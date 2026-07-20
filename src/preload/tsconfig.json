@@ -1,0 +1,11 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "composite": true,
+    "lib": ["ES2023", "DOM"],
+    "rootDir": "..",
+    "tsBuildInfoFile": "../../dist/.tsbuildinfo/preload.tsbuildinfo",
+    "types": ["node"]
+  },
+  "include": ["./**/*.ts", "../contracts/**/*.ts"]
+}

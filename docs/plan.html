@@ -510,9 +510,10 @@
         product-specific capabilities remain optional until a real requirement activates them.
       </p>
       <div class="meta" aria-label="Plan metadata">
-        <span class="pill pill--active">Baseline verified</span>
+        <span class="pill pill--active">Phase 01 in progress</span>
         <span class="pill">Updated July 20, 2026</span>
-        <span class="pill">Initial cleanup complete</span>
+        <span class="pill">Vite + TypeScript 7 verified</span>
+        <span class="pill">Packaging foundation verified</span>
         <span class="pill">Repository: electron-boilerplate</span>
       </div>
     </header>
@@ -543,9 +544,8 @@
             <span class="number">01</span>
             <h3>Transparent tooling</h3>
             <p>
-              Vite builds the renderer. tsdown builds Node-facing runtimes. electron-builder
-              packages the result. No Electron-specific Vite abstraction sits between us and the
-              underlying tools.
+              Vite is the single command entrypoint. Doubleshot integrates the Electron main and
+              preload builds, while electron-builder will package the eventual result.
             </p>
           </article>
           <article class="panel">
@@ -714,7 +714,7 @@
               </tr>
               <tr>
                 <td>Language</td>
-                <td>Strict TypeScript</td>
+                <td>Strict TypeScript 7</td>
                 <td>Shared contracts and runtime boundaries benefit from strong static checks.</td>
               </tr>
               <tr>
@@ -723,9 +723,9 @@
                 <td>Focused use of Vite for the browser runtime and fast development feedback.</td>
               </tr>
               <tr>
-                <td>Main, preload, BFF</td>
-                <td>tsdown</td>
-                <td>Small, explicit builds for Node-facing TypeScript entrypoints.</td>
+                <td>Electron integration</td>
+                <td>vite-plugin-doubleshot</td>
+                <td>One Vite command builds the renderer, main, and preload and starts Electron.</td>
               </tr>
               <tr>
                 <td>BFF</td>
@@ -889,8 +889,8 @@
               <ul>
                 <li>Move from npm/plain JavaScript to pnpm and strict TypeScript.</li>
                 <li>Create desktop, BFF server, BFF package, and contracts package boundaries.</li>
-                <li>Configure Vite for renderer and tsdown for main, preload, and server builds.</li>
-                <li>Add a development supervisor that starts Vite, watchers, and Electron.</li>
+                <li>Configure one Vite entrypoint for renderer, main, and preload builds.</li>
+                <li>Use Doubleshot for Electron startup and development restarts.</li>
               </ul>
               <p class="acceptance"><strong>Accept when:</strong> install, dev, typecheck, and production build succeed from a clean checkout.</p>
             </div>
@@ -953,7 +953,8 @@
             <div>
               <h3>Packaging and release readiness</h3>
               <ul>
-                <li>Configure electron-builder outputs, ASAR, icons, and artifact naming.</li>
+                <li>Completed early: electron-builder, ASAR, isolated release output, unpacked launch, and unsigned NSIS generation.</li>
+                <li>Add product icons and final application identity.</li>
                 <li>Add signing-ready environment configuration without committing secrets.</li>
                 <li>Add package smoke tests and document platform-specific release steps.</li>
                 <li>Prepare release automation; do not publish until explicitly requested.</li>
@@ -1124,7 +1125,8 @@ pnpm test:e2e</code></pre>
 
     <footer class="footer shell">
       <p>
-        This is a living plan. The next action is Phase 01: workspace and build foundation.
+        This is a living plan. The next action is the portable in-memory Hono BFF and its first
+        validated IPC vertical slice; the build and packaging foundations are verified.
       </p>
     </footer>
   </body>

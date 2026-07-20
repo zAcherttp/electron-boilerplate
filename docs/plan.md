@@ -1,7 +1,7 @@
 # Electron Boilerplate — Quick Plan
 
 Updated: 2026-07-20
-Status: initial cleanup and baseline verification complete; Phase 01 is next
+Status: Phase 01 in progress; build and electron-builder packaging foundations verified
 
 The detailed plan is in [`plan.html`](./plan.html).
 
@@ -13,7 +13,7 @@ Build an opinionated but small Electron boilerplate using:
 - strict TypeScript
 - Electron
 - Vite + React for the renderer
-- tsdown for main, preload, BFF, and server builds
+- vite-plugin-doubleshot for Electron main/preload builds and startup
 - Hono as a desktop Backend for Frontend (BFF)
 - Zod contracts
 - TanStack Router and TanStack Query
@@ -21,7 +21,7 @@ Build an opinionated but small Electron boilerplate using:
 - Vitest and Playwright
 - ESLint, Prettier, Pino, and GitHub Actions
 
-Do not use `electron-vite`. Vite owns only the renderer build; the remaining build and packaging steps stay explicit.
+Do not use `electron-vite`. Vite remains the single command entrypoint, with Doubleshot wiring in Electron main and preload builds.
 
 ## Runtime architecture
 
@@ -91,8 +91,8 @@ Acceptance: baseline behavior is known and reproducible.
 
 - Convert npm/plain JavaScript to pnpm and strict TypeScript.
 - Create workspace boundaries.
-- Add React/Vite renderer and tsdown builds.
-- Add a development supervisor.
+- Add the React renderer and Electron builds to one Vite configuration.
+- Let Doubleshot own development startup and Electron restarts.
 
 Acceptance: clean install, development startup, typecheck, and production build pass.
 
@@ -131,7 +131,8 @@ Acceptance: CI validates a clean checkout end to end.
 
 ### Phase 06 — Packaging
 
-- Configure electron-builder, ASAR, icons, and artifact naming.
+- Packaging foundation completed early: electron-builder, ASAR, isolated `release/` output, artifact naming, unpacked launch, and unsigned NSIS generation are verified.
+- Add product icons and final application identity.
 - Add signing-ready configuration without secrets.
 - Add package smoke tests and release documentation.
 
@@ -180,4 +181,4 @@ pnpm test:e2e
 
 ## Next action
 
-Implement Phase 01 only: the workspace and build foundation. Do not install optional modules or begin later phases until the current phase acceptance criteria pass.
+Create the portable Hono BFF boundary and first `system/info` vertical slice. Electron must call the shared Hono app in memory through validated IPC; do not open a localhost port or add the optional Node HTTP adapter yet. Re-run the packaged application smoke test after the slice works.
