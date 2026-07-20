@@ -1,44 +1,72 @@
-# minimal-repro
+# Electron Boilerplate
 
-**Quickly create and share examples of Electron app behaviors or bugs.**
+An incremental, opinionated desktop application foundation built around Electron, React, strict TypeScript, and a Hono Backend for Frontend (BFF).
 
-> [!NOTE]
-> This repro was renamed from `electron-quick-start` to clarify its purpose as a repro template. If you're looking to boostrap a new Electron app, check out the [Electron Forge](https://www.electronforge.io/) docs instead to get started!
+The repository currently contains the cleaned minimal Electron baseline. We are implementing the architecture one verified increment at a time instead of introducing the entire stack at once.
 
-Creating a minimal reproduction (or "minimal repro") is essential when troubleshooting Electron apps. By stripping away everything except the code needed to demonstrate a specific behavior or bug, it becomes easier for others to understand, debug, and fix issues. This focused approach saves time and ensures that everyone involved is looking at exactly the same problem without distractions.
+## Planned stack
 
-A basic Electron application contains:
+- pnpm workspace
+- Electron
+- Vite + React
+- strict TypeScript
+- tsdown
+- Hono BFF with Zod contracts
+- TanStack Router and TanStack Query
+- electron-builder
+- Vitest and Playwright
 
-- `package.json` - Points to the app's main file and lists its details and dependencies.
-- `main.js` - Starts the app and creates a browser window to render HTML. This is the app's **main process**.
-- `index.html` - A web page to render. This is the app's **renderer process**.
-- `preload.js` - A content script that runs before the renderer process loads.
+Vite will build only the renderer. Electron main, preload, the Hono BFF, and the standalone server adapter will use explicit tsdown builds.
 
-You can learn more about each of these components in depth within the [Tutorial](https://electronjs.org/docs/latest/tutorial/tutorial-prerequisites).
+## Current baseline
 
-## To Use
+This first increment intentionally remains plain JavaScript. It removes the inherited template automation and identity, and places runtime source files under `src/` before the workspace and TypeScript migration begins.
 
-To clone and run this repository you'll need [Git](https://git-scm.com) and [Node.js](https://nodejs.org/en/download/) (which comes with [npm](http://npmjs.com)) installed on your computer. From your command line:
-
-```bash
-# Clone this repository
-git clone https://github.com/electron/minimal-repro
-# Go into the repository
-cd minimal-repro
-# Install dependencies
-npm install
-# Run the app
-npm start
+```text
+.
+├─ docs/
+│  ├─ plan.html
+│  └─ plan.md
+├─ src/
+│  ├─ main.js
+│  ├─ preload.js
+│  ├─ renderer.js
+│  └─ styles.css
+├─ index.html
+├─ package.json
+└─ pnpm-lock.yaml
 ```
 
-Note: If you're using Linux Bash for Windows, [see this guide](https://www.howtogeek.com/261575/how-to-run-graphical-linux-desktop-applications-from-windows-10s-bash-shell/) or use `node` from the command prompt.
+## Run the baseline
 
-## Resources for Learning Electron
+Requirements:
 
-- [electronjs.org/docs](https://electronjs.org/docs) - all of Electron's documentation
-- [Electron Fiddle](https://electronjs.org/fiddle) - Electron Fiddle, an app to test small Electron experiments
-- [Electron Forge](https://www.electronforge.io/) - Looking to bootstrap a new Electron app? Check out the Electron Forge docs to get started
+- Node.js compatible with the installed Electron release
+- pnpm 11.15.1
 
-## License
+```bash
+pnpm install
+pnpm start
+```
 
-[CC0 1.0 (Public Domain)](LICENSE.md)
+## Architecture direction
+
+The default embedded request flow will be:
+
+```text
+React renderer
+  → typed preload API
+  → validated Electron IPC
+  → Electron main
+  → Hono app.request()
+  → local data, filesystem, or remote APIs
+```
+
+Hono will run in memory without opening a localhost port. A separate Node adapter will allow the same BFF application to run as a standalone HTTP service.
+
+## Plans
+
+- [Full visual implementation plan](docs/plan.html)
+- [Brief session-reload plan](docs/plan.md)
+
+The next increment is the workspace and build foundation: pnpm, strict TypeScript, React/Vite, tsdown, and the initial package boundaries.

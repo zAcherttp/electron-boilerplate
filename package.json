@@ -1,21 +1,19 @@
 {
-  "name": "minimal-repro",
-  "version": "1.0.0",
-  "description": "A minimal Electron application",
-  "main": "main.js",
+  "name": "electron-boilerplate",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@11.15.1",
+  "description": "An incremental Electron, React, and Hono BFF boilerplate",
+  "main": "src/main.js",
   "scripts": {
+    "postinstall": "install-electron",
     "start": "electron ."
   },
-  "repository": "https://github.com/electron/minimal-repro",
   "keywords": [
-    "Electron",
-    "quick",
-    "start",
-    "tutorial",
-    "demo"
+    "electron",
+    "boilerplate"
   ],
-  "author": "GitHub",
-  "license": "CC0-1.0",
+  "license": "UNLICENSED",
   "devDependencies": {
     "electron": "^43.1.0"
   }

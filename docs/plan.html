@@ -1,0 +1,1131 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Incremental implementation plan for an Electron, Vite, React, TypeScript, and Hono BFF boilerplate."
+    />
+    <title>Electron Boilerplate — Implementation Plan</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --ink: #17221f;
+        --muted: #5e6b66;
+        --paper: #f5f2e9;
+        --surface: #fffdf7;
+        --surface-strong: #ebe7da;
+        --line: #d8d3c5;
+        --accent: #087f68;
+        --accent-dark: #075d4f;
+        --accent-soft: #dcefe9;
+        --warm: #a34e26;
+        --warm-soft: #f4e3d8;
+        --code: #12211d;
+        --shadow: 0 18px 50px rgb(31 48 42 / 9%);
+        --radius: 18px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at top right, rgb(8 127 104 / 10%), transparent 28rem),
+          var(--paper);
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
+        font-size: 16px;
+        line-height: 1.65;
+      }
+
+      a {
+        color: var(--accent-dark);
+        text-decoration-thickness: 1px;
+        text-underline-offset: 0.2em;
+      }
+
+      a:hover {
+        color: var(--accent);
+      }
+
+      code,
+      pre {
+        font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      }
+
+      code {
+        padding: 0.12rem 0.35rem;
+        border-radius: 0.35rem;
+        background: var(--surface-strong);
+        font-size: 0.9em;
+      }
+
+      pre {
+        overflow: auto;
+        margin: 0;
+        padding: 1.25rem;
+        border-radius: 14px;
+        color: #dcebe5;
+        background: var(--code);
+        font-size: 0.86rem;
+        line-height: 1.7;
+      }
+
+      pre code {
+        padding: 0;
+        color: inherit;
+        background: transparent;
+        font-size: inherit;
+      }
+
+      h1,
+      h2,
+      h3 {
+        margin-top: 0;
+        line-height: 1.15;
+        letter-spacing: -0.025em;
+      }
+
+      h1 {
+        max-width: 14ch;
+        margin-bottom: 1.25rem;
+        font-size: clamp(2.7rem, 7vw, 5.8rem);
+        font-weight: 750;
+      }
+
+      h2 {
+        margin-bottom: 1rem;
+        font-size: clamp(1.8rem, 4vw, 2.7rem);
+      }
+
+      h3 {
+        margin-bottom: 0.6rem;
+        font-size: 1.12rem;
+      }
+
+      p {
+        margin-top: 0;
+      }
+
+      .shell {
+        width: min(1180px, calc(100% - 2rem));
+        margin-inline: auto;
+      }
+
+      .masthead {
+        padding: clamp(4rem, 10vw, 8rem) 0 4rem;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        gap: 0.55rem;
+        align-items: center;
+        margin-bottom: 1.35rem;
+        color: var(--accent-dark);
+        font-size: 0.76rem;
+        font-weight: 800;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .eyebrow::before {
+        width: 1.8rem;
+        height: 2px;
+        background: currentcolor;
+        content: "";
+      }
+
+      .lede {
+        max-width: 62ch;
+        margin-bottom: 1.75rem;
+        color: var(--muted);
+        font-size: clamp(1.05rem, 2vw, 1.28rem);
+      }
+
+      .meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.7rem;
+      }
+
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.42rem 0.75rem;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        color: var(--muted);
+        background: rgb(255 253 247 / 65%);
+        font-size: 0.8rem;
+        font-weight: 700;
+      }
+
+      .pill--active {
+        border-color: #9bcabe;
+        color: var(--accent-dark);
+        background: var(--accent-soft);
+      }
+
+      .jump-nav {
+        position: sticky;
+        z-index: 10;
+        top: 0;
+        border-top: 1px solid var(--line);
+        border-bottom: 1px solid var(--line);
+        background: rgb(245 242 233 / 92%);
+        backdrop-filter: blur(14px);
+      }
+
+      .jump-nav__inner {
+        display: flex;
+        gap: 1.4rem;
+        overflow-x: auto;
+        padding: 0.85rem 0;
+        scrollbar-width: thin;
+      }
+
+      .jump-nav a {
+        flex: 0 0 auto;
+        color: var(--muted);
+        font-size: 0.78rem;
+        font-weight: 800;
+        letter-spacing: 0.06em;
+        text-decoration: none;
+        text-transform: uppercase;
+      }
+
+      .jump-nav a:hover {
+        color: var(--accent-dark);
+      }
+
+      main {
+        padding: 2rem 0 6rem;
+      }
+
+      section {
+        padding: clamp(3.3rem, 8vw, 6.5rem) 0;
+        border-bottom: 1px solid var(--line);
+        scroll-margin-top: 3.5rem;
+      }
+
+      section:last-child {
+        border-bottom: 0;
+      }
+
+      .section-intro {
+        max-width: 68ch;
+        margin-bottom: 2rem;
+        color: var(--muted);
+        font-size: 1.05rem;
+      }
+
+      .grid {
+        display: grid;
+        gap: 1rem;
+      }
+
+      .grid--2 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .grid--3 {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .panel {
+        padding: clamp(1.25rem, 3vw, 2rem);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: var(--surface);
+        box-shadow: var(--shadow);
+      }
+
+      .panel p:last-child,
+      .panel ul:last-child {
+        margin-bottom: 0;
+      }
+
+      .panel--accent {
+        border-color: #9bcabe;
+        background: var(--accent-soft);
+      }
+
+      .panel--warm {
+        border-color: #dfbca7;
+        background: var(--warm-soft);
+      }
+
+      .number {
+        display: inline-grid;
+        width: 2rem;
+        height: 2rem;
+        margin-bottom: 1.5rem;
+        border-radius: 50%;
+        color: white;
+        background: var(--accent);
+        font-size: 0.78rem;
+        font-weight: 800;
+        place-items: center;
+      }
+
+      .flow {
+        display: grid;
+        grid-template-columns: repeat(7, auto);
+        gap: 0.75rem;
+        align-items: center;
+        padding: 1.5rem;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: var(--surface);
+        box-shadow: var(--shadow);
+      }
+
+      .flow__node {
+        min-height: 7rem;
+        padding: 1rem;
+        border-radius: 14px;
+        background: var(--surface-strong);
+      }
+
+      .flow__node strong,
+      .flow__node span {
+        display: block;
+      }
+
+      .flow__node span {
+        margin-top: 0.35rem;
+        color: var(--muted);
+        font-size: 0.8rem;
+      }
+
+      .flow__node--key {
+        color: #eaf7f2;
+        background: var(--accent-dark);
+      }
+
+      .flow__node--key span {
+        color: #b9d8cf;
+      }
+
+      .flow__arrow {
+        color: var(--accent);
+        font-size: 1.4rem;
+        font-weight: 800;
+        text-align: center;
+      }
+
+      .callout {
+        margin-top: 1rem;
+        padding: 1rem 1.2rem;
+        border-left: 4px solid var(--accent);
+        border-radius: 0 10px 10px 0;
+        background: var(--accent-soft);
+      }
+
+      .callout strong {
+        color: var(--accent-dark);
+      }
+
+      .table-wrap {
+        overflow-x: auto;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: var(--surface);
+        box-shadow: var(--shadow);
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.9rem;
+      }
+
+      th,
+      td {
+        padding: 0.95rem 1rem;
+        border-bottom: 1px solid var(--line);
+        text-align: left;
+        vertical-align: top;
+      }
+
+      th {
+        color: var(--accent-dark);
+        background: var(--accent-soft);
+        font-size: 0.72rem;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+
+      tr:last-child td {
+        border-bottom: 0;
+      }
+
+      td:first-child {
+        font-weight: 750;
+      }
+
+      .phase-list {
+        display: grid;
+        gap: 1rem;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .phase {
+        display: grid;
+        grid-template-columns: 4rem minmax(0, 1fr);
+        gap: 1.25rem;
+        padding: 1.5rem;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: var(--surface);
+      }
+
+      .phase__index {
+        color: var(--accent);
+        font-size: 2rem;
+        font-weight: 800;
+        line-height: 1;
+      }
+
+      .phase ul,
+      .check-list {
+        margin: 0.65rem 0 0;
+        padding-left: 1.2rem;
+      }
+
+      .phase li,
+      .check-list li {
+        margin: 0.35rem 0;
+      }
+
+      .acceptance {
+        margin-top: 0.9rem;
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+
+      .acceptance strong {
+        color: var(--ink);
+      }
+
+      .module-status {
+        display: inline-block;
+        min-width: 5.2rem;
+        padding: 0.2rem 0.5rem;
+        border-radius: 999px;
+        color: var(--accent-dark);
+        background: var(--accent-soft);
+        font-size: 0.72rem;
+        font-weight: 800;
+        text-align: center;
+      }
+
+      .module-status--later {
+        color: #74401f;
+        background: var(--warm-soft);
+      }
+
+      .footer {
+        padding: 2rem 0 4rem;
+        color: var(--muted);
+        font-size: 0.88rem;
+      }
+
+      @media (max-width: 860px) {
+        .grid--2,
+        .grid--3 {
+          grid-template-columns: 1fr;
+        }
+
+        .flow {
+          grid-template-columns: 1fr;
+        }
+
+        .flow__node {
+          min-height: auto;
+        }
+
+        .flow__arrow {
+          transform: rotate(90deg);
+        }
+      }
+
+      @media (max-width: 560px) {
+        .shell {
+          width: min(100% - 1.2rem, 1180px);
+        }
+
+        .phase {
+          grid-template-columns: 1fr;
+        }
+
+        .phase__index {
+          font-size: 1.25rem;
+        }
+      }
+
+      @media print {
+        :root {
+          --paper: white;
+          --surface: white;
+          --shadow: none;
+        }
+
+        .jump-nav {
+          display: none;
+        }
+
+        section {
+          break-inside: avoid;
+        }
+
+        .panel,
+        .phase,
+        .table-wrap,
+        .flow {
+          box-shadow: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="masthead shell">
+      <div class="eyebrow">Architecture plan · v0.1</div>
+      <h1>Our Electron boilerplate.</h1>
+      <p class="lede">
+        An incremental plan for a secure, understandable desktop foundation built with Electron,
+        Vite, React, strict TypeScript, and a Hono Backend for Frontend. The base stays small;
+        product-specific capabilities remain optional until a real requirement activates them.
+      </p>
+      <div class="meta" aria-label="Plan metadata">
+        <span class="pill pill--active">Baseline verified</span>
+        <span class="pill">Updated July 20, 2026</span>
+        <span class="pill">Initial cleanup complete</span>
+        <span class="pill">Repository: electron-boilerplate</span>
+      </div>
+    </header>
+
+    <nav class="jump-nav" aria-label="Plan sections">
+      <div class="jump-nav__inner shell">
+        <a href="#principles">Principles</a>
+        <a href="#architecture">Architecture</a>
+        <a href="#structure">Structure</a>
+        <a href="#stack">Stack</a>
+        <a href="#core-modules">Core modules</a>
+        <a href="#phases">Phases</a>
+        <a href="#optional-modules">Optional modules</a>
+        <a href="#quality">Quality</a>
+      </div>
+    </nav>
+
+    <main class="shell">
+      <section id="principles">
+        <div class="eyebrow">01 · Direction</div>
+        <h2>Small base, strong boundaries.</h2>
+        <p class="section-intro">
+          This boilerplate should demonstrate the difficult boundaries once, then get out of the
+          product's way. It is a starting point rather than a framework we must continually fight.
+        </p>
+        <div class="grid grid--3">
+          <article class="panel">
+            <span class="number">01</span>
+            <h3>Transparent tooling</h3>
+            <p>
+              Vite builds the renderer. tsdown builds Node-facing runtimes. electron-builder
+              packages the result. No Electron-specific Vite abstraction sits between us and the
+              underlying tools.
+            </p>
+          </article>
+          <article class="panel">
+            <span class="number">02</span>
+            <h3>Validate at boundaries</h3>
+            <p>
+              Renderer input, IPC payloads, HTTP requests, environment variables, and external API
+              responses are untrusted. Parse them once at the edge; internal code receives trusted
+              values.
+            </p>
+          </article>
+          <article class="panel">
+            <span class="number">03</span>
+            <h3>Feature ownership</h3>
+            <p>
+              Product behavior lives with its feature. Avoid broad <code>utils</code>,
+              <code>services</code>, <code>helpers</code>, and <code>common</code> buckets that hide
+              ownership.
+            </p>
+          </article>
+        </div>
+        <div class="callout">
+          <strong>Non-goal:</strong> ship every desktop capability in the base. Database, updater,
+          auth, telemetry, tray behavior, and similar concerns are documented as opt-in modules.
+        </div>
+      </section>
+
+      <section id="architecture">
+        <div class="eyebrow">02 · Runtime model</div>
+        <h2>Hono as the desktop BFF.</h2>
+        <p class="section-intro">
+          Hono is a Backend for Frontend because its contract is tailored to the React renderer. In
+          embedded mode it receives in-memory Web Standard requests—there is no localhost port. A
+          thin standalone adapter can expose the exact same Hono app over HTTP when needed.
+        </p>
+
+        <div class="flow" aria-label="Embedded request flow">
+          <div class="flow__node">
+            <strong>React</strong>
+            <span>Pages and features</span>
+          </div>
+          <div class="flow__arrow" aria-hidden="true">→</div>
+          <div class="flow__node">
+            <strong>Preload</strong>
+            <span>Narrow typed API</span>
+          </div>
+          <div class="flow__arrow" aria-hidden="true">→</div>
+          <div class="flow__node">
+            <strong>Electron main</strong>
+            <span>Validates IPC sender</span>
+          </div>
+          <div class="flow__arrow" aria-hidden="true">→</div>
+          <div class="flow__node flow__node--key">
+            <strong>Hono BFF</strong>
+            <span>app.request()</span>
+          </div>
+        </div>
+
+        <div class="grid grid--2" style="margin-top: 1rem">
+          <article class="panel panel--accent">
+            <h3>Embedded mode · default</h3>
+            <p>
+              Electron main imports the Hono application factory and calls
+              <code>app.request()</code>. This avoids port discovery, CORS, loopback authentication,
+              and a second process during the initial implementation.
+            </p>
+          </article>
+          <article class="panel">
+            <h3>Standalone mode · supported</h3>
+            <p>
+              A tiny Node adapter uses <code>@hono/node-server</code>. It proves the BFF is not tied
+              to Electron and gives us a path to a browser client or remote deployment.
+            </p>
+          </article>
+        </div>
+
+        <div class="callout">
+          <strong>Isolation rule:</strong> CPU-heavy, crash-prone, or long-running work does not
+          belong in Electron main or the thin BFF. Add a utility process or worker when such work
+          appears.
+        </div>
+      </section>
+
+      <section id="structure">
+        <div class="eyebrow">03 · Ownership</div>
+        <h2>Repository shape.</h2>
+        <p class="section-intro">
+          The Hono application is a package because it has two real consumers: Electron embedded
+          mode and the standalone server adapter. Runtime entrypoints remain thin.
+        </p>
+        <pre><code>electron-boilerplate/
+├─ apps/
+│  ├─ desktop/
+│  │  └─ src/
+│  │     ├─ main/
+│  │     │  ├─ app/
+│  │     │  ├─ windows/
+│  │     │  ├─ ipc/
+│  │     │  └─ security/
+│  │     ├─ preload/
+│  │     └─ renderer/
+│  │        ├─ app/
+│  │        ├─ routes/
+│  │        └─ features/
+│  └─ bff-server/
+│     └─ src/index.ts              # Node HTTP adapter only
+├─ packages/
+│  ├─ bff/
+│  │  └─ src/
+│  │     ├─ features/
+│  │     ├─ middleware/
+│  │     └─ app.ts                 # createBffApp()
+│  └─ contracts/
+│     └─ src/
+│        ├─ ipc/
+│        └─ http/
+├─ tests/e2e/
+├─ scripts/dev.mjs
+├─ pnpm-workspace.yaml
+└─ package.json</code></pre>
+
+        <div class="grid grid--2" style="margin-top: 1rem">
+          <article class="panel">
+            <h3>Allowed dependency direction</h3>
+            <pre><code>contracts
+   ↑
+   ├── bff ← desktop main
+   │          ↑
+   │      bff-server
+   └── preload + renderer</code></pre>
+          </article>
+          <article class="panel panel--warm">
+            <h3>Boundaries we will enforce</h3>
+            <ul class="check-list">
+              <li>Packages never import from apps.</li>
+              <li>Renderer never imports Electron or BFF implementations.</li>
+              <li>Preload never exposes raw <code>ipcRenderer</code>.</li>
+              <li>Contracts contain schemas and data shapes, not workflows.</li>
+              <li>No root mega-barrels or cross-package relative imports.</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <section id="stack">
+        <div class="eyebrow">04 · Decisions</div>
+        <h2>Technology choices.</h2>
+        <p class="section-intro">
+          Exact versions will be selected from current stable releases during implementation and
+          pinned through the lockfile. Prereleases require an explicit decision.
+        </p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Concern</th>
+                <th scope="col">Choice</th>
+                <th scope="col">Reason</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Workspace</td>
+                <td>pnpm</td>
+                <td>Fast installs, explicit workspace boundaries, one lockfile.</td>
+              </tr>
+              <tr>
+                <td>Language</td>
+                <td>Strict TypeScript</td>
+                <td>Shared contracts and runtime boundaries benefit from strong static checks.</td>
+              </tr>
+              <tr>
+                <td>Renderer</td>
+                <td>Vite + React</td>
+                <td>Focused use of Vite for the browser runtime and fast development feedback.</td>
+              </tr>
+              <tr>
+                <td>Main, preload, BFF</td>
+                <td>tsdown</td>
+                <td>Small, explicit builds for Node-facing TypeScript entrypoints.</td>
+              </tr>
+              <tr>
+                <td>BFF</td>
+                <td>Hono</td>
+                <td>Web Standard Request/Response model, in-memory testing, optional Node adapter.</td>
+              </tr>
+              <tr>
+                <td>Validation</td>
+                <td>Zod</td>
+                <td>One runtime schema can validate boundaries and derive TypeScript types.</td>
+              </tr>
+              <tr>
+                <td>Routing</td>
+                <td>TanStack Router</td>
+                <td>Typed navigation and route ownership for a React SPA.</td>
+              </tr>
+              <tr>
+                <td>Server state</td>
+                <td>TanStack Query</td>
+                <td>Explicit async state, caching, retries, and invalidation.</td>
+              </tr>
+              <tr>
+                <td>Packaging</td>
+                <td>electron-builder</td>
+                <td>Packaging remains separate from compilation and supports signing workflows.</td>
+              </tr>
+              <tr>
+                <td>Testing</td>
+                <td>Vitest + Playwright</td>
+                <td>Fast contracts/integration tests plus real packaged-runtime confidence.</td>
+              </tr>
+              <tr>
+                <td>Logging</td>
+                <td>Pino</td>
+                <td>Structured logs shared by Electron main and Hono.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="core-modules">
+        <div class="eyebrow">05 · Base scope</div>
+        <h2>Core modules.</h2>
+        <p class="section-intro">
+          These modules define the boilerplate. Each must have an owner, a public boundary, and at
+          least one observable verification path.
+        </p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Module</th>
+                <th scope="col">Owner</th>
+                <th scope="col">Responsibility</th>
+                <th scope="col">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Workspace foundation</td>
+                <td>Root</td>
+                <td>pnpm, TypeScript configs, scripts, build outputs, dependency policy.</td>
+                <td><span class="module-status">Core</span></td>
+              </tr>
+              <tr>
+                <td>Application lifecycle</td>
+                <td>Desktop main</td>
+                <td>Ready, activate, quit, single-instance behavior, graceful shutdown.</td>
+                <td><span class="module-status">Core</span></td>
+              </tr>
+              <tr>
+                <td>Window management</td>
+                <td>Desktop main</td>
+                <td>Create and restore windows, development/production renderer loading.</td>
+                <td><span class="module-status">Core</span></td>
+              </tr>
+              <tr>
+                <td>Desktop security</td>
+                <td>Desktop main</td>
+                <td>Sandbox, context isolation, CSP, navigation policy, sender validation.</td>
+                <td><span class="module-status">Core</span></td>
+              </tr>
+              <tr>
+                <td>Preload bridge</td>
+                <td>Desktop preload</td>
+                <td>One narrow, typed method per renderer capability.</td>
+                <td><span class="module-status">Core</span></td>
+              </tr>
+              <tr>
+                <td>Contracts</td>
+                <td>packages/contracts</td>
+                <td>Zod schemas for IPC, BFF requests, responses, and structured errors.</td>
+                <td><span class="module-status">Core</span></td>
+              </tr>
+              <tr>
+                <td>Hono application</td>
+                <td>packages/bff</td>
+                <td>Feature routes, middleware, request IDs, errors, and health behavior.</td>
+                <td><span class="module-status">Core</span></td>
+              </tr>
+              <tr>
+                <td>Standalone adapter</td>
+                <td>apps/bff-server</td>
+                <td>Bind the shared Hono app to Node HTTP and handle shutdown.</td>
+                <td><span class="module-status">Core</span></td>
+              </tr>
+              <tr>
+                <td>Renderer shell</td>
+                <td>Desktop renderer</td>
+                <td>Router, query client, error boundary, layout, loading and empty states.</td>
+                <td><span class="module-status">Core</span></td>
+              </tr>
+              <tr>
+                <td>Configuration</td>
+                <td>Each runtime</td>
+                <td>Validate environment at startup and prevent secrets entering the renderer.</td>
+                <td><span class="module-status">Core</span></td>
+              </tr>
+              <tr>
+                <td>Observability baseline</td>
+                <td>Main + BFF</td>
+                <td>Structured logs, request correlation, useful startup and failure messages.</td>
+                <td><span class="module-status">Core</span></td>
+              </tr>
+              <tr>
+                <td>Quality gates</td>
+                <td>Root + CI</td>
+                <td>Format, lint, typecheck, tests, build, and dependency-boundary checks.</td>
+                <td><span class="module-status">Core</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="phases">
+        <div class="eyebrow">06 · Delivery</div>
+        <h2>Incremental implementation.</h2>
+        <p class="section-intro">
+          Each phase should leave the repository runnable and reviewable. We do not begin the next
+          phase until the current acceptance criteria pass.
+        </p>
+        <ol class="phase-list">
+          <li class="phase">
+            <div class="phase__index">00</div>
+            <div>
+              <h3>Plan and baseline</h3>
+              <ul>
+                <li>Record architecture, module scope, and dependency direction.</li>
+                <li>Confirm the existing minimal Electron app still starts before migration.</li>
+                <li>Capture the initial git state without rewriting repository history.</li>
+              </ul>
+              <p class="acceptance"><strong>Accept when:</strong> this plan is reviewed and the baseline launch is known.</p>
+            </div>
+          </li>
+          <li class="phase">
+            <div class="phase__index">01</div>
+            <div>
+              <h3>Workspace and build foundation</h3>
+              <ul>
+                <li>Move from npm/plain JavaScript to pnpm and strict TypeScript.</li>
+                <li>Create desktop, BFF server, BFF package, and contracts package boundaries.</li>
+                <li>Configure Vite for renderer and tsdown for main, preload, and server builds.</li>
+                <li>Add a development supervisor that starts Vite, watchers, and Electron.</li>
+              </ul>
+              <p class="acceptance"><strong>Accept when:</strong> install, dev, typecheck, and production build succeed from a clean checkout.</p>
+            </div>
+          </li>
+          <li class="phase">
+            <div class="phase__index">02</div>
+            <div>
+              <h3>Secure Electron shell</h3>
+              <ul>
+                <li>Implement application lifecycle and window ownership.</li>
+                <li>Enable sandboxing and context isolation; keep Node integration disabled.</li>
+                <li>Deny unexpected navigation and new-window requests.</li>
+                <li>Add restrictive development and production content security policies.</li>
+              </ul>
+              <p class="acceptance"><strong>Accept when:</strong> the React renderer launches in development and packaged modes without direct Node access.</p>
+            </div>
+          </li>
+          <li class="phase">
+            <div class="phase__index">03</div>
+            <div>
+              <h3>Contracts, typed IPC, and Hono BFF</h3>
+              <ul>
+                <li>Create structured success and error contracts.</li>
+                <li>Add a narrow preload bridge and validate IPC senders and payloads.</li>
+                <li>Create the Hono app factory and in-memory Electron adapter.</li>
+                <li>Add the standalone Node server adapter and graceful shutdown.</li>
+                <li>Deliver the first vertical slice: <code>system.getInfo</code>.</li>
+              </ul>
+              <p class="acceptance"><strong>Accept when:</strong> React renders validated system information through preload → IPC → Hono, and the same route passes a standalone request test.</p>
+            </div>
+          </li>
+          <li class="phase">
+            <div class="phase__index">04</div>
+            <div>
+              <h3>Renderer application foundation</h3>
+              <ul>
+                <li>Add typed routes, query ownership, and global error handling.</li>
+                <li>Create a restrained app shell with accessible loading, error, and empty states.</li>
+                <li>Keep product UI under feature owners; shared primitives stay genuinely generic.</li>
+                <li>Do not add a global client-state library until a real state owner requires it.</li>
+              </ul>
+              <p class="acceptance"><strong>Accept when:</strong> the vertical slice is navigable, keyboard-accessible, and handles success and failure visibly.</p>
+            </div>
+          </li>
+          <li class="phase">
+            <div class="phase__index">05</div>
+            <div>
+              <h3>Testing, quality, and CI</h3>
+              <ul>
+                <li>Add schema contract tests and Hono request-level integration tests.</li>
+                <li>Add renderer behavior tests and an Electron launch smoke test.</li>
+                <li>Configure format, lint, typecheck, test, and build commands.</li>
+                <li>Run the complete quality gate in GitHub Actions.</li>
+              </ul>
+              <p class="acceptance"><strong>Accept when:</strong> CI proves a clean checkout can install, validate, test, and build.</p>
+            </div>
+          </li>
+          <li class="phase">
+            <div class="phase__index">06</div>
+            <div>
+              <h3>Packaging and release readiness</h3>
+              <ul>
+                <li>Configure electron-builder outputs, ASAR, icons, and artifact naming.</li>
+                <li>Add signing-ready environment configuration without committing secrets.</li>
+                <li>Add package smoke tests and document platform-specific release steps.</li>
+                <li>Prepare release automation; do not publish until explicitly requested.</li>
+              </ul>
+              <p class="acceptance"><strong>Accept when:</strong> a locally packaged artifact installs or launches and completes the system-info vertical slice.</p>
+            </div>
+          </li>
+        </ol>
+      </section>
+
+      <section id="optional-modules">
+        <div class="eyebrow">07 · Opt-in catalog</div>
+        <h2>Optional modules.</h2>
+        <p class="section-intro">
+          Optional modules are recipes with clear activation triggers. They are not installed in the
+          base merely because many desktop applications eventually need them.
+        </p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Module</th>
+                <th scope="col">Add when</th>
+                <th scope="col">Likely implementation</th>
+                <th scope="col">Tier</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Local database</td>
+                <td>The desktop owns durable structured data or must work offline.</td>
+                <td>SQLite + Drizzle, generated migrations, packaged native-module verification.</td>
+                <td><span class="module-status module-status--later">Common</span></td>
+              </tr>
+              <tr>
+                <td>Secure secrets</td>
+                <td>The application stores access tokens or private credentials.</td>
+                <td>Electron <code>safeStorage</code> or an evaluated OS keychain adapter.</td>
+                <td><span class="module-status module-status--later">Common</span></td>
+              </tr>
+              <tr>
+                <td>Auto updater</td>
+                <td>Signed releases have a stable artifact feed and rollback policy.</td>
+                <td>electron-updater, staged rollout, visible update state, recovery path.</td>
+                <td><span class="module-status module-status--later">Common</span></td>
+              </tr>
+              <tr>
+                <td>Deep links</td>
+                <td>Web pages or other apps need to open a specific desktop route.</td>
+                <td>Custom protocol, single-instance forwarding, strict URL parsing.</td>
+                <td><span class="module-status module-status--later">Common</span></td>
+              </tr>
+              <tr>
+                <td>Native menus and tray</td>
+                <td>The product has background behavior or native commands.</td>
+                <td>Feature-owned command registry shared by menu, shortcut, and UI adapters.</td>
+                <td><span class="module-status module-status--later">Product</span></td>
+              </tr>
+              <tr>
+                <td>File-system access</td>
+                <td>A concrete import, export, workspace, or document workflow exists.</td>
+                <td>Narrow dialog and file APIs with validated paths and explicit permissions.</td>
+                <td><span class="module-status module-status--later">Product</span></td>
+              </tr>
+              <tr>
+                <td>Authentication</td>
+                <td>The BFF calls user-scoped remote services.</td>
+                <td>System browser login, PKCE, callback deep link, secure token storage.</td>
+                <td><span class="module-status module-status--later">Product</span></td>
+              </tr>
+              <tr>
+                <td>Realtime events</td>
+                <td>Polling is insufficient for a defined product workflow.</td>
+                <td>SSE or WebSocket at the BFF edge, translated into a narrow preload event API.</td>
+                <td><span class="module-status module-status--later">Product</span></td>
+              </tr>
+              <tr>
+                <td>Background work</td>
+                <td>Tasks are CPU-heavy, long-running, restartable, or crash-prone.</td>
+                <td>Electron utility process or worker with explicit job and progress contracts.</td>
+                <td><span class="module-status module-status--later">Product</span></td>
+              </tr>
+              <tr>
+                <td>Telemetry</td>
+                <td>There is a privacy policy, consent model, and operational owner.</td>
+                <td>OpenTelemetry and/or error reporting with sensitive-field redaction.</td>
+                <td><span class="module-status module-status--later">Operations</span></td>
+              </tr>
+              <tr>
+                <td>Internationalization</td>
+                <td>A second locale is committed, not merely possible.</td>
+                <td>Typed message catalogs, locale negotiation, formatting tests.</td>
+                <td><span class="module-status module-status--later">Product</span></td>
+              </tr>
+              <tr>
+                <td>Design system</td>
+                <td>Multiple product screens require reusable visual primitives.</td>
+                <td>Tailwind plus accessible primitives and documented design tokens.</td>
+                <td><span class="module-status module-status--later">Product</span></td>
+              </tr>
+              <tr>
+                <td>Offline synchronization</td>
+                <td>Local and remote sources both own mutable data.</td>
+                <td>Explicit sync state machine, conflict policy, durable operation log.</td>
+                <td><span class="module-status module-status--later">Advanced</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="callout">
+          <strong>Activation rule:</strong> before adding an optional module, write its owner, threat
+          model, persistence needs, packaging impact, and acceptance test. Then implement one
+          vertical slice rather than installing an ecosystem all at once.
+        </div>
+      </section>
+
+      <section id="quality">
+        <div class="eyebrow">08 · Guardrails</div>
+        <h2>Definition of done.</h2>
+        <p class="section-intro">
+          A phase is complete when the behavior is observable at its real boundary—not when a set of
+          internal mocks confirms that helper functions called one another.
+        </p>
+        <div class="grid grid--2">
+          <article class="panel">
+            <h3>Test lanes</h3>
+            <ul class="check-list">
+              <li>Contract tests for schemas and serialization.</li>
+              <li>Hono integration tests through <code>app.request()</code>.</li>
+              <li>Renderer tests for visible behavior and accessibility.</li>
+              <li>Electron end-to-end smoke tests for runtime wiring.</li>
+              <li>Package smoke tests for production paths and assets.</li>
+            </ul>
+          </article>
+          <article class="panel">
+            <h3>Security invariants</h3>
+            <ul class="check-list">
+              <li>Context isolation and renderer sandbox remain enabled.</li>
+              <li>Node integration remains disabled.</li>
+              <li>Raw Electron APIs never cross the preload bridge.</li>
+              <li>IPC senders and untrusted payloads are validated.</li>
+              <li>Renderer bundles contain no server secrets.</li>
+              <li>Navigation and external URLs use explicit allowlists.</li>
+            </ul>
+          </article>
+          <article class="panel panel--accent">
+            <h3>Repository gate</h3>
+            <pre><code>pnpm format:check
+pnpm lint
+pnpm typecheck
+pnpm test
+pnpm build
+pnpm test:e2e</code></pre>
+          </article>
+          <article class="panel panel--warm">
+            <h3>Change discipline</h3>
+            <ul class="check-list">
+              <li>One implementation phase at a time.</li>
+              <li>Review dependency changes before installation.</li>
+              <li>Keep generated artifacts out of source control unless intentional.</li>
+              <li>Update this plan when architecture decisions change.</li>
+              <li>Commit only after the phase acceptance criteria pass.</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer shell">
+      <p>
+        This is a living plan. The next action is Phase 01: workspace and build foundation.
+      </p>
+    </footer>
+  </body>
+</html>
