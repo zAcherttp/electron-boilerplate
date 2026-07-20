@@ -1,8 +1,8 @@
 # Electron Boilerplate
 
-An incremental, opinionated desktop application foundation built around Electron, React, strict TypeScript, and a planned Hono Backend for Frontend (BFF).
+An incremental, opinionated desktop application foundation built around Electron, React, strict TypeScript, and a portable Hono Application API.
 
-The repository is being assembled one verified increment at a time. The current increment establishes one Vite entrypoint for the React renderer and Electron runtimes. Hono is deliberately not installed yet.
+The repository is being assembled one verified increment at a time. The current increment adds an in-memory Hono API reached through validated Electron IPC.
 
 ## Current foundation
 
@@ -11,6 +11,9 @@ The repository is being assembled one verified increment at a time. The current 
 - TypeScript 7 in strict mode
 - vite-plugin-doubleshot for Electron main, preload, and application startup
 - electron-builder for ASAR packaging and Windows installers
+- Hono Application API with Zod request and response contracts
+- narrow, sender-validated IPC exposed as `window.app.system.getInfo()`
+- Oxlint with TypeScript 7 type-aware, React, accessibility, and Vitest rules
 - pnpm 11.15.1 pinned through `packageManager`
 - one straightforward Vite command for development and production builds
 
@@ -20,9 +23,16 @@ Vite is the toolchain entrypoint. Doubleshot wires Electron main and preload bui
 .
 ├─ src/
 │  ├─ contracts/
-│  │  └─ desktop-api.ts
+│  │  ├─ api-error.ts
+│  │  ├─ app-api.ts
+│  │  └─ system-info.ts
+│  ├─ api/
+│  │  ├─ create-api.ts
+│  │  └─ create-api.test.ts
 │  ├─ main/
 │  │  ├─ index.ts
+│  │  ├─ system/
+│  │  │  └─ register-system-info-ipc.ts
 │  │  └─ tsconfig.json
 │  ├─ preload/
 │  │  ├─ index.ts
@@ -55,12 +65,15 @@ pnpm dev
 ## Checks and production run
 
 ```bash
+pnpm lint
 pnpm typecheck
 pnpm build
 pnpm start
 ```
 
-`pnpm start` runs the already-built production output, so run `pnpm build` first.
+Use `pnpm lint:fix` to apply Oxlint's safe automatic fixes.
+
+`pnpm build` creates the production output without launching it. `pnpm start` performs a clean production build and then launches Electron, so it is safe to run after a development session.
 
 ## Packaging
 
@@ -90,11 +103,11 @@ React renderer
   → local data, filesystem, or remote APIs
 ```
 
-Hono will run in memory without opening a localhost port. A separate Node adapter will allow the same BFF application to run as a standalone HTTP service.
+Hono runs in memory without opening a localhost port. A future Node adapter can run the same Application API as a standalone HTTP service when a web client becomes a real second consumer.
 
 ## Plans
 
 - [Full visual implementation plan](docs/plan.html)
 - [Brief session-reload plan](docs/plan.md)
 
-The Vite, TypeScript, and electron-builder foundations are verified. The next functional increment is a portable in-memory Hono BFF reached through validated Electron IPC; it will not open an HTTP port by default.
+The Vite, TypeScript, electron-builder, and first Application API vertical slice are verified. The next increment can harden the Electron shell or extend the API with the first product-owned feature.

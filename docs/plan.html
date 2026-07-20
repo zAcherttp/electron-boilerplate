@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="Incremental implementation plan for an Electron, Vite, React, TypeScript, and Hono BFF boilerplate."
+      content="Incremental implementation plan for an Electron, Vite, React, TypeScript, and Hono Application API boilerplate."
     />
     <title>Electron Boilerplate — Implementation Plan</title>
     <style>
@@ -506,7 +506,7 @@
       <h1>Our Electron boilerplate.</h1>
       <p class="lede">
         An incremental plan for a secure, understandable desktop foundation built with Electron,
-        Vite, React, strict TypeScript, and a Hono Backend for Frontend. The base stays small;
+        Vite, React, strict TypeScript, and a Hono Application API. The base stays small;
         product-specific capabilities remain optional until a real requirement activates them.
       </p>
       <div class="meta" aria-label="Plan metadata">
@@ -575,10 +575,10 @@
 
       <section id="architecture">
         <div class="eyebrow">02 · Runtime model</div>
-        <h2>Hono as the desktop BFF.</h2>
+        <h2>Hono as the Application API.</h2>
         <p class="section-intro">
-          Hono is a Backend for Frontend because its contract is tailored to the React renderer. In
-          embedded mode it receives in-memory Web Standard requests—there is no localhost port. A
+          Hono provides a portable Application API whose current contract is tailored to the desktop
+          application. In embedded mode it receives in-memory Web Standard requests—there is no localhost port. A
           thin standalone adapter can expose the exact same Hono app over HTTP when needed.
         </p>
 
@@ -599,7 +599,7 @@
           </div>
           <div class="flow__arrow" aria-hidden="true">→</div>
           <div class="flow__node flow__node--key">
-            <strong>Hono BFF</strong>
+            <strong>Hono Application API</strong>
             <span>app.request()</span>
           </div>
         </div>
@@ -614,17 +614,17 @@
             </p>
           </article>
           <article class="panel">
-            <h3>Standalone mode · supported</h3>
+            <h3>Standalone mode · later</h3>
             <p>
-              A tiny Node adapter uses <code>@hono/node-server</code>. It proves the BFF is not tied
-              to Electron and gives us a path to a browser client or remote deployment.
+              After a web client becomes a real second consumer, a tiny Node adapter can use
+              <code>@hono/node-server</code>. The API itself remains independent of Electron.
             </p>
           </article>
         </div>
 
         <div class="callout">
           <strong>Isolation rule:</strong> CPU-heavy, crash-prone, or long-running work does not
-          belong in Electron main or the thin BFF. Add a utility process or worker when such work
+          belong in Electron main or the thin Application API. Add a utility process or worker when such work
           appears.
         </div>
       </section>
@@ -633,55 +633,37 @@
         <div class="eyebrow">03 · Ownership</div>
         <h2>Repository shape.</h2>
         <p class="section-intro">
-          The Hono application is a package because it has two real consumers: Electron embedded
-          mode and the standalone server adapter. Runtime entrypoints remain thin.
+          Keep the Hono application app-local while Electron is its only consumer. Extract packages
+          only after a standalone web runtime becomes a real second consumer.
         </p>
         <pre><code>electron-boilerplate/
-├─ apps/
-│  ├─ desktop/
-│  │  └─ src/
-│  │     ├─ main/
-│  │     │  ├─ app/
-│  │     │  ├─ windows/
-│  │     │  ├─ ipc/
-│  │     │  └─ security/
-│  │     ├─ preload/
-│  │     └─ renderer/
-│  │        ├─ app/
-│  │        ├─ routes/
-│  │        └─ features/
-│  └─ bff-server/
-│     └─ src/index.ts              # Node HTTP adapter only
-├─ packages/
-│  ├─ bff/
-│  │  └─ src/
-│  │     ├─ features/
-│  │     ├─ middleware/
-│  │     └─ app.ts                 # createBffApp()
-│  └─ contracts/
-│     └─ src/
-│        ├─ ipc/
-│        └─ http/
-├─ tests/e2e/
-├─ scripts/dev.mjs
+├─ src/
+│  ├─ api/
+│  │  ├─ create-api.ts
+│  │  └─ create-api.test.ts
+│  ├─ contracts/
+│  ├─ main/
+│  │  └─ system/
+│  ├─ preload/
+│  └─ renderer/
+├─ docs/
 ├─ pnpm-workspace.yaml
 └─ package.json</code></pre>
 
         <div class="grid grid--2" style="margin-top: 1rem">
           <article class="panel">
             <h3>Allowed dependency direction</h3>
-            <pre><code>contracts
-   ↑
-   ├── bff ← desktop main
-   │          ↑
-   │      bff-server
-   └── preload + renderer</code></pre>
+            <pre><code>renderer ──→ contracts
+preload  ──→ contracts
+main     ──→ api ──→ contracts
+
+future api-server ──→ extracted api package</code></pre>
           </article>
           <article class="panel panel--warm">
             <h3>Boundaries we will enforce</h3>
             <ul class="check-list">
               <li>Packages never import from apps.</li>
-              <li>Renderer never imports Electron or BFF implementations.</li>
+              <li>Renderer never imports Electron or Application API implementations.</li>
               <li>Preload never exposes raw <code>ipcRenderer</code>.</li>
               <li>Contracts contain schemas and data shapes, not workflows.</li>
               <li>No root mega-barrels or cross-package relative imports.</li>
@@ -728,7 +710,7 @@
                 <td>One Vite command builds the renderer, main, and preload and starts Electron.</td>
               </tr>
               <tr>
-                <td>BFF</td>
+                <td>Application API</td>
                 <td>Hono</td>
                 <td>Web Standard Request/Response model, in-memory testing, optional Node adapter.</td>
               </tr>
@@ -817,21 +799,21 @@
               </tr>
               <tr>
                 <td>Contracts</td>
-                <td>packages/contracts</td>
-                <td>Zod schemas for IPC, BFF requests, responses, and structured errors.</td>
+                <td>src/contracts</td>
+                <td>Zod schemas for IPC, API requests, responses, and structured errors.</td>
                 <td><span class="module-status">Core</span></td>
               </tr>
               <tr>
                 <td>Hono application</td>
-                <td>packages/bff</td>
+                <td>src/api</td>
                 <td>Feature routes, middleware, request IDs, errors, and health behavior.</td>
                 <td><span class="module-status">Core</span></td>
               </tr>
               <tr>
                 <td>Standalone adapter</td>
-                <td>apps/bff-server</td>
+                <td>apps/api-server</td>
                 <td>Bind the shared Hono app to Node HTTP and handle shutdown.</td>
-                <td><span class="module-status">Core</span></td>
+                <td><span class="module-status module-status--later">Optional</span></td>
               </tr>
               <tr>
                 <td>Renderer shell</td>
@@ -847,7 +829,7 @@
               </tr>
               <tr>
                 <td>Observability baseline</td>
-                <td>Main + BFF</td>
+                <td>Main + Application API</td>
                 <td>Structured logs, request correlation, useful startup and failure messages.</td>
                 <td><span class="module-status">Core</span></td>
               </tr>
@@ -888,7 +870,7 @@
               <h3>Workspace and build foundation</h3>
               <ul>
                 <li>Move from npm/plain JavaScript to pnpm and strict TypeScript.</li>
-                <li>Create desktop, BFF server, BFF package, and contracts package boundaries.</li>
+                <li>Keep the API app-local; extract API and server packages only with a second runtime.</li>
                 <li>Configure one Vite entrypoint for renderer, main, and preload builds.</li>
                 <li>Use Doubleshot for Electron startup and development restarts.</li>
               </ul>
@@ -911,15 +893,15 @@
           <li class="phase">
             <div class="phase__index">03</div>
             <div>
-              <h3>Contracts, typed IPC, and Hono BFF</h3>
+              <h3>Contracts, typed IPC, and Hono Application API</h3>
               <ul>
                 <li>Create structured success and error contracts.</li>
                 <li>Add a narrow preload bridge and validate IPC senders and payloads.</li>
                 <li>Create the Hono app factory and in-memory Electron adapter.</li>
-                <li>Add the standalone Node server adapter and graceful shutdown.</li>
+                <li>Add the standalone Node server adapter only with a real web consumer.</li>
                 <li>Deliver the first vertical slice: <code>system.getInfo</code>.</li>
               </ul>
-              <p class="acceptance"><strong>Accept when:</strong> React renders validated system information through preload → IPC → Hono, and the same route passes a standalone request test.</p>
+              <p class="acceptance"><strong>Accept when:</strong> React renders validated system information through preload → IPC → Hono, and the same route passes a direct in-memory request test.</p>
             </div>
           </li>
           <li class="phase">
@@ -1021,14 +1003,14 @@
               </tr>
               <tr>
                 <td>Authentication</td>
-                <td>The BFF calls user-scoped remote services.</td>
+                <td>The Application API calls user-scoped remote services.</td>
                 <td>System browser login, PKCE, callback deep link, secure token storage.</td>
                 <td><span class="module-status module-status--later">Product</span></td>
               </tr>
               <tr>
                 <td>Realtime events</td>
                 <td>Polling is insufficient for a defined product workflow.</td>
-                <td>SSE or WebSocket at the BFF edge, translated into a narrow preload event API.</td>
+                <td>SSE or WebSocket at the API edge, translated into a narrow preload event API.</td>
                 <td><span class="module-status module-status--later">Product</span></td>
               </tr>
               <tr>
@@ -1125,8 +1107,8 @@ pnpm test:e2e</code></pre>
 
     <footer class="footer shell">
       <p>
-        This is a living plan. The next action is the portable in-memory Hono BFF and its first
-        validated IPC vertical slice; the build and packaging foundations are verified.
+        This is a living plan. The portable in-memory Hono Application API and its first validated
+        IPC vertical slice are implemented; the build and packaging foundations are verified.
       </p>
     </footer>
   </body>

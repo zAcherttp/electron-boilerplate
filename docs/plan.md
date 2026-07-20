@@ -1,7 +1,7 @@
 # Electron Boilerplate — Quick Plan
 
 Updated: 2026-07-20
-Status: Phase 01 in progress; build and electron-builder packaging foundations verified
+Status: Phase 03 in progress; first Application API vertical slice implemented
 
 The detailed plan is in [`plan.html`](./plan.html).
 
@@ -14,12 +14,12 @@ Build an opinionated but small Electron boilerplate using:
 - Electron
 - Vite + React for the renderer
 - vite-plugin-doubleshot for Electron main/preload builds and startup
-- Hono as a desktop Backend for Frontend (BFF)
+- Hono as a portable Application API
 - Zod contracts
 - TanStack Router and TanStack Query
 - electron-builder
 - Vitest and Playwright
-- ESLint, Prettier, Pino, and GitHub Actions
+- Oxlint, formatting, Pino, and GitHub Actions
 
 Do not use `electron-vite`. Vite remains the single command entrypoint, with Doubleshot wiring in Electron main and preload builds.
 
@@ -36,41 +36,28 @@ React renderer
   → database / filesystem / remote APIs
 ```
 
-Hono runs in memory by default, without a localhost port. A thin standalone Node adapter exposes the same Hono app through `@hono/node-server` when needed.
+Hono runs in memory by default, without a localhost port. A future standalone Node adapter can expose the same Hono app through `@hono/node-server` when a web client needs it.
 
-CPU-heavy, crash-prone, or long-running work belongs in an Electron utility process or worker—not Electron main or the thin BFF.
+CPU-heavy, crash-prone, or long-running work belongs in an Electron utility process or worker—not Electron main or the thin Application API.
 
-## Intended repository structure
+## Current repository structure
 
 ```text
-apps/
-  desktop/
-    src/
-      main/
-      preload/
-      renderer/
-  bff-server/
-    src/index.ts
-
-packages/
-  bff/
-    src/app.ts
-    src/features/
-    src/middleware/
+src/
+  api/
+    create-api.ts
   contracts/
-    src/ipc/
-    src/http/
-
-tests/e2e/
-scripts/dev.mjs
+  main/
+  preload/
+  renderer/
 ```
 
-`packages/bff` has two real consumers: embedded Electron mode and `apps/bff-server`. The server app is only a runtime adapter.
+Keep the API app-local until a standalone web runtime becomes a real second consumer. At that point, extract `src/api` to `packages/api` and add a thin `apps/api-server` Node adapter.
 
 ## Boundary rules
 
 - Packages never import from apps.
-- Renderer never imports Electron or BFF implementations.
+- Renderer never imports Electron or Application API implementations.
 - Preload never exposes raw `ipcRenderer`.
 - Validate IPC, HTTP, environment variables, user input, and external responses at their boundaries.
 - Contracts contain schemas and data shapes, not workflows.
@@ -104,14 +91,15 @@ Acceptance: clean install, development startup, typecheck, and production build 
 
 Acceptance: React launches in development and packaged modes without direct Node access.
 
-### Phase 03 — Contracts, IPC, and Hono
+### Phase 03 — Contracts, IPC, and Hono Application API
 
-- Add Zod success/error contracts.
-- Add narrow preload methods and IPC sender/payload validation.
-- Add the shared Hono app and standalone Node adapter.
-- Implement the first vertical slice: `system.getInfo`.
+- Add Zod success/error contracts. **Done**
+- Add narrow preload methods and IPC sender/payload validation. **Done**
+- Add the portable in-memory Hono app. **Done**
+- Implement the first vertical slice: `system.getInfo`. **Done**
+- Add a standalone Node adapter only when a web client becomes a real second consumer.
 
-Acceptance: React renders validated system information through preload → IPC → Hono, and the same Hono route passes a standalone request test.
+Acceptance: React renders validated system information through preload → IPC → Hono, and the same Hono route passes a direct in-memory request test.
 
 ### Phase 04 — Renderer foundation
 
@@ -181,4 +169,4 @@ pnpm test:e2e
 
 ## Next action
 
-Create the portable Hono BFF boundary and first `system/info` vertical slice. Electron must call the shared Hono app in memory through validated IPC; do not open a localhost port or add the optional Node HTTP adapter yet. Re-run the packaged application smoke test after the slice works.
+Re-run the packaged application smoke test for the completed `system/info` slice, then harden the Electron shell or add the first product-owned API feature. Do not open a localhost port or add the optional Node HTTP adapter until a web client needs it.

@@ -1,0 +1,16 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "categories": {
+    "correctness": "error",
+    "suspicious": "error"
+  },
+  "plugins": ["react", "jsx-a11y", "vitest"],
+  "rules": {
+    "react/react-in-jsx-scope": "off"
+  },
+  "ignorePatterns": ["dist/**", "release/**"],
+  "options": {
+    "typeAware": true,
+    "reportUnusedDisableDirectives": "error"
+  }
+}

@@ -102,9 +102,22 @@ h2 {
   border-top: 1px solid #c9cec7;
 }
 
+.runtime-result > p {
+  margin: 0;
+  padding: 1rem;
+  border-radius: 14px;
+  color: #183d34;
+  background: rgb(255 255 255 / 56%);
+}
+
+.runtime-result .runtime-error {
+  color: #7a2727;
+  background: #f7dddd;
+}
+
 .runtime dl {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 0.7rem;
   margin: 0;
 }

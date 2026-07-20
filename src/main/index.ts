@@ -1,8 +1,37 @@
 import { join } from 'node:path'
 import { app, BrowserWindow } from 'electron'
+import { createApi } from '../api/create-api'
+import { registerSystemInfoIpc } from './system/register-system-info-ipc'
 
 const rendererDevelopmentUrl = process.env.DS_RENDERER_URL
 let mainWindow: BrowserWindow | null = null
+
+function readRuntimeVersion(name: 'chrome' | 'electron' | 'node'): string {
+  const version = process.versions[name]
+
+  if (!version)
+    throw new Error(`Missing ${name} runtime version`)
+
+  return version
+}
+
+const api = createApi({
+  getSystemInfo: () => ({
+    appVersion: app.getVersion(),
+    architecture: process.arch,
+    platform: process.platform,
+    runtimeVersions: {
+      chrome: readRuntimeVersion('chrome'),
+      electron: readRuntimeVersion('electron'),
+      node: readRuntimeVersion('node'),
+    },
+  }),
+})
+
+const removeSystemInfoIpc = registerSystemInfoIpc({
+  api,
+  getWindow: () => mainWindow,
+})
 
 function createWindow(): void {
   const window = new BrowserWindow({
@@ -44,3 +73,5 @@ app.on('window-all-closed', () => {
   if (process.platform !== 'darwin')
     app.quit()
 })
+
+app.once('will-quit', removeSystemInfoIpc)

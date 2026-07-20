@@ -1,21 +1,11 @@
-import type { DesktopApi } from '../contracts/desktop-api'
-import { contextBridge } from 'electron'
+import type { AppApi } from '../contracts/app-api'
+import { contextBridge, ipcRenderer } from 'electron'
+import { systemInfoChannel } from '../contracts/app-api'
 
-function readRuntimeVersion(name: 'chrome' | 'electron' | 'node'): string {
-  const version = process.versions[name]
-
-  if (!version)
-    throw new Error(`Missing ${name} runtime version`)
-
-  return version
-}
-
-const desktopApi: DesktopApi = {
-  versions: {
-    chrome: readRuntimeVersion('chrome'),
-    electron: readRuntimeVersion('electron'),
-    node: readRuntimeVersion('node'),
+const appApi: AppApi = {
+  system: {
+    getInfo: () => ipcRenderer.invoke(systemInfoChannel),
   },
 }
 
-contextBridge.exposeInMainWorld('desktop', desktopApi)
+contextBridge.exposeInMainWorld('app', appApi)

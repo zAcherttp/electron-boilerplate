@@ -7,5 +7,5 @@
     "tsBuildInfoFile": "../../dist/.tsbuildinfo/main.tsbuildinfo",
     "types": ["node"]
   },
-  "include": ["./**/*.ts", "../contracts/**/*.ts"]
+  "include": ["./**/*.ts", "../api/**/*.ts", "../contracts/**/*.ts"]
 }
