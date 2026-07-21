@@ -1,38 +1,25 @@
-import type { ApplicationApi } from '../../api/create-api'
+import type { ApplicationApiClient } from '../../api/create-api-client'
 import type { BrowserWindow } from 'electron'
 import { ipcMain } from 'electron'
-import { apiErrorSchema } from '../../contracts/api-error'
 import { systemInfoChannel } from '../../contracts/app-api'
-import { systemInfoRequestSchema, systemInfoSchema } from '../../contracts/system-info'
+import { systemInfoSchema } from '../../contracts/system-info'
+import { assertTrustedIpcSender } from '../security/assert-trusted-ipc-sender'
 
 interface RegisterSystemInfoIpcOptions {
-  api: ApplicationApi
+  apiClient: ApplicationApiClient
   getWindow: () => BrowserWindow | null
 }
 
 export function registerSystemInfoIpc(options: RegisterSystemInfoIpcOptions): () => void {
-  ipcMain.handle(systemInfoChannel, async (event, request: unknown) => {
-    const window = options.getWindow()
+  ipcMain.handle(systemInfoChannel, async (event) => {
+    assertTrustedIpcSender(event, options.getWindow())
 
-    if (
-      window === null
-      || event.sender !== window.webContents
-      || event.senderFrame !== window.webContents.mainFrame
-    ) {
-      throw new Error('Rejected system information request from an untrusted renderer')
-    }
+    const response = await options.apiClient.system.info.$get()
 
-    systemInfoRequestSchema.parse(request)
+    if (!response.ok)
+      throw new Error(`Application API request failed with status ${response.status}`)
 
-    const response = await options.api.request('/system/info')
-    const payload: unknown = await response.json()
-
-    if (!response.ok) {
-      const error = apiErrorSchema.parse(payload)
-      throw new Error(`${error.code}: ${error.message}`)
-    }
-
-    return systemInfoSchema.parse(payload)
+    return systemInfoSchema.parse(await response.json())
   })
 
   return () => ipcMain.removeHandler(systemInfoChannel)

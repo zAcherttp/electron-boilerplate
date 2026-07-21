@@ -19,11 +19,11 @@ export function App() {
         if (isCurrent)
           setSystemInfoState({ status: 'ready', systemInfo })
       })
-      .catch((error: unknown) => {
+      .catch(() => {
         if (isCurrent) {
           setSystemInfoState({
             status: 'error',
-            message: error instanceof Error ? error.message : 'Unknown API error',
+            message: 'The application API request failed.',
           })
         }
       })

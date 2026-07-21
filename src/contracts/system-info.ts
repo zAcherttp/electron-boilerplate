@@ -1,7 +1,5 @@
 import { z } from 'zod'
 
-export const systemInfoRequestSchema = z.undefined()
-
 export const systemInfoSchema = z.object({
   appVersion: z.string().min(1),
   architecture: z.string().min(1),

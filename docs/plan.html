@@ -511,9 +511,9 @@
       </p>
       <div class="meta" aria-label="Plan metadata">
         <span class="pill pill--active">Phase 01 in progress</span>
-        <span class="pill">Updated July 20, 2026</span>
+        <span class="pill">Updated July 21, 2026</span>
         <span class="pill">Vite + TypeScript 7 verified</span>
-        <span class="pill">Packaging foundation verified</span>
+        <span class="pill">Secure shell + packaging verified</span>
         <span class="pill">Repository: electron-boilerplate</span>
       </div>
     </header>
@@ -600,7 +600,7 @@
           <div class="flow__arrow" aria-hidden="true">→</div>
           <div class="flow__node flow__node--key">
             <strong>Hono Application API</strong>
-            <span>app.request()</span>
+            <span>typed client → app.fetch()</span>
           </div>
         </div>
 
@@ -608,9 +608,9 @@
           <article class="panel panel--accent">
             <h3>Embedded mode · default</h3>
             <p>
-              Electron main imports the Hono application factory and calls
-              <code>app.request()</code>. This avoids port discovery, CORS, loopback authentication,
-              and a second process during the initial implementation.
+              Electron main uses Hono's typed client with the application's <code>app.fetch()</code>
+              injected as its transport. This avoids untyped JSON, port discovery, CORS, loopback
+              authentication, and a second process during the initial implementation.
             </p>
           </article>
           <article class="panel">
@@ -882,10 +882,11 @@ future api-server ──→ extracted api package</code></pre>
             <div>
               <h3>Secure Electron shell</h3>
               <ul>
-                <li>Implement application lifecycle and window ownership.</li>
-                <li>Enable sandboxing and context isolation; keep Node integration disabled.</li>
-                <li>Deny unexpected navigation and new-window requests.</li>
-                <li>Add restrictive development and production content security policies.</li>
+                <li>Implement application lifecycle, window ownership, and single-instance behavior. <strong>Done.</strong></li>
+                <li>Enable sandboxing and context isolation; keep Node integration disabled. <strong>Done.</strong></li>
+                <li>Serve packaged assets from a contained <code>app://bundle</code> protocol. <strong>Done.</strong></li>
+                <li>Deny unexpected navigation, windows, webviews, external URLs, and permissions. <strong>Done.</strong></li>
+                <li>Add restrictive development and production content security policies and package-time fuses. <strong>Done.</strong></li>
               </ul>
               <p class="acceptance"><strong>Accept when:</strong> the React renderer launches in development and packaged modes without direct Node access.</p>
             </div>
@@ -1079,7 +1080,10 @@ future api-server ──→ extracted api package</code></pre>
               <li>Raw Electron APIs never cross the preload bridge.</li>
               <li>IPC senders and untrusted payloads are validated.</li>
               <li>Renderer bundles contain no server secrets.</li>
-              <li>Navigation and external URLs use explicit allowlists.</li>
+              <li>Navigation and external URLs use exact, explicit allowlists.</li>
+              <li>Browser permissions remain denied until a feature owns a narrow policy.</li>
+              <li>Production assets use a secure custom protocol rather than privileged <code>file://</code>.</li>
+              <li>Packaged binaries disable unneeded Electron capabilities with fuses.</li>
             </ul>
           </article>
           <article class="panel panel--accent">
@@ -1107,8 +1111,8 @@ pnpm test:e2e</code></pre>
 
     <footer class="footer shell">
       <p>
-        This is a living plan. The portable in-memory Hono Application API and its first validated
-        IPC vertical slice are implemented; the build and packaging foundations are verified.
+        This is a living plan. The portable in-memory Hono Application API, its first validated IPC
+        vertical slice, and the secure Electron shell are implemented and package-smoke verified.
       </p>
     </footer>
   </body>

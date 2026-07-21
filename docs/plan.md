@@ -1,7 +1,7 @@
 # Electron Boilerplate — Quick Plan
 
-Updated: 2026-07-20
-Status: Phase 03 in progress; first Application API vertical slice implemented
+Updated: 2026-07-21
+Status: Phases 02 and 03 complete; secure shell and first Application API vertical slice verified
 
 The detailed plan is in [`plan.html`](./plan.html).
 
@@ -32,7 +32,7 @@ React renderer
   → narrow typed preload API
   → validated Electron IPC
   → Electron main
-  → Hono app.request()
+  → typed Hono client over app.fetch()
   → database / filesystem / remote APIs
 ```
 
@@ -85,11 +85,13 @@ Acceptance: clean install, development startup, typecheck, and production build 
 
 ### Phase 02 — Secure Electron shell
 
-- Add lifecycle, window ownership, and single-instance behavior.
-- Enable sandbox and context isolation; keep Node integration disabled.
-- Restrict navigation, new windows, external URLs, and CSP.
+- Add lifecycle, window ownership, and single-instance behavior. **Done**
+- Enable sandbox and context isolation; keep Node integration disabled. **Done**
+- Serve packaged renderer assets from a contained `app://bundle` protocol. **Done**
+- Restrict navigation, new windows, webviews, external URLs, permissions, and CSP. **Done**
+- Apply package-time Electron security fuses. **Done**
 
-Acceptance: React launches in development and packaged modes without direct Node access.
+Acceptance: React launches in development and packaged modes without direct Node access. Packaged `app://` rendering and the live preload → IPC → Hono slice are verified.
 
 ### Phase 03 — Contracts, IPC, and Hono Application API
 
@@ -155,6 +157,9 @@ Before adding an optional module, define its owner, threat model, persistence an
 - validate IPC senders and untrusted payloads
 - never place backend secrets in renderer bundles
 - allowlist navigation and external URLs
+- deny browser permissions until a feature owns a narrow policy
+- serve production assets from `app://`, not privileged `file://`
+- disable unneeded Electron capabilities with package-time fuses
 
 ## Standard quality gate
 
@@ -169,4 +174,4 @@ pnpm test:e2e
 
 ## Next action
 
-Re-run the packaged application smoke test for the completed `system/info` slice, then harden the Electron shell or add the first product-owned API feature. Do not open a localhost port or add the optional Node HTTP adapter until a web client needs it.
+Build the renderer foundation or add the first product-owned API feature. Keep consent, remembered external origins, permission grants, deep-link routing, and the Node HTTP adapter out until a real feature defines their contracts.
