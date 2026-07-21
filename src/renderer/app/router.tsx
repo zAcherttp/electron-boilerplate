@@ -15,7 +15,9 @@ function RootLayout() {
   return (
     <>
       <header className="app-header">
-        <Link className="app-brand" to="/">Electron Boilerplate</Link>
+        <Link className="app-brand" to="/">
+          Electron Boilerplate
+        </Link>
         <span>Desktop foundation</span>
       </header>
       <Outlet />
@@ -38,7 +40,11 @@ function NotFoundPage() {
   return (
     <main className="app-shell app-fallback">
       <EmptyState
-        action={<Link className="text-link" to="/">Return home</Link>}
+        action={
+          <Link className="text-link" to="/">
+            Return home
+          </Link>
+        }
         description="The requested desktop route does not exist."
         title="Page not found"
       />

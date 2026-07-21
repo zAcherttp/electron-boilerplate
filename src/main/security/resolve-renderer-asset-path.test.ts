@@ -6,13 +6,15 @@ const rendererRoot = resolve('dist/renderer')
 
 describe('renderer asset path resolution', () => {
   it('maps the renderer root to index.html', () => {
-    expect(resolveRendererAssetPath(rendererRoot, 'app://bundle/'))
-      .toBe(resolve(rendererRoot, 'index.html'))
+    expect(resolveRendererAssetPath(rendererRoot, 'app://bundle/')).toBe(
+      resolve(rendererRoot, 'index.html'),
+    )
   })
 
   it('maps assets inside the renderer root', () => {
-    expect(resolveRendererAssetPath(rendererRoot, 'app://bundle/assets/main.js?v=1'))
-      .toBe(resolve(rendererRoot, 'assets/main.js'))
+    expect(resolveRendererAssetPath(rendererRoot, 'app://bundle/assets/main.js?v=1')).toBe(
+      resolve(rendererRoot, 'assets/main.js'),
+    )
   })
 
   it('rejects another scheme or host', () => {

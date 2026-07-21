@@ -1,7 +1,7 @@
 # Electron Boilerplate — Quick Plan
 
 Updated: 2026-07-21
-Status: Phase 05 in progress; automated Electron smoke coverage implemented
+Status: Core scaffold complete through Phase 06; local package accepted and remote workflow runs pending
 
 The detailed plan is in [`plan.html`](./plan.html).
 
@@ -118,19 +118,20 @@ Acceptance: the packaged vertical slice renders through the typed route, remains
 ### Phase 05 — Quality and CI
 
 - Add contract, Hono integration, renderer, and Electron smoke tests. **Done**
-- Add formatting, linting, typechecking, test, and build gates.
-- Run all gates in GitHub Actions.
+- Add formatting, linting, typechecking, test, and build gates. **Done**
+- Run all gates in GitHub Actions. **Workflow configured**
 
-Acceptance: CI validates a clean checkout end to end.
+Acceptance: `pnpm check` passes locally. The Windows workflow installs with `--frozen-lockfile` and runs the same gate; its first GitHub run supplies the final remote clean-checkout evidence.
 
 ### Phase 06 — Packaging
 
-- Packaging foundation completed early: electron-builder, ASAR, isolated `release/` output, artifact naming, unpacked launch, and unsigned NSIS generation are verified.
-- Add product icons and final application identity.
-- Add signing-ready configuration without secrets.
-- Add package smoke tests and release documentation.
+- Packaging foundation: electron-builder, ASAR, isolated `release/` output, artifact naming, unpacked launch, and unsigned NSIS generation. **Done**
+- Add an editable product icon and explicit application identity. **Done**
+- Add signing-ready configuration without secrets. **Done**
+- Add a hardened package smoke test and Windows release documentation. **Done**
+- Add manual signed/unsigned package automation without publishing. **Configured**
 
-Acceptance: a local packaged artifact launches and completes the system-info vertical slice.
+Acceptance: `pnpm test:package` launches the unpacked Windows artifact and completes the system-info vertical slice; `pnpm dist` produces the branded unsigned NSIS installer and block map. **Accepted locally**
 
 ## Optional modules
 
@@ -168,14 +169,9 @@ Before adding an optional module, define its owner, threat model, persistence an
 ## Standard quality gate
 
 ```bash
-pnpm format:check
-pnpm lint
-pnpm typecheck
-pnpm test
-pnpm build
-pnpm test:e2e
+pnpm check
 ```
 
 ## Next action
 
-Add formatting and a unified local quality command, then run the same gates in a new Windows GitHub Actions workflow. Keep consent, remembered external origins, permission grants, deep-link routing, and the Node HTTP adapter out until a real feature defines their contracts.
+The essential scaffold is complete. Start an optional module only when a real application requirement defines its owner and acceptance test. Consent, remembered external origins, permission grants, deep-link routing, and the Node HTTP adapter remain deliberately absent.

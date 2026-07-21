@@ -2,30 +2,40 @@
   "name": "electron-boilerplate",
   "version": "0.1.0",
   "private": true,
-  "packageManager": "pnpm@11.15.1",
   "description": "An incremental Electron, React, and Hono Application API boilerplate",
+  "keywords": [
+    "boilerplate",
+    "electron"
+  ],
+  "license": "UNLICENSED",
+  "author": "Electron Boilerplate contributors",
   "main": "dist/main/index.js",
   "scripts": {
     "dev": "rimraf dist && vite",
     "debug": "rimraf dist && vite -- --dsb-debug",
     "build": "rimraf dist && vite build",
+    "check": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test && pnpm test:e2e",
     "lint": "oxlint .",
     "lint:fix": "oxlint --fix .",
+    "format": "oxfmt .",
+    "format:check": "oxfmt --check .",
     "test": "vitest run --root .",
-    "test:e2e": "pnpm build && playwright test",
+    "test:e2e": "pnpm build && playwright test tests/e2e/application.e2e.ts",
+    "test:package": "pnpm package && playwright test tests/e2e/package.e2e.ts",
     "typecheck": "tsc -b --pretty",
     "start": "rimraf dist && vite build && electron .",
     "package": "pnpm build && electron-builder --dir --publish never",
     "dist": "pnpm build && electron-builder --publish never",
+    "dist:signed": "pnpm build && electron-builder --publish never --config.forceCodeSigning=true",
     "postinstall": "electron-builder install-app-deps"
   },
-  "keywords": [
-    "electron",
-    "boilerplate"
-  ],
-  "license": "UNLICENSED",
-  "engines": {
-    "node": ">=22.18.0"
+  "dependencies": {
+    "@tanstack/react-query": "5.101.2",
+    "@tanstack/react-router": "1.170.18",
+    "hono": "^4.12.31",
+    "react": "19.2.7",
+    "react-dom": "19.2.7",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@playwright/test": "1.61.1",
@@ -39,6 +49,7 @@
     "electron": "^43.1.0",
     "electron-builder": "26.15.3",
     "jsdom": "29.1.1",
+    "oxfmt": "0.59.0",
     "oxlint": "^1.74.0",
     "oxlint-tsgolint": "^0.25.0",
     "playwright": "1.61.1",
@@ -48,12 +59,8 @@
     "vite-plugin-doubleshot": "0.0.25",
     "vitest": "^4.1.10"
   },
-  "dependencies": {
-    "@tanstack/react-query": "5.101.2",
-    "@tanstack/react-router": "1.170.18",
-    "hono": "^4.12.31",
-    "react": "19.2.7",
-    "react-dom": "19.2.7",
-    "zod": "^4.4.3"
-  }
+  "engines": {
+    "node": ">=22.18.0"
+  },
+  "packageManager": "pnpm@11.15.1"
 }

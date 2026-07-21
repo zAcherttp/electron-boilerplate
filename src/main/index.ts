@@ -18,14 +18,14 @@ const trustedExternalOrigins: string[] = []
 let mainWindow: BrowserWindow | null = null
 
 registerRendererScheme()
+if (process.platform === 'win32') app.setAppUserModelId('dev.electron.boilerplate')
 
 const singleInstance = registerSingleInstance(() => mainWindow)
 
 function readRuntimeVersion(name: 'chrome' | 'electron' | 'node'): string {
   const version = process.versions[name]
 
-  if (!version)
-    throw new Error(`Missing ${name} runtime version`)
+  if (!version) throw new Error(`Missing ${name} runtime version`)
 
   return version
 }
@@ -87,14 +87,12 @@ function startApplication(): void {
     createWindow()
 
     app.on('activate', () => {
-      if (mainWindow === null)
-        createWindow()
+      if (mainWindow === null) createWindow()
     })
   })
 
   app.on('window-all-closed', () => {
-    if (process.platform !== 'darwin')
-      app.quit()
+    if (process.platform !== 'darwin') app.quit()
   })
 
   app.once('will-quit', () => {
@@ -103,5 +101,4 @@ function startApplication(): void {
   })
 }
 
-if (singleInstance.acquired)
-  startApplication()
+if (singleInstance.acquired) startApplication()

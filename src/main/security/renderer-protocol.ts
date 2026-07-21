@@ -34,20 +34,17 @@ export function registerRendererProtocol(rendererRoot: string): () => void {
   protocol.handle(rendererScheme, async (request) => {
     const assetPath = resolveRendererAssetPath(rendererRoot, request.url)
 
-    if (assetPath === null)
-      return new Response(null, { status: 404 })
+    if (assetPath === null) return new Response(null, { status: 404 })
 
     let response: Response
 
     try {
       response = await net.fetch(pathToFileURL(assetPath).toString())
-    }
-    catch {
+    } catch {
       return new Response(null, { status: 404 })
     }
 
-    if (!assetPath.endsWith('.html'))
-      return response
+    if (!assetPath.endsWith('.html')) return response
 
     const headers = new Headers(response.headers)
     headers.set('Content-Security-Policy', productionContentSecurityPolicy)

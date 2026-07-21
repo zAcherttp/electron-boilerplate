@@ -7,9 +7,5 @@
     "tsBuildInfoFile": "./dist/.tsbuildinfo/tools.tsbuildinfo",
     "types": ["node"]
   },
-  "include": [
-    "./playwright.config.ts",
-    "./tests/e2e/**/*.ts",
-    "./vite.config.ts"
-  ]
+  "include": ["./playwright.config.ts", "./tests/e2e/**/*.ts", "./vite.config.ts"]
 }

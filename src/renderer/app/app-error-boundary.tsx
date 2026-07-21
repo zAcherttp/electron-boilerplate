@@ -11,10 +11,7 @@ interface AppErrorBoundaryState {
   hasError: boolean
 }
 
-export class AppErrorBoundary extends Component<
-  AppErrorBoundaryProps,
-  AppErrorBoundaryState
-> {
+export class AppErrorBoundary extends Component<AppErrorBoundaryProps, AppErrorBoundaryState> {
   public override state: AppErrorBoundaryState = { hasError: false }
 
   public static getDerivedStateFromError(): AppErrorBoundaryState {
@@ -26,8 +23,7 @@ export class AppErrorBoundary extends Component<
   }
 
   public override render(): ReactNode {
-    if (!this.state.hasError)
-      return this.props.children
+    if (!this.state.hasError) return this.props.children
 
     return (
       <main className="app-shell app-fallback">

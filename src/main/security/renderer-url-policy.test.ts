@@ -47,9 +47,11 @@ describe('renderer URL policy', () => {
   })
 
   it('rejects non-HTTPS external origin configuration', () => {
-    expect(() => createRendererUrlPolicy({
-      rendererUrl: 'app://bundle/index.html',
-      trustedExternalOrigins: ['http://docs.example.com'],
-    })).toThrow('External origins must use HTTPS')
+    expect(() =>
+      createRendererUrlPolicy({
+        rendererUrl: 'app://bundle/index.html',
+        trustedExternalOrigins: ['http://docs.example.com'],
+      }),
+    ).toThrow('External origins must use HTTPS')
   })
 })

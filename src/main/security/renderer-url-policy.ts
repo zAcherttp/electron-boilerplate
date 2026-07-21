@@ -16,8 +16,7 @@ interface UrlAuthority {
 function readUrl(url: string): URL | null {
   try {
     return new URL(url)
-  }
-  catch {
+  } catch {
     return null
   }
 }
@@ -35,10 +34,12 @@ function readAuthority(url: string): UrlAuthority {
 }
 
 function hasAuthority(url: URL, authority: UrlAuthority): boolean {
-  return url.username === ''
-    && url.password === ''
-    && url.protocol === authority.protocol
-    && url.host === authority.host
+  return (
+    url.username === '' &&
+    url.password === '' &&
+    url.protocol === authority.protocol &&
+    url.host === authority.host
+  )
 }
 
 export function createRendererUrlPolicy(options: RendererUrlPolicyOptions): RendererUrlPolicy {
@@ -56,9 +57,11 @@ export function createRendererUrlPolicy(options: RendererUrlPolicyOptions): Rend
     isTrustedExternalUrl: (url) => {
       const parsedUrl = readUrl(url)
 
-      return parsedUrl !== null
-        && parsedUrl.protocol === 'https:'
-        && externalAuthorities.some(authority => hasAuthority(parsedUrl, authority))
+      return (
+        parsedUrl !== null &&
+        parsedUrl.protocol === 'https:' &&
+        externalAuthorities.some((authority) => hasAuthority(parsedUrl, authority))
+      )
     },
     isTrustedRendererUrl: (url) => {
       const parsedUrl = readUrl(url)

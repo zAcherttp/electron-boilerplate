@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-labelledby="title description">
+  <title id="title">Electron Boilerplate application icon</title>
+  <desc id="description">A cream bridge mark on a deep green rounded square.</desc>
+  <rect width="1024" height="1024" rx="224" fill="#08745f" />
+  <rect x="224" y="208" width="144" height="608" rx="72" fill="#f1efe7" />
+  <rect x="656" y="208" width="144" height="608" rx="72" fill="#f1efe7" />
+  <rect x="320" y="440" width="384" height="144" rx="72" fill="#f1efe7" />
+  <circle cx="296" cy="512" r="32" fill="#18201d" />
+  <circle cx="728" cy="512" r="32" fill="#18201d" />
+</svg>

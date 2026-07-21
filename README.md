@@ -15,6 +15,8 @@ The repository is being assembled one verified increment at a time. The current 
 - TanStack Query with feature-owned IPC queries and explicit async states
 - top-level React error containment and accessible renderer fallbacks
 - Playwright smoke coverage for Electron startup, routing, IPC, and renderer isolation
+- Oxfmt formatting and one `pnpm check` quality gate shared by local development and CI
+- Windows GitHub Actions validation from a frozen-lockfile checkout
 - TypeScript 7 in strict mode
 - vite-plugin-doubleshot for Electron main, preload, and application startup
 - electron-builder for ASAR packaging and Windows installers
@@ -28,6 +30,15 @@ Vite is the toolchain entrypoint. Doubleshot wires Electron main and preload bui
 
 ```text
 .
+├─ .github/workflows/
+│  ├─ package-windows.yml
+│  └─ quality.yml
+├─ .gitattributes
+├─ .oxfmtrc.json
+├─ build/
+│  └─ icon.svg
+├─ docs/
+│  └─ releasing.md
 ├─ src/
 │  ├─ contracts/
 │  │  ├─ api-error.ts
@@ -98,11 +109,14 @@ pnpm dev
 ## Checks and production run
 
 ```bash
+pnpm format
+pnpm format:check
 pnpm lint
 pnpm typecheck
 pnpm test
 pnpm build
 pnpm test:e2e
+pnpm check
 pnpm start
 ```
 
@@ -112,16 +126,22 @@ Use `pnpm lint:fix` to apply Oxlint's safe automatic fixes.
 
 `pnpm test:e2e` creates a clean production build and launches it through Playwright's Electron driver. The smoke test verifies the secure `app://` renderer, typed route, live preload → IPC → Hono result, and the absence of raw Node or Electron globals. It uses Electron's bundled Chromium and does not require a separate Playwright browser download.
 
+`pnpm check` is the authoritative quality gate. It checks Oxfmt formatting, runs Oxlint and TypeScript, executes Vitest, builds the production application, and finishes with the Electron smoke test. The Windows GitHub Actions workflow installs from the frozen lockfile and runs this same command.
+
 ## Packaging
 
 ```bash
 pnpm package
+pnpm test:package
 pnpm dist
+pnpm dist:signed
 ```
 
 `pnpm package` creates an unpacked application in `release/win-unpacked` for fast runtime checks. `pnpm dist` creates an unsigned NSIS installer and block map in `release/` without publishing them.
 
-The packaging baseline intentionally uses Electron's default icon. Product identity, icons, signing, publishing, and auto-update configuration belong to later release-readiness increments.
+`pnpm test:package` launches the hardened unpacked executable and verifies the same secure renderer and Application API vertical slice as the source-build smoke test. The neutral identity and editable `build/icon.svg` provide explicit replacement points for applications created from this template.
+
+`pnpm dist:signed` requires valid Windows signing credentials and fails rather than creating an unsigned release. See the [Windows packaging and release guide](docs/releasing.md) for the identity checklist, CI secret names, validation steps, and publishing boundary.
 
 Packaged applications also disable Electron's run-as-Node, Node environment option, CLI inspect, and privileged `file://` behaviors. They require the integrity-checked ASAR and enable encrypted cookies.
 
@@ -167,4 +187,4 @@ Hono runs in memory without opening a localhost port. A future Node adapter can 
 - [Full visual implementation plan](docs/plan.html)
 - [Brief session-reload plan](docs/plan.md)
 
-The Vite, TypeScript, electron-builder, secure Electron shell, first Application API slice, and renderer foundation are verified. The automated Electron smoke lane is active; formatting and CI remain in Phase 05.
+The core scaffold is locally verified through packaging: Vite, TypeScript, the secure Electron shell, Application API slice, renderer foundation, formatting, source and packaged-runtime smoke tests, editable identity, and unsigned NSIS generation. The Windows quality and manual packaging workflows await their first GitHub runs.

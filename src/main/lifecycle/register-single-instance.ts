@@ -7,11 +7,9 @@ interface SingleInstanceRegistration {
 }
 
 function focusWindow(window: BrowserWindow | null): void {
-  if (window === null)
-    return
+  if (window === null) return
 
-  if (window.isMinimized())
-    window.restore()
+  if (window.isMinimized()) window.restore()
 
   window.show()
   window.focus()

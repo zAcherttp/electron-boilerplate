@@ -42,7 +42,12 @@
           radial-gradient(circle at top right, rgb(8 127 104 / 10%), transparent 28rem),
           var(--paper);
         font-family:
-          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          Inter,
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          'Segoe UI',
           sans-serif;
         font-size: 16px;
         line-height: 1.65;
@@ -60,7 +65,7 @@
 
       code,
       pre {
-        font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+        font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
       }
 
       code {
@@ -142,7 +147,7 @@
         width: 1.8rem;
         height: 2px;
         background: currentcolor;
-        content: "";
+        content: '';
       }
 
       .lede {
@@ -510,12 +515,14 @@
         product-specific capabilities remain optional until a real requirement activates them.
       </p>
       <div class="meta" aria-label="Plan metadata">
-        <span class="pill pill--active">Phase 05 in progress</span>
+        <span class="pill pill--active">Core scaffold complete through Phase 06</span>
         <span class="pill">Updated July 21, 2026</span>
         <span class="pill">Vite + TypeScript 7 verified</span>
         <span class="pill">Secure shell + packaging verified</span>
         <span class="pill">Renderer foundation verified</span>
         <span class="pill">Electron smoke automated</span>
+        <span class="pill">Windows quality workflow configured</span>
+        <span class="pill">Windows package accepted locally</span>
         <span class="pill">Repository: electron-boilerplate</span>
       </div>
     </header>
@@ -580,8 +587,9 @@
         <h2>Hono as the Application API.</h2>
         <p class="section-intro">
           Hono provides a portable Application API whose current contract is tailored to the desktop
-          application. In embedded mode it receives in-memory Web Standard requests—there is no localhost port. A
-          thin standalone adapter can expose the exact same Hono app over HTTP when needed.
+          application. In embedded mode it receives in-memory Web Standard requests—there is no
+          localhost port. A thin standalone adapter can expose the exact same Hono app over HTTP
+          when needed.
         </p>
 
         <div class="flow" aria-label="Embedded request flow">
@@ -626,8 +634,8 @@
 
         <div class="callout">
           <strong>Isolation rule:</strong> CPU-heavy, crash-prone, or long-running work does not
-          belong in Electron main or the thin Application API. Add a utility process or worker when such work
-          appears.
+          belong in Electron main or the thin Application API. Add a utility process or worker when
+          such work appears.
         </div>
       </section>
 
@@ -709,12 +717,16 @@ future api-server ──→ extracted api package</code></pre>
               <tr>
                 <td>Electron integration</td>
                 <td>vite-plugin-doubleshot</td>
-                <td>One Vite command builds the renderer, main, and preload and starts Electron.</td>
+                <td>
+                  One Vite command builds the renderer, main, and preload and starts Electron.
+                </td>
               </tr>
               <tr>
                 <td>Application API</td>
                 <td>Hono</td>
-                <td>Web Standard Request/Response model, in-memory testing, optional Node adapter.</td>
+                <td>
+                  Web Standard Request/Response model, in-memory testing, optional Node adapter.
+                </td>
               </tr>
               <tr>
                 <td>Validation</td>
@@ -863,7 +875,10 @@ future api-server ──→ extracted api package</code></pre>
                 <li>Confirm the existing minimal Electron app still starts before migration.</li>
                 <li>Capture the initial git state without rewriting repository history.</li>
               </ul>
-              <p class="acceptance"><strong>Accept when:</strong> this plan is reviewed and the baseline launch is known.</p>
+              <p class="acceptance">
+                <strong>Accept when:</strong> this plan is reviewed and the baseline launch is
+                known.
+              </p>
             </div>
           </li>
           <li class="phase">
@@ -872,11 +887,17 @@ future api-server ──→ extracted api package</code></pre>
               <h3>Workspace and build foundation</h3>
               <ul>
                 <li>Move from npm/plain JavaScript to pnpm and strict TypeScript.</li>
-                <li>Keep the API app-local; extract API and server packages only with a second runtime.</li>
+                <li>
+                  Keep the API app-local; extract API and server packages only with a second
+                  runtime.
+                </li>
                 <li>Configure one Vite entrypoint for renderer, main, and preload builds.</li>
                 <li>Use Doubleshot for Electron startup and development restarts.</li>
               </ul>
-              <p class="acceptance"><strong>Accept when:</strong> install, dev, typecheck, and production build succeed from a clean checkout.</p>
+              <p class="acceptance">
+                <strong>Accept when:</strong> install, dev, typecheck, and production build succeed
+                from a clean checkout.
+              </p>
             </div>
           </li>
           <li class="phase">
@@ -884,13 +905,31 @@ future api-server ──→ extracted api package</code></pre>
             <div>
               <h3>Secure Electron shell</h3>
               <ul>
-                <li>Implement application lifecycle, window ownership, and single-instance behavior. <strong>Done.</strong></li>
-                <li>Enable sandboxing and context isolation; keep Node integration disabled. <strong>Done.</strong></li>
-                <li>Serve packaged assets from a contained <code>app://bundle</code> protocol. <strong>Done.</strong></li>
-                <li>Deny unexpected navigation, windows, webviews, external URLs, and permissions. <strong>Done.</strong></li>
-                <li>Add restrictive development and production content security policies and package-time fuses. <strong>Done.</strong></li>
+                <li>
+                  Implement application lifecycle, window ownership, and single-instance behavior.
+                  <strong>Done.</strong>
+                </li>
+                <li>
+                  Enable sandboxing and context isolation; keep Node integration disabled.
+                  <strong>Done.</strong>
+                </li>
+                <li>
+                  Serve packaged assets from a contained <code>app://bundle</code> protocol.
+                  <strong>Done.</strong>
+                </li>
+                <li>
+                  Deny unexpected navigation, windows, webviews, external URLs, and permissions.
+                  <strong>Done.</strong>
+                </li>
+                <li>
+                  Add restrictive development and production content security policies and
+                  package-time fuses. <strong>Done.</strong>
+                </li>
               </ul>
-              <p class="acceptance"><strong>Accept when:</strong> the React renderer launches in development and packaged modes without direct Node access.</p>
+              <p class="acceptance">
+                <strong>Accept when:</strong> the React renderer launches in development and
+                packaged modes without direct Node access.
+              </p>
             </div>
           </li>
           <li class="phase">
@@ -904,7 +943,10 @@ future api-server ──→ extracted api package</code></pre>
                 <li>Add the standalone Node server adapter only with a real web consumer.</li>
                 <li>Deliver the first vertical slice: <code>system.getInfo</code>.</li>
               </ul>
-              <p class="acceptance"><strong>Accept when:</strong> React renders validated system information through preload → IPC → Hono, and the same route passes a direct in-memory request test.</p>
+              <p class="acceptance">
+                <strong>Accept when:</strong> React renders validated system information through
+                preload → IPC → Hono, and the same route passes a direct in-memory request test.
+              </p>
             </div>
           </li>
           <li class="phase">
@@ -912,13 +954,30 @@ future api-server ──→ extracted api package</code></pre>
             <div>
               <h3>Renderer application foundation</h3>
               <ul>
-                <li>Add typed routes, query ownership, and global error handling. <strong>Done.</strong></li>
-                <li>Create a restrained app shell with accessible loading, error, and empty states. <strong>Done.</strong></li>
-                <li>Keep product UI under feature owners; shared primitives stay genuinely generic. <strong>Done.</strong></li>
-                <li>Tag custom primitives with <code>@shadcn-replaceable</code> for a future migration. <strong>Done.</strong></li>
-                <li>Do not add a global client-state library until a real state owner requires it.</li>
+                <li>
+                  Add typed routes, query ownership, and global error handling.
+                  <strong>Done.</strong>
+                </li>
+                <li>
+                  Create a restrained app shell with accessible loading, error, and empty states.
+                  <strong>Done.</strong>
+                </li>
+                <li>
+                  Keep product UI under feature owners; shared primitives stay genuinely generic.
+                  <strong>Done.</strong>
+                </li>
+                <li>
+                  Tag custom primitives with <code>@shadcn-replaceable</code> for a future
+                  migration. <strong>Done.</strong>
+                </li>
+                <li>
+                  Do not add a global client-state library until a real state owner requires it.
+                </li>
               </ul>
-              <p class="acceptance"><strong>Accepted:</strong> the packaged typed route is keyboard-accessible and its success, failure, and retry behavior is tested.</p>
+              <p class="acceptance">
+                <strong>Accepted:</strong> the packaged typed route is keyboard-accessible and its
+                success, failure, and retry behavior is tested.
+              </p>
             </div>
           </li>
           <li class="phase">
@@ -926,12 +985,27 @@ future api-server ──→ extracted api package</code></pre>
             <div>
               <h3>Testing, quality, and CI</h3>
               <ul>
-                <li>Add schema contract tests and Hono request-level integration tests. <strong>Done.</strong></li>
-                <li>Add renderer behavior tests and an Electron launch smoke test. <strong>Done.</strong></li>
-                <li>Configure format, lint, typecheck, test, and build commands.</li>
-                <li>Run the complete quality gate in GitHub Actions.</li>
+                <li>
+                  Add schema contract tests and Hono request-level integration tests.
+                  <strong>Done.</strong>
+                </li>
+                <li>
+                  Add renderer behavior tests and an Electron launch smoke test.
+                  <strong>Done.</strong>
+                </li>
+                <li>
+                  Configure format, lint, typecheck, test, and build commands.
+                  <strong>Done.</strong>
+                </li>
+                <li>
+                  Run the complete quality gate in GitHub Actions.
+                  <strong>Workflow configured.</strong>
+                </li>
               </ul>
-              <p class="acceptance"><strong>Accept when:</strong> CI proves a clean checkout can install, validate, test, and build.</p>
+              <p class="acceptance">
+                <strong>Accepted locally:</strong> <code>pnpm check</code> passes. The first GitHub
+                run supplies the final remote clean-checkout evidence.
+              </p>
             </div>
           </li>
           <li class="phase">
@@ -939,13 +1013,31 @@ future api-server ──→ extracted api package</code></pre>
             <div>
               <h3>Packaging and release readiness</h3>
               <ul>
-                <li>Completed early: electron-builder, ASAR, isolated release output, unpacked launch, and unsigned NSIS generation.</li>
-                <li>Add product icons and final application identity.</li>
-                <li>Add signing-ready environment configuration without committing secrets.</li>
-                <li>Add package smoke tests and document platform-specific release steps.</li>
-                <li>Prepare release automation; do not publish until explicitly requested.</li>
+                <li>
+                  Completed early: electron-builder, ASAR, isolated release output, unpacked launch,
+                  and unsigned NSIS generation.
+                </li>
+                <li>
+                  Add an editable product icon and explicit application identity.
+                  <strong>Done.</strong>
+                </li>
+                <li>
+                  Add signing-ready environment configuration without committing secrets.
+                  <strong>Done.</strong>
+                </li>
+                <li>
+                  Add a hardened package smoke test and document Windows release steps.
+                  <strong>Done.</strong>
+                </li>
+                <li>
+                  Prepare manual signed or unsigned package automation without publishing.
+                  <strong>Configured.</strong>
+                </li>
               </ul>
-              <p class="acceptance"><strong>Accept when:</strong> a locally packaged artifact installs or launches and completes the system-info vertical slice.</p>
+              <p class="acceptance">
+                <strong>Accepted locally:</strong> the unpacked artifact launches and completes the
+                system-info vertical slice, and the branded unsigned NSIS artifact builds.
+              </p>
             </div>
           </li>
         </ol>
@@ -972,7 +1064,9 @@ future api-server ──→ extracted api package</code></pre>
               <tr>
                 <td>Local database</td>
                 <td>The desktop owns durable structured data or must work offline.</td>
-                <td>SQLite + Drizzle, generated migrations, packaged native-module verification.</td>
+                <td>
+                  SQLite + Drizzle, generated migrations, packaged native-module verification.
+                </td>
                 <td><span class="module-status module-status--later">Common</span></td>
               </tr>
               <tr>
@@ -1014,13 +1108,17 @@ future api-server ──→ extracted api package</code></pre>
               <tr>
                 <td>Realtime events</td>
                 <td>Polling is insufficient for a defined product workflow.</td>
-                <td>SSE or WebSocket at the API edge, translated into a narrow preload event API.</td>
+                <td>
+                  SSE or WebSocket at the API edge, translated into a narrow preload event API.
+                </td>
                 <td><span class="module-status module-status--later">Product</span></td>
               </tr>
               <tr>
                 <td>Background work</td>
                 <td>Tasks are CPU-heavy, long-running, restartable, or crash-prone.</td>
-                <td>Electron utility process or worker with explicit job and progress contracts.</td>
+                <td>
+                  Electron utility process or worker with explicit job and progress contracts.
+                </td>
                 <td><span class="module-status module-status--later">Product</span></td>
               </tr>
               <tr>
@@ -1051,8 +1149,8 @@ future api-server ──→ extracted api package</code></pre>
           </table>
         </div>
         <div class="callout">
-          <strong>Activation rule:</strong> before adding an optional module, write its owner, threat
-          model, persistence needs, packaging impact, and acceptance test. Then implement one
+          <strong>Activation rule:</strong> before adding an optional module, write its owner,
+          threat model, persistence needs, packaging impact, and acceptance test. Then implement one
           vertical slice rather than installing an ecosystem all at once.
         </div>
       </section>
@@ -1085,18 +1183,16 @@ future api-server ──→ extracted api package</code></pre>
               <li>Renderer bundles contain no server secrets.</li>
               <li>Navigation and external URLs use exact, explicit allowlists.</li>
               <li>Browser permissions remain denied until a feature owns a narrow policy.</li>
-              <li>Production assets use a secure custom protocol rather than privileged <code>file://</code>.</li>
+              <li>
+                Production assets use a secure custom protocol rather than privileged
+                <code>file://</code>.
+              </li>
               <li>Packaged binaries disable unneeded Electron capabilities with fuses.</li>
             </ul>
           </article>
           <article class="panel panel--accent">
             <h3>Repository gate</h3>
-            <pre><code>pnpm format:check
-pnpm lint
-pnpm typecheck
-pnpm test
-pnpm build
-pnpm test:e2e</code></pre>
+            <pre><code>pnpm check</code></pre>
           </article>
           <article class="panel panel--warm">
             <h3>Change discipline</h3>
@@ -1116,7 +1212,8 @@ pnpm test:e2e</code></pre>
       <p>
         This is a living plan. The portable in-memory Hono Application API, its first validated IPC
         vertical slice, secure Electron shell, and typed renderer foundation are implemented. The
-        production Electron smoke path is automated; formatting and CI remain in progress.
+        production Electron and packaged-runtime smoke paths are automated. The Windows quality and
+        manual package workflows are configured and await their first GitHub runs.
       </p>
     </footer>
   </body>

@@ -7,9 +7,5 @@
     "tsBuildInfoFile": "./dist/.tsbuildinfo/test.tsbuildinfo",
     "types": ["node"]
   },
-  "include": [
-    "./src/api/**/*.ts",
-    "./src/contracts/**/*.ts",
-    "./src/main/security/**/*.ts"
-  ]
+  "include": ["./src/api/**/*.ts", "./src/contracts/**/*.ts", "./src/main/security/**/*.ts"]
 }

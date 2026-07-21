@@ -4,8 +4,7 @@ import { App } from './App'
 
 const rootElement = document.getElementById('root')
 
-if (!rootElement)
-  throw new Error('Missing renderer root element')
+if (!rootElement) throw new Error('Missing renderer root element')
 
 createRoot(rootElement).render(
   <StrictMode>

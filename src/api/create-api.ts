@@ -20,7 +20,7 @@ const notFoundError: ApiError = {
 export function createApi(dependencies: ApiDependencies) {
   const api = new Hono()
 
-  api.notFound(context => context.json(notFoundError, 404))
+  api.notFound((context) => context.json(notFoundError, 404))
   api.onError((_error, context) => context.json(internalError, 500))
 
   return api.get('/system/info', async (context) => {

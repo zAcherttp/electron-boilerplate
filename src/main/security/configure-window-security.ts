@@ -2,13 +2,9 @@ import type { BrowserWindow } from 'electron'
 import type { RendererUrlPolicy } from './renderer-url-policy'
 import { shell } from 'electron'
 
-export function configureWindowSecurity(
-  window: BrowserWindow,
-  urlPolicy: RendererUrlPolicy,
-): void {
+export function configureWindowSecurity(window: BrowserWindow, urlPolicy: RendererUrlPolicy): void {
   window.webContents.on('will-frame-navigate', (event) => {
-    if (!urlPolicy.isTrustedRendererUrl(event.url))
-      event.preventDefault()
+    if (!urlPolicy.isTrustedRendererUrl(event.url)) event.preventDefault()
   })
 
   window.webContents.on('will-attach-webview', (event) => {

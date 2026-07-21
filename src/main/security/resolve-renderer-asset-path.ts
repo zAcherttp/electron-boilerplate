@@ -6,16 +6,15 @@ export function resolveRendererAssetPath(rendererRoot: string, requestUrl: strin
 
   try {
     parsedUrl = new URL(requestUrl)
-  }
-  catch {
+  } catch {
     return null
   }
 
   if (
-    parsedUrl.protocol !== `${rendererScheme}:`
-    || parsedUrl.host !== rendererHost
-    || parsedUrl.username !== ''
-    || parsedUrl.password !== ''
+    parsedUrl.protocol !== `${rendererScheme}:` ||
+    parsedUrl.host !== rendererHost ||
+    parsedUrl.username !== '' ||
+    parsedUrl.password !== ''
   ) {
     return null
   }
@@ -24,19 +23,16 @@ export function resolveRendererAssetPath(rendererRoot: string, requestUrl: strin
 
   try {
     pathname = decodeURIComponent(parsedUrl.pathname)
-  }
-  catch {
+  } catch {
     return null
   }
 
-  if (pathname.includes('\0') || pathname.includes('\\'))
-    return null
+  if (pathname.includes('\0') || pathname.includes('\\')) return null
 
   const assetPath = resolve(rendererRoot, pathname === '/' ? 'index.html' : pathname.slice(1))
   const relativeAssetPath = relative(rendererRoot, assetPath)
 
-  if (relativeAssetPath.startsWith('..') || isAbsolute(relativeAssetPath))
-    return null
+  if (relativeAssetPath.startsWith('..') || isAbsolute(relativeAssetPath)) return null
 
   return assetPath
 }

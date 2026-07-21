@@ -23,12 +23,14 @@ export function SystemInfoPage() {
         <p className="eyebrow">Renderer foundation</p>
         <h1 id="page-title">A small, explicit Electron stack.</h1>
         <p className="lede">
-          Typed routes and feature-owned queries sit on top of the portable Hono API.
-          No localhost server is running.
+          Typed routes and feature-owned queries sit on top of the portable Hono API. No localhost
+          server is running.
         </p>
 
         <ul className="toolchain" aria-label="Active toolchain">
-          {toolchain.map(tool => <li key={tool}>{tool}</li>)}
+          {toolchain.map((tool) => (
+            <li key={tool}>{tool}</li>
+          ))}
         </ul>
       </section>
 
@@ -62,7 +64,9 @@ export function SystemInfoPage() {
               </div>
               <div>
                 <dt>Platform</dt>
-                <dd>{systemInfoQuery.data.platform} / {systemInfoQuery.data.architecture}</dd>
+                <dd>
+                  {systemInfoQuery.data.platform} / {systemInfoQuery.data.architecture}
+                </dd>
               </div>
               <div>
                 <dt>Electron</dt>

@@ -54,8 +54,7 @@ describe('system information page', () => {
     const getInfo = async (): Promise<SystemInfo> => {
       attempt += 1
 
-      if (attempt === 1)
-        throw new Error('desktop API unavailable')
+      if (attempt === 1) throw new Error('desktop API unavailable')
 
       return systemInfo
     }
