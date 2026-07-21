@@ -510,11 +510,12 @@
         product-specific capabilities remain optional until a real requirement activates them.
       </p>
       <div class="meta" aria-label="Plan metadata">
-        <span class="pill pill--active">Phase 04 complete</span>
+        <span class="pill pill--active">Phase 05 in progress</span>
         <span class="pill">Updated July 21, 2026</span>
         <span class="pill">Vite + TypeScript 7 verified</span>
         <span class="pill">Secure shell + packaging verified</span>
         <span class="pill">Renderer foundation verified</span>
+        <span class="pill">Electron smoke automated</span>
         <span class="pill">Repository: electron-boilerplate</span>
       </div>
     </header>
@@ -925,8 +926,8 @@ future api-server ──→ extracted api package</code></pre>
             <div>
               <h3>Testing, quality, and CI</h3>
               <ul>
-                <li>Add schema contract tests and Hono request-level integration tests.</li>
-                <li>Add renderer behavior tests and an Electron launch smoke test.</li>
+                <li>Add schema contract tests and Hono request-level integration tests. <strong>Done.</strong></li>
+                <li>Add renderer behavior tests and an Electron launch smoke test. <strong>Done.</strong></li>
                 <li>Configure format, lint, typecheck, test, and build commands.</li>
                 <li>Run the complete quality gate in GitHub Actions.</li>
               </ul>
@@ -1114,7 +1115,8 @@ pnpm test:e2e</code></pre>
     <footer class="footer shell">
       <p>
         This is a living plan. The portable in-memory Hono Application API, its first validated IPC
-        vertical slice, secure Electron shell, and typed renderer foundation are implemented and package-smoke verified.
+        vertical slice, secure Electron shell, and typed renderer foundation are implemented. The
+        production Electron smoke path is automated; formatting and CI remain in progress.
       </p>
     </footer>
   </body>

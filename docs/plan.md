@@ -1,7 +1,7 @@
 # Electron Boilerplate — Quick Plan
 
 Updated: 2026-07-21
-Status: Phases 02–04 complete; secure shell, Application API, and renderer foundation verified
+Status: Phase 05 in progress; automated Electron smoke coverage implemented
 
 The detailed plan is in [`plan.html`](./plan.html).
 
@@ -117,7 +117,7 @@ Acceptance: the packaged vertical slice renders through the typed route, remains
 
 ### Phase 05 — Quality and CI
 
-- Add contract, Hono integration, renderer, and Electron smoke tests.
+- Add contract, Hono integration, renderer, and Electron smoke tests. **Done**
 - Add formatting, linting, typechecking, test, and build gates.
 - Run all gates in GitHub Actions.
 
@@ -178,4 +178,4 @@ pnpm test:e2e
 
 ## Next action
 
-Complete the repository quality lane: formatting, automated package smoke coverage, and GitHub Actions. Keep consent, remembered external origins, permission grants, deep-link routing, and the Node HTTP adapter out until a real feature defines their contracts.
+Add formatting and a unified local quality command, then run the same gates in a new Windows GitHub Actions workflow. Keep consent, remembered external origins, permission grants, deep-link routing, and the Node HTTP adapter out until a real feature defines their contracts.

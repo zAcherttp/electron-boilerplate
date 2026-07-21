@@ -14,6 +14,7 @@ The repository is being assembled one verified increment at a time. The current 
 - TanStack Router with a code-defined, hash-based desktop route tree
 - TanStack Query with feature-owned IPC queries and explicit async states
 - top-level React error containment and accessible renderer fallbacks
+- Playwright smoke coverage for Electron startup, routing, IPC, and renderer isolation
 - TypeScript 7 in strict mode
 - vite-plugin-doubleshot for Electron main, preload, and application startup
 - electron-builder for ASAR packaging and Windows installers
@@ -75,6 +76,8 @@ Vite is the toolchain entrypoint. Doubleshot wires Electron main and preload bui
 │     └─ tsconfig.json
 ├─ tsconfig.json
 ├─ electron-builder.yml
+├─ playwright.config.ts
+├─ tests/e2e/application.e2e.ts
 └─ vite.config.ts
 ```
 
@@ -97,13 +100,17 @@ pnpm dev
 ```bash
 pnpm lint
 pnpm typecheck
+pnpm test
 pnpm build
+pnpm test:e2e
 pnpm start
 ```
 
 Use `pnpm lint:fix` to apply Oxlint's safe automatic fixes.
 
 `pnpm build` creates the production output without launching it. `pnpm start` performs a clean production build and then launches Electron, so it is safe to run after a development session.
+
+`pnpm test:e2e` creates a clean production build and launches it through Playwright's Electron driver. The smoke test verifies the secure `app://` renderer, typed route, live preload → IPC → Hono result, and the absence of raw Node or Electron globals. It uses Electron's bundled Chromium and does not require a separate Playwright browser download.
 
 ## Packaging
 
@@ -160,4 +167,4 @@ Hono runs in memory without opening a localhost port. A future Node adapter can 
 - [Full visual implementation plan](docs/plan.html)
 - [Brief session-reload plan](docs/plan.md)
 
-The Vite, TypeScript, electron-builder, secure Electron shell, first Application API slice, and renderer foundation are verified. The next planned increment is CI and the remaining repository quality gates.
+The Vite, TypeScript, electron-builder, secure Electron shell, first Application API slice, and renderer foundation are verified. The automated Electron smoke lane is active; formatting and CI remain in Phase 05.

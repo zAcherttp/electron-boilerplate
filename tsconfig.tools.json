@@ -2,10 +2,14 @@
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
     "composite": true,
-    "lib": ["ES2023"],
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
     "rootDir": ".",
     "tsBuildInfoFile": "./dist/.tsbuildinfo/tools.tsbuildinfo",
     "types": ["node"]
   },
-  "include": ["./vite.config.ts"]
+  "include": [
+    "./playwright.config.ts",
+    "./tests/e2e/**/*.ts",
+    "./vite.config.ts"
+  ]
 }
