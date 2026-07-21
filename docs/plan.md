@@ -1,7 +1,7 @@
 # Electron Boilerplate — Quick Plan
 
-Updated: 2026-07-21
-Status: Core scaffold complete through Phase 06; local package accepted and remote workflow runs pending
+Updated: 2026-07-22
+Status: Core scaffold complete through Phase 06; clean Windows workflows verified and Pino baseline implemented
 
 The detailed plan is in [`plan.html`](./plan.html).
 
@@ -93,6 +93,7 @@ Acceptance: clean install, development startup, typecheck, and production build 
 - Serve packaged renderer assets from a contained `app://bundle` protocol. **Done**
 - Restrict navigation, new windows, webviews, external URLs, permissions, and CSP. **Done**
 - Apply package-time Electron security fuses. **Done**
+- Add main-owned structured logging with packaged file output and credential redaction. **Done**
 
 Acceptance: React launches in development and packaged modes without direct Node access. Packaged `app://` rendering and the live preload → IPC → Hono slice are verified.
 
@@ -121,7 +122,7 @@ Acceptance: the packaged vertical slice renders through the typed route, remains
 - Add formatting, linting, typechecking, test, and build gates. **Done**
 - Run all gates in GitHub Actions. **Workflow configured**
 
-Acceptance: `pnpm check` passes locally. The Windows workflow installs with `--frozen-lockfile` and runs the same gate; its first GitHub run supplies the final remote clean-checkout evidence.
+Acceptance: `pnpm check` passes locally and in the Windows workflow after a clean `--frozen-lockfile` install. **Verified**
 
 ### Phase 06 — Packaging
 
@@ -131,7 +132,7 @@ Acceptance: `pnpm check` passes locally. The Windows workflow installs with `--f
 - Add a hardened package smoke test and Windows release documentation. **Done**
 - Add manual signed/unsigned package automation without publishing. **Configured**
 
-Acceptance: `pnpm test:package` launches the unpacked Windows artifact and completes the system-info vertical slice; `pnpm dist` produces the branded unsigned NSIS installer and block map. **Accepted locally**
+Acceptance: `pnpm test:package` launches the unpacked Windows artifact and completes the system-info vertical slice; the manual Windows workflow produces and uploads the unsigned NSIS installer and block map. **Verified**
 
 ## Optional modules
 

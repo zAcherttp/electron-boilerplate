@@ -3,6 +3,7 @@ import { app, BrowserWindow, session } from 'electron'
 import { createApi } from '../api/create-api'
 import { createApiClient } from '../api/create-api-client'
 import { registerSingleInstance } from './lifecycle/register-single-instance'
+import { createApplicationLogger } from './logging/create-application-logger'
 import { configureSessionSecurity } from './security/configure-session-security'
 import { configureWindowSecurity } from './security/configure-window-security'
 import { createRendererUrlPolicy } from './security/renderer-url-policy'
@@ -19,8 +20,24 @@ let mainWindow: BrowserWindow | null = null
 
 registerRendererScheme()
 if (process.platform === 'win32') app.setAppUserModelId('dev.electron.boilerplate')
+app.setAppLogsPath()
 
-const singleInstance = registerSingleInstance(() => mainWindow)
+const applicationLogger = createApplicationLogger({
+  appVersion: app.getVersion(),
+  isPackaged: app.isPackaged,
+  logDirectory: app.getPath('logs'),
+})
+const logger = applicationLogger.logger
+
+const singleInstance = registerSingleInstance(() => {
+  logger.info('second instance requested')
+  return mainWindow
+})
+
+if (!singleInstance.acquired) {
+  logger.warn('application is already running')
+  applicationLogger.flush()
+}
 
 function readRuntimeVersion(name: 'chrome' | 'electron' | 'node'): string {
   const version = process.versions[name]
@@ -54,14 +71,33 @@ function createWindow(): void {
 
   configureWindowSecurity(window, urlPolicy)
 
-  window.once('closed', () => {
-    mainWindow = null
+  window.webContents.on('render-process-gone', (_event, details) => {
+    logger.error(
+      { exitCode: details.exitCode, reason: details.reason },
+      'renderer process terminated',
+    )
   })
 
-  void window.loadURL(activeRendererUrl)
+  window.once('closed', () => {
+    mainWindow = null
+    logger.debug('main window closed')
+  })
+
+  void window.loadURL(activeRendererUrl).catch((error: Error) => {
+    logger.error({ err: error }, 'renderer failed to load')
+  })
 }
 
 function startApplication(): void {
+  logger.info(
+    {
+      architecture: process.arch,
+      logFile: applicationLogger.filePath,
+      packaged: app.isPackaged,
+      platform: process.platform,
+    },
+    'application starting',
+  )
   const api = createApi({
     getSystemInfo: () => ({
       appVersion: app.getVersion(),
@@ -80,6 +116,7 @@ function startApplication(): void {
   })
 
   void app.whenReady().then(() => {
+    logger.info('application ready')
     configureSessionSecurity(session.defaultSession)
     const removeRendererProtocol = registerRendererProtocol(join(__dirname, '../renderer'))
 
@@ -96,8 +133,10 @@ function startApplication(): void {
   })
 
   app.once('will-quit', () => {
+    logger.info('application stopping')
     removeSystemInfoIpc()
     singleInstance.dispose()
+    applicationLogger.flush()
   })
 }
 

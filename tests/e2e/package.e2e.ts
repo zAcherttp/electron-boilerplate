@@ -1,8 +1,9 @@
 import { spawn } from 'node:child_process'
+import { existsSync, readFileSync } from 'node:fs'
 import { createServer } from 'node:net'
 import { dirname, resolve } from 'node:path'
 import { setTimeout as delay } from 'node:timers/promises'
-import { test } from '@playwright/test'
+import { expect, test } from '@playwright/test'
 import { chromium, type Browser } from 'playwright'
 import { assertApplicationWindow } from './assert-application-window'
 
@@ -49,6 +50,7 @@ async function connectToPackagedApplication(port: number): Promise<Browser> {
 test('launches the packaged Windows application and completes the vertical slice', async () => {
   const port = await getAvailablePort()
   const profilePath = resolve(projectRoot, 'test-results', 'packaged-profile')
+  const logFilePath = resolve(profilePath, 'logs', 'main.log')
   const packagedApplication = spawn(
     executablePath,
     [`--remote-debugging-port=${port}`, `--user-data-dir=${profilePath}`],
@@ -69,6 +71,13 @@ test('launches the packaged Windows application and completes the vertical slice
     const window = context.pages()[0] ?? (await context.waitForEvent('page'))
 
     await assertApplicationWindow(window)
+    await expect
+      .poll(
+        () =>
+          existsSync(logFilePath) &&
+          readFileSync(logFilePath, 'utf8').includes('"msg":"application ready"'),
+      )
+      .toBe(true)
   } finally {
     await browser?.close()
     if (packagedApplication.exitCode === null) packagedApplication.kill()

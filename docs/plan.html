@@ -516,13 +516,15 @@
       </p>
       <div class="meta" aria-label="Plan metadata">
         <span class="pill pill--active">Core scaffold complete through Phase 06</span>
-        <span class="pill">Updated July 21, 2026</span>
+        <span class="pill">Updated July 22, 2026</span>
         <span class="pill">Vite + TypeScript 7 verified</span>
         <span class="pill">Secure shell + packaging verified</span>
         <span class="pill">Renderer foundation verified</span>
         <span class="pill">Electron smoke automated</span>
         <span class="pill">Windows quality workflow configured</span>
         <span class="pill">Windows package accepted locally</span>
+        <span class="pill">Clean Windows workflows verified</span>
+        <span class="pill">Pino logging implemented</span>
         <span class="pill">Repository: electron-boilerplate</span>
       </div>
     </header>
@@ -756,7 +758,7 @@ future api-server ──→ extracted api package</code></pre>
               <tr>
                 <td>Logging</td>
                 <td>Pino</td>
-                <td>Structured logs shared by Electron main and Hono.</td>
+                <td>Main-owned structured logs with packaged file output and redaction.</td>
               </tr>
             </tbody>
           </table>
@@ -925,6 +927,10 @@ future api-server ──→ extracted api package</code></pre>
                   Add restrictive development and production content security policies and
                   package-time fuses. <strong>Done.</strong>
                 </li>
+                <li>
+                  Add main-owned structured logging with packaged file output and credential
+                  redaction. <strong>Done.</strong>
+                </li>
               </ul>
               <p class="acceptance">
                 <strong>Accept when:</strong> the React renderer launches in development and
@@ -1003,8 +1009,8 @@ future api-server ──→ extracted api package</code></pre>
                 </li>
               </ul>
               <p class="acceptance">
-                <strong>Accepted locally:</strong> <code>pnpm check</code> passes. The first GitHub
-                run supplies the final remote clean-checkout evidence.
+                <strong>Verified:</strong> <code>pnpm check</code> passes locally and in the Windows
+                workflow after a clean frozen-lockfile install.
               </p>
             </div>
           </li>
@@ -1035,8 +1041,9 @@ future api-server ──→ extracted api package</code></pre>
                 </li>
               </ul>
               <p class="acceptance">
-                <strong>Accepted locally:</strong> the unpacked artifact launches and completes the
-                system-info vertical slice, and the branded unsigned NSIS artifact builds.
+                <strong>Verified:</strong> the clean Windows workflow launches the unpacked
+                artifact, completes the system-info vertical slice, and uploads the unsigned NSIS
+                artifact.
               </p>
             </div>
           </li>
@@ -1213,7 +1220,7 @@ future api-server ──→ extracted api package</code></pre>
         This is a living plan. The portable in-memory Hono Application API, its first validated IPC
         vertical slice, secure Electron shell, and typed renderer foundation are implemented. The
         production Electron and packaged-runtime smoke paths are automated. The Windows quality and
-        manual package workflows are configured and await their first GitHub runs.
+        manual package workflows are verified, and Electron main now owns a packaged Pino log.
       </p>
     </footer>
   </body>

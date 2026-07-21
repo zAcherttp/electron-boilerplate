@@ -22,6 +22,7 @@ The repository is being assembled one verified increment at a time. The current 
 - electron-builder for ASAR packaging and Windows installers
 - Hono Application API with Zod request and response contracts
 - narrow, sender-validated IPC exposed as `window.app.system.getInfo()`
+- Pino structured logging owned by Electron main with packaged file output
 - Oxlint with TypeScript 7 type-aware, React, accessibility, and Vitest rules
 - pnpm 11.15.1 pinned through `packageManager`
 - one straightforward Vite command for development and production builds
@@ -52,6 +53,9 @@ Vite is the toolchain entrypoint. Doubleshot wires Electron main and preload bui
 │  │  ├─ index.ts
 │  │  ├─ lifecycle/
 │  │  │  └─ register-single-instance.ts
+│  │  ├─ logging/
+│  │  │  ├─ create-application-logger.test.ts
+│  │  │  └─ create-application-logger.ts
 │  │  ├─ security/
 │  │  │  ├─ assert-trusted-ipc-sender.ts
 │  │  │  ├─ configure-session-security.ts
@@ -145,6 +149,14 @@ pnpm dist:signed
 
 Packaged applications also disable Electron's run-as-Node, Node environment option, CLI inspect, and privileged `file://` behaviors. They require the integrity-checked ASAR and enable encrypted cookies.
 
+## Logging
+
+Electron main owns the Pino logger. Development records are structured JSON on stdout; packaged records append to `main.log` in Electron's operating-system log directory. Startup, readiness, second-instance activation, renderer termination, load failure, window closure, and shutdown provide the baseline lifecycle trail.
+
+Common password, token, authorization, and cookie fields are redacted at the logger boundary. Do not log raw IPC payloads, request bodies, credentials, or user documents. The renderer receives no generic logging IPC method; add feature-specific diagnostics only when a product requirement defines their data policy.
+
+The packaged-runtime smoke test verifies that the log file is created and contains the readiness record. Products that introduce sustained or high-volume logging should also define retention and rotation limits.
+
 ## Electron security policy
 
 The renderer may navigate only within its exact development or production authority. New windows are always denied. An HTTPS URL is handed to the operating system only when its exact origin appears in `trustedExternalOrigins` in `src/main/index.ts`; the scaffold intentionally starts with an empty list and includes no consent or remembered-domain system.
@@ -187,4 +199,4 @@ Hono runs in memory without opening a localhost port. A future Node adapter can 
 - [Full visual implementation plan](docs/plan.html)
 - [Brief session-reload plan](docs/plan.md)
 
-The core scaffold is locally verified through packaging: Vite, TypeScript, the secure Electron shell, Application API slice, renderer foundation, formatting, source and packaged-runtime smoke tests, editable identity, and unsigned NSIS generation. The Windows quality and manual packaging workflows await their first GitHub runs.
+The core scaffold is verified through packaging: Vite, TypeScript, the secure Electron shell, Application API slice, renderer foundation, formatting, source and packaged-runtime smoke tests, editable identity, Pino logging, and unsigned NSIS generation. The Windows quality and manual packaging workflows both pass from clean checkouts.
