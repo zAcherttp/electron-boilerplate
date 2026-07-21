@@ -510,10 +510,11 @@
         product-specific capabilities remain optional until a real requirement activates them.
       </p>
       <div class="meta" aria-label="Plan metadata">
-        <span class="pill pill--active">Phase 01 in progress</span>
+        <span class="pill pill--active">Phase 04 complete</span>
         <span class="pill">Updated July 21, 2026</span>
         <span class="pill">Vite + TypeScript 7 verified</span>
         <span class="pill">Secure shell + packaging verified</span>
+        <span class="pill">Renderer foundation verified</span>
         <span class="pill">Repository: electron-boilerplate</span>
       </div>
     </header>
@@ -910,12 +911,13 @@ future api-server ──→ extracted api package</code></pre>
             <div>
               <h3>Renderer application foundation</h3>
               <ul>
-                <li>Add typed routes, query ownership, and global error handling.</li>
-                <li>Create a restrained app shell with accessible loading, error, and empty states.</li>
-                <li>Keep product UI under feature owners; shared primitives stay genuinely generic.</li>
+                <li>Add typed routes, query ownership, and global error handling. <strong>Done.</strong></li>
+                <li>Create a restrained app shell with accessible loading, error, and empty states. <strong>Done.</strong></li>
+                <li>Keep product UI under feature owners; shared primitives stay genuinely generic. <strong>Done.</strong></li>
+                <li>Tag custom primitives with <code>@shadcn-replaceable</code> for a future migration. <strong>Done.</strong></li>
                 <li>Do not add a global client-state library until a real state owner requires it.</li>
               </ul>
-              <p class="acceptance"><strong>Accept when:</strong> the vertical slice is navigable, keyboard-accessible, and handles success and failure visibly.</p>
+              <p class="acceptance"><strong>Accepted:</strong> the packaged typed route is keyboard-accessible and its success, failure, and retry behavior is tested.</p>
             </div>
           </li>
           <li class="phase">
@@ -1112,7 +1114,7 @@ pnpm test:e2e</code></pre>
     <footer class="footer shell">
       <p>
         This is a living plan. The portable in-memory Hono Application API, its first validated IPC
-        vertical slice, and the secure Electron shell are implemented and package-smoke verified.
+        vertical slice, secure Electron shell, and typed renderer foundation are implemented and package-smoke verified.
       </p>
     </footer>
   </body>

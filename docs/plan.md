@@ -1,7 +1,7 @@
 # Electron Boilerplate — Quick Plan
 
 Updated: 2026-07-21
-Status: Phases 02 and 03 complete; secure shell and first Application API vertical slice verified
+Status: Phases 02–04 complete; secure shell, Application API, and renderer foundation verified
 
 The detailed plan is in [`plan.html`](./plan.html).
 
@@ -50,6 +50,9 @@ src/
   main/
   preload/
   renderer/
+    app/
+    components/ui/
+    features/system-info/
 ```
 
 Keep the API app-local until a standalone web runtime becomes a real second consumer. At that point, extract `src/api` to `packages/api` and add a thin `apps/api-server` Node adapter.
@@ -105,11 +108,12 @@ Acceptance: React renders validated system information through preload → IPC �
 
 ### Phase 04 — Renderer foundation
 
-- Add typed routing, query ownership, error boundary, and app shell.
-- Add accessible loading, empty, and failure states.
-- Keep UI and workflows organized by feature.
+- Add typed routing, query ownership, error boundary, and app shell. **Done**
+- Add accessible loading, empty, and failure states. **Done**
+- Keep UI and workflows organized by feature. **Done**
+- Tag replaceable custom primitives with `@shadcn-replaceable`. **Done**
 
-Acceptance: the vertical slice is navigable, keyboard-accessible, and visibly handles success and failure.
+Acceptance: the packaged vertical slice renders through the typed route, remains keyboard-accessible, and has tested success, failure, and retry behavior. **Verified**
 
 ### Phase 05 — Quality and CI
 
@@ -174,4 +178,4 @@ pnpm test:e2e
 
 ## Next action
 
-Build the renderer foundation or add the first product-owned API feature. Keep consent, remembered external origins, permission grants, deep-link routing, and the Node HTTP adapter out until a real feature defines their contracts.
+Complete the repository quality lane: formatting, automated package smoke coverage, and GitHub Actions. Keep consent, remembered external origins, permission grants, deep-link routing, and the Node HTTP adapter out until a real feature defines their contracts.

@@ -19,6 +19,37 @@ body {
     #f1efe7;
 }
 
+.app-header {
+  display: flex;
+  width: min(960px, calc(100% - 3rem));
+  margin: 0 auto;
+  padding: 1.1rem 0;
+  border-bottom: 1px solid #c9cec7;
+  align-items: center;
+  justify-content: space-between;
+  color: #66716c;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.app-brand,
+.text-link {
+  color: #08745f;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.24em;
+}
+
+.app-brand {
+  text-decoration: none;
+}
+
+.app-brand:hover,
+.text-link:hover {
+  color: #183d34;
+}
+
 button,
 input,
 textarea,
@@ -31,6 +62,12 @@ select {
   min-height: 100vh;
   margin: 0 auto;
   padding: clamp(3rem, 8vw, 7rem) 0 3rem;
+}
+
+.app-fallback {
+  display: grid;
+  min-height: calc(100vh - 4rem);
+  place-items: center;
 }
 
 .hero {
@@ -102,24 +139,95 @@ h2 {
   border-top: 1px solid #c9cec7;
 }
 
-.runtime-result > p {
-  margin: 0;
-  padding: 1rem;
-  border-radius: 14px;
-  color: #183d34;
-  background: rgb(255 255 255 / 56%);
-}
-
-.runtime-result .runtime-error {
-  color: #7a2727;
-  background: #f7dddd;
-}
-
 .runtime dl {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 0.7rem;
   margin: 0;
+}
+
+.runtime-skeletons {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.7rem;
+}
+
+.ui-skeleton {
+  min-height: 5.2rem;
+  border-radius: 14px;
+  background: linear-gradient(100deg, #dfe4dc 30%, #f6f7f3 50%, #dfe4dc 70%);
+  background-size: 220% 100%;
+  animation: skeleton-pulse 1.5s ease-in-out infinite;
+}
+
+.ui-alert,
+.ui-empty-state {
+  width: min(100%, 38rem);
+  padding: 1.25rem;
+  border: 1px solid #dbb6b6;
+  border-radius: 14px;
+  color: #632323;
+  background: #f7e4e1;
+}
+
+.ui-alert h2 {
+  margin-bottom: 0.55rem;
+  font-size: 1.2rem;
+}
+
+.ui-alert p,
+.ui-empty-state > p {
+  margin-bottom: 1rem;
+  line-height: 1.55;
+}
+
+.ui-empty-state {
+  border-color: #c9cec7;
+  color: #18201d;
+  background: rgb(255 255 255 / 58%);
+}
+
+.ui-empty-state h1 {
+  margin-bottom: 1rem;
+  font-size: clamp(2.5rem, 7vw, 5rem);
+}
+
+.ui-button {
+  padding: 0.62rem 0.9rem;
+  border: 1px solid #183d34;
+  border-radius: 9px;
+  color: #f3f8f6;
+  background: #183d34;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 750;
+}
+
+.ui-button:hover {
+  background: #24584a;
+}
+
+.ui-button:focus-visible,
+.app-brand:focus-visible,
+.text-link:focus-visible {
+  outline: 3px solid rgb(8 116 95 / 32%);
+  outline-offset: 3px;
+}
+
+@keyframes skeleton-pulse {
+  from {
+    background-position: 100% 0;
+  }
+
+  to {
+    background-position: -100% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ui-skeleton {
+    animation: none;
+  }
 }
 
 .runtime dl div {
@@ -145,6 +253,7 @@ h2 {
 }
 
 @media (max-width: 720px) {
+  .app-header,
   .app-shell {
     width: min(100% - 1.5rem, 960px);
   }
@@ -153,7 +262,8 @@ h2 {
     grid-template-columns: 1fr;
   }
 
-  .runtime dl {
+  .runtime dl,
+  .runtime-skeletons {
     grid-template-columns: 1fr;
   }
 }

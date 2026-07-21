@@ -2,7 +2,7 @@
 
 An incremental, opinionated desktop application foundation built around Electron, React, strict TypeScript, and a portable Hono Application API.
 
-The repository is being assembled one verified increment at a time. The current foundation combines an in-memory Hono API with a deny-by-default Electron security shell.
+The repository is being assembled one verified increment at a time. The current foundation combines an in-memory Hono API, a deny-by-default Electron security shell, and a typed React application layer.
 
 ## Current foundation
 
@@ -11,6 +11,9 @@ The repository is being assembled one verified increment at a time. The current 
 - default-deny navigation, popups, webviews, external URLs, and session permissions
 - single-instance lifecycle and package-time Electron security fuses
 - React 19 rendered by Vite 8
+- TanStack Router with a code-defined, hash-based desktop route tree
+- TanStack Query with feature-owned IPC queries and explicit async states
+- top-level React error containment and accessible renderer fallbacks
 - TypeScript 7 in strict mode
 - vite-plugin-doubleshot for Electron main, preload, and application startup
 - electron-builder for ASAR packaging and Windows installers
@@ -52,6 +55,19 @@ Vite is the toolchain entrypoint. Doubleshot wires Electron main and preload bui
 │  │  ├─ index.ts
 │  │  └─ tsconfig.json
 │  └─ renderer/
+│     ├─ app/
+│     │  ├─ app-error-boundary.tsx
+│     │  ├─ application-query-client.ts
+│     │  └─ router.tsx
+│     ├─ components/ui/
+│     │  ├─ alert.tsx
+│     │  ├─ button.tsx
+│     │  ├─ empty-state.tsx
+│     │  └─ skeleton.tsx
+│     ├─ features/system-info/
+│     │  ├─ system-info-page.test.tsx
+│     │  ├─ system-info-page.tsx
+│     │  └─ system-info-query.ts
 │     ├─ App.tsx
 │     ├─ index.html
 │     ├─ main.tsx
@@ -108,6 +124,18 @@ The renderer may navigate only within its exact development or production author
 
 Browser permission checks and requests are denied until a product feature introduces a narrowly owned policy. Deep-link registration is likewise optional; the single-instance lifecycle needed by a future deep-link module is already present.
 
+## Renderer conventions
+
+Routes are code-defined to keep this initial tree explicit and avoid generated TypeScript. Hash history keeps desktop routes behind the contained `app://bundle/index.html` entry point. TanStack Query uses `networkMode: 'always'` because its current transport is IPC rather than browser networking.
+
+Replaceable UI primitives carry a searchable source comment in this form:
+
+```ts
+/** @shadcn-replaceable button */
+```
+
+Run `rg "@shadcn-replaceable" src/renderer` to find the complete migration surface before adopting shadcn.
+
 ## TypeScript 7 support
 
 This foundation uses TypeScript 7.0.2 directly for project type-checking. Vite and Doubleshot handle transpilation, while Oxlint provides type-aware linting without introducing a second TypeScript compiler.
@@ -132,4 +160,4 @@ Hono runs in memory without opening a localhost port. A future Node adapter can 
 - [Full visual implementation plan](docs/plan.html)
 - [Brief session-reload plan](docs/plan.md)
 
-The Vite, TypeScript, electron-builder, secure Electron shell, and first Application API vertical slice are verified. The next planned increment is the renderer foundation or the first product-owned feature.
+The Vite, TypeScript, electron-builder, secure Electron shell, first Application API slice, and renderer foundation are verified. The next planned increment is CI and the remaining repository quality gates.
