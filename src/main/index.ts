@@ -2,6 +2,8 @@ import { join } from 'node:path'
 import { app, BrowserWindow, session } from 'electron'
 import { createApi } from '../api/create-api'
 import { createApiClient } from '../api/create-api-client'
+import { registerAppearance, type AppearanceRegistration } from './appearance/register-appearance'
+import { registerApplicationWindowControls } from './application-window/register-application-window-controls'
 import { registerSingleInstance } from './lifecycle/register-single-instance'
 import { createApplicationLogger } from './logging/create-application-logger'
 import { configureSessionSecurity } from './security/configure-session-security'
@@ -19,6 +21,7 @@ const trustedExternalOrigins: string[] = []
 let mainWindow: BrowserWindow | null = null
 
 registerRendererScheme()
+app.setName('Electron Boilerplate')
 if (process.platform === 'win32') app.setAppUserModelId('dev.electron.boilerplate')
 app.setAppLogsPath()
 
@@ -64,17 +67,21 @@ function readRuntimeVersion(name: 'chrome' | 'electron' | 'node'): string {
   return version
 }
 
-function createWindow(): void {
+function createWindow(appearance: AppearanceRegistration): void {
   const activeRendererUrl = rendererDevelopmentUrl ?? rendererUrl
   const urlPolicy = createRendererUrlPolicy({
     rendererUrl: activeRendererUrl,
     trustedExternalOrigins,
   })
   const window = new BrowserWindow({
+    autoHideMenuBar: true,
+    backgroundColor: appearance.getBackgroundColor(),
     width: 960,
     height: 680,
     minWidth: 720,
     minHeight: 520,
+    title: app.getName(),
+    titleBarStyle: process.platform === 'darwin' ? 'hiddenInset' : 'hidden',
     webPreferences: {
       allowRunningInsecureContent: false,
       contextIsolation: true,
@@ -85,6 +92,11 @@ function createWindow(): void {
     },
   })
   mainWindow = window
+  const removeApplicationWindowControls = registerApplicationWindowControls({
+    appName: app.getName(),
+    usesNativeControls: process.platform === 'darwin',
+    window,
+  })
 
   configureWindowSecurity(window, urlPolicy)
 
@@ -96,6 +108,7 @@ function createWindow(): void {
   })
 
   window.once('closed', () => {
+    removeApplicationWindowControls()
     mainWindow = null
     logger.debug('main window closed')
   })
@@ -131,6 +144,13 @@ function startApplication(): void {
     apiClient: createApiClient(api),
     getWindow: () => mainWindow,
   })
+  const appearance = registerAppearance({
+    getWindow: () => mainWindow,
+    preferencesFilePath: join(app.getPath('userData'), 'appearance.json'),
+  })
+
+  if (appearance.preferencesStatus === 'recovered')
+    logger.warn('invalid appearance preferences ignored; using the system theme')
 
   void app
     .whenReady()
@@ -140,10 +160,10 @@ function startApplication(): void {
       const removeRendererProtocol = registerRendererProtocol(join(__dirname, '../renderer'))
 
       app.once('will-quit', removeRendererProtocol)
-      createWindow()
+      createWindow(appearance)
 
       app.on('activate', () => {
-        if (mainWindow === null) createWindow()
+        if (mainWindow === null) createWindow(appearance)
       })
     })
     .catch((error: Error) => {
@@ -158,6 +178,7 @@ function startApplication(): void {
 
   app.once('will-quit', () => {
     logger.info('application stopping')
+    appearance.dispose()
     removeSystemInfoIpc()
     singleInstance.dispose()
     applicationLogger.flush()

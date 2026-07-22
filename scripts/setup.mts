@@ -35,7 +35,6 @@ const repositoryFiles = {
   packageE2e: 'tests/e2e/package.e2e.ts',
   rendererE2e: 'tests/e2e/assert-application-window.ts',
   rendererHtml: 'src/renderer/index.html',
-  rendererRouter: 'src/renderer/app/router.tsx',
   releaseGuide: 'docs/releasing.md',
   readme: 'README.md',
   shortPlan: 'docs/plan.md',
@@ -433,9 +432,16 @@ function planIdentityUpdates(
     )
   })
 
-  setPlannedText(plan, repositoryFiles.main, (content) =>
-    replaceRequiredLiteral(content, current.appId, next.appId, repositoryFiles.main),
-  )
+  setPlannedText(plan, repositoryFiles.main, (content) => {
+    let updated = replaceRequiredLiteral(content, current.appId, next.appId, repositoryFiles.main)
+    updated = replaceRequiredLiteral(
+      updated,
+      `app.setName('${escapeSingleQuotedTypeScript(current.productName)}')`,
+      `app.setName('${escapeSingleQuotedTypeScript(next.productName)}')`,
+      repositoryFiles.main,
+    )
+    return updated
+  })
   setPlannedText(plan, repositoryFiles.license, (content) =>
     replaceRequiredLiteral(content, current.author, next.author, repositoryFiles.license),
   )
@@ -445,14 +451,6 @@ function planIdentityUpdates(
       `<title>${escapeHtml(current.productName)}</title>`,
       `<title>${escapeHtml(next.productName)}</title>`,
       repositoryFiles.rendererHtml,
-    ),
-  )
-  setPlannedText(plan, repositoryFiles.rendererRouter, (content) =>
-    replaceRequiredLiteral(
-      content,
-      escapeHtml(current.productName),
-      escapeHtml(next.productName),
-      repositoryFiles.rendererRouter,
     ),
   )
   setPlannedText(plan, repositoryFiles.rendererE2e, (content) => {
@@ -599,8 +597,8 @@ function verifyPlannedRepository(
 
   const checks: Array<[string, string]> = [
     [repositoryFiles.main, `setAppUserModelId('${escapeSingleQuotedTypeScript(identity.appId)}')`],
+    [repositoryFiles.main, `app.setName('${escapeSingleQuotedTypeScript(identity.productName)}')`],
     [repositoryFiles.rendererHtml, `<title>${escapeHtml(identity.productName)}</title>`],
-    [repositoryFiles.rendererRouter, escapeHtml(identity.productName)],
     [repositoryFiles.rendererE2e, escapeSingleQuotedTypeScript(identity.productName)],
     [repositoryFiles.rendererE2e, escapeSingleQuotedTypeScript(identity.version)],
     [repositoryFiles.packageE2e, `${identity.executableName}.exe`],

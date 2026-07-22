@@ -1,7 +1,7 @@
 # Electron Boilerplate — Quick Plan
 
 Updated: 2026-07-22
-Status: Core scaffold complete through Phase 07; Phase 08 logging operations complete; Phase 09 design system verified
+Status: Core scaffold complete through Phase 07; Phase 08 logging operations complete; Phases 09–11 verified
 
 The detailed plan is in [`plan.html`](./plan.html).
 
@@ -169,6 +169,29 @@ Acceptance: logging has an explicit operating policy, dependency updates arrive 
 - Package Geist locally and keep the complete UI toolchain out of production dependencies. **Done**
 
 Acceptance: the selected Base UI preset is reproducible, all `@shadcn-replaceable` primitives are migrated without duplicate styling, success/loading/error/empty renderer states remain accessible, and `pnpm check` plus `pnpm test:package` pass. **Verified**
+
+### Phase 10 — Custom application chrome
+
+- Compare three directions in [`titlebar-playground.html`](titlebar-playground.html) and select Quiet Precision as the scaffold default. **Done**
+- Keep one renderer-owned `ApplicationTitleBar` in the app shell; source the visible title from Electron's registered application identity rather than a duplicate string. **Done**
+- Use an HTML drag region with explicit non-draggable controls. Keep native macOS traffic lights and use HTML minimize, maximize/restore, and close controls on Windows/Linux. **Done**
+- Add a narrow, validated preload/IPC contract for window commands and observable focus/maximize state. Never expose `BrowserWindow`, `ipcRenderer`, or generic channel access. **Done**
+- Preserve resize behavior, system window shortcuts, inactive-window treatment, keyboard focus, accessible labels, and reduced-motion behavior. **Done**
+- Auto-hide rather than remove the default application menu so Windows/Linux users retain standard Alt-key access; do not imitate the menu in HTML. **Done**
+- Cover the schema and component states in Vitest, exercise maximize/restore in source and packaged Electron smoke tests, and close the source application through the rendered control. **Done**
+
+Acceptance: the chosen title bar is draggable outside interactive controls, uses the personalized app name, remains operable by mouse and keyboard, reflects focus and maximize state, preserves native macOS controls, and passes `pnpm check` plus `pnpm test:package` on the currently declared platform contract. **Verified**
+
+### Phase 11 — Native appearance
+
+- Add typed System, Light, and Dark appearance contracts and a narrow sender-validated preload/IPC API. **Done**
+- Keep `nativeTheme.themeSource` in Electron main as the single source of truth for native and renderer surfaces. **Done**
+- Persist the source in a versioned, schema-validated user-data preference and recover invalid files to System. **Done**
+- Apply the resolved palette before React mounts, keep the shadcn `.dark` selector synchronized, and update the BrowserWindow background to prevent a contrasting startup flash. **Done**
+- Add an accessible Base UI radio menu to the title bar without changing the custom controls' geometry-on-press policy. **Done**
+- Cover contracts, persistence, renderer selection, palette application, native Electron switching, and restart persistence. **Done**
+
+Acceptance: System remains the default, explicit Light/Dark choices synchronize native and renderer surfaces, the preference survives a clean application restart, invalid storage fails safely, and the full local quality and package gates pass. **Verified**
 
 ## Optional modules
 

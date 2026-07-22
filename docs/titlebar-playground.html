@@ -1,0 +1,1006 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Interactive title-bar design playground for the Electron Boilerplate."
+    />
+    <title>Title-bar playground · Electron Boilerplate</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        font-family: Geist, 'Segoe UI Variable', 'Segoe UI', sans-serif;
+        font-synthesis: none;
+        --page: #090b0a;
+        --page-raised: #101311;
+        --page-line: rgb(255 255 255 / 9%);
+        --page-text: #f4f6f4;
+        --page-muted: #8d958f;
+        --accent: #2ab582;
+        --accent-bright: #6ee7b7;
+        --danger: #e5484d;
+        --shadow: 0 32px 80px rgb(0 0 0 / 36%);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        background: var(--page);
+      }
+
+      body {
+        min-width: 320px;
+        min-height: 100vh;
+        margin: 0;
+        color: var(--page-text);
+        background:
+          radial-gradient(circle at 82% -10%, rgb(42 181 130 / 14%), transparent 34rem),
+          linear-gradient(rgb(255 255 255 / 2%) 1px, transparent 1px), var(--page);
+        background-size:
+          auto,
+          100% 6rem,
+          auto;
+      }
+
+      button {
+        color: inherit;
+        font: inherit;
+      }
+
+      button:focus-visible {
+        outline: 2px solid var(--accent-bright);
+        outline-offset: 3px;
+      }
+
+      .shell {
+        width: min(1440px, calc(100% - 3rem));
+        margin-inline: auto;
+      }
+
+      .page-header {
+        display: grid;
+        min-height: 22rem;
+        padding-block: 5.5rem 4rem;
+        align-content: end;
+        border-bottom: 1px solid var(--page-line);
+      }
+
+      .page-header__layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 3rem;
+        align-items: end;
+      }
+
+      .eyebrow,
+      .concept__number,
+      .status-label {
+        color: var(--accent-bright);
+        font-size: 0.72rem;
+        font-weight: 680;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        max-width: 820px;
+        margin: 1rem 0 0;
+        font-size: clamp(2.7rem, 7vw, 6.6rem);
+        font-weight: 620;
+        letter-spacing: -0.065em;
+        line-height: 0.88;
+      }
+
+      .intro {
+        max-width: 670px;
+        margin: 1.6rem 0 0;
+        color: var(--page-muted);
+        font-size: 1rem;
+        line-height: 1.65;
+      }
+
+      .toolbar {
+        display: flex;
+        gap: 0.6rem;
+        padding-bottom: 0.35rem;
+      }
+
+      .toolbar button,
+      .choose-button {
+        min-height: 2.6rem;
+        padding: 0.65rem 0.9rem;
+        border: 1px solid var(--page-line);
+        border-radius: 0.7rem;
+        background: rgb(255 255 255 / 4%);
+        cursor: pointer;
+        transition:
+          border-color 160ms ease,
+          background 160ms ease,
+          transform 160ms ease;
+      }
+
+      .toolbar button:hover,
+      .choose-button:hover {
+        border-color: rgb(110 231 183 / 35%);
+        background: rgb(110 231 183 / 8%);
+        transform: translateY(-1px);
+      }
+
+      main {
+        padding-block: 2rem 8rem;
+      }
+
+      .concept {
+        display: grid;
+        grid-template-columns: 13rem minmax(0, 1fr) 14rem;
+        gap: clamp(1.5rem, 4vw, 4.5rem);
+        padding-block: 5rem;
+        align-items: center;
+        border-bottom: 1px solid var(--page-line);
+      }
+
+      .concept:last-child {
+        border-bottom: 0;
+      }
+
+      .concept__intro h2 {
+        margin: 0.8rem 0 0;
+        font-size: clamp(1.55rem, 3vw, 2.4rem);
+        font-weight: 590;
+        letter-spacing: -0.045em;
+        line-height: 1;
+      }
+
+      .concept__intro p,
+      .concept__notes p {
+        margin: 1rem 0 0;
+        color: var(--page-muted);
+        font-size: 0.88rem;
+        line-height: 1.55;
+      }
+
+      .recommended {
+        display: inline-flex;
+        margin-top: 1.25rem;
+        padding: 0.34rem 0.55rem;
+        border: 1px solid rgb(110 231 183 / 20%);
+        border-radius: 999px;
+        color: var(--accent-bright);
+        background: rgb(42 181 130 / 7%);
+        font-size: 0.7rem;
+        font-weight: 650;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .concept__notes ul {
+        display: grid;
+        gap: 0.65rem;
+        margin: 1.25rem 0 1.5rem;
+        padding: 0;
+        color: #c8ceca;
+        font-size: 0.8rem;
+        line-height: 1.45;
+        list-style: none;
+      }
+
+      .concept__notes li {
+        display: grid;
+        grid-template-columns: 0.65rem 1fr;
+        gap: 0.45rem;
+      }
+
+      .concept__notes li::before {
+        width: 0.28rem;
+        height: 0.28rem;
+        margin-top: 0.42rem;
+        border-radius: 50%;
+        background: var(--accent);
+        content: '';
+      }
+
+      .choose-button {
+        width: 100%;
+        color: #e8eeea;
+        font-size: 0.82rem;
+        font-weight: 620;
+      }
+
+      .concept.is-selected .choose-button {
+        border-color: var(--accent);
+        color: #06130e;
+        background: var(--accent-bright);
+      }
+
+      .mock-window {
+        --surface: #f7f8f7;
+        --surface-raised: #ffffff;
+        --surface-muted: #edf0ee;
+        --text: #161a17;
+        --muted: #6e756f;
+        --line: #dfe4e1;
+        position: relative;
+        min-width: 0;
+        overflow: hidden;
+        border: 1px solid rgb(255 255 255 / 14%);
+        border-radius: 0.8rem;
+        color: var(--text);
+        background: var(--surface);
+        box-shadow: var(--shadow);
+        transition:
+          border-radius 220ms ease,
+          filter 220ms ease,
+          opacity 220ms ease,
+          transform 220ms ease;
+      }
+
+      body[data-preview-theme='dark'] .mock-window {
+        --surface: #151816;
+        --surface-raised: #1c201d;
+        --surface-muted: #222724;
+        --text: #f2f5f3;
+        --muted: #949d97;
+        --line: #303632;
+      }
+
+      body[data-window-activity='inactive'] .mock-window {
+        filter: saturate(0.45);
+        opacity: 0.78;
+      }
+
+      .mock-window.is-maximized {
+        border-radius: 0.15rem;
+        transform: scale(1.015);
+      }
+
+      .mock-window.is-minimized {
+        opacity: 0;
+        transform: translateY(1.5rem) scale(0.92);
+      }
+
+      .mock-window.is-closing {
+        opacity: 0;
+        transform: scale(0.96);
+      }
+
+      .titlebar {
+        display: grid;
+        position: relative;
+        z-index: 2;
+        align-items: stretch;
+        border-bottom: 1px solid var(--line);
+        user-select: none;
+        -webkit-app-region: drag;
+      }
+
+      .identity {
+        display: flex;
+        min-width: 0;
+        gap: 0.65rem;
+        padding-inline: 0.9rem;
+        align-items: center;
+      }
+
+      .app-mark {
+        display: grid;
+        flex: 0 0 auto;
+        width: 1.45rem;
+        height: 1.45rem;
+        place-items: center;
+        border-radius: 0.42rem;
+        color: #052117;
+        background: var(--accent-bright);
+        box-shadow: inset 0 0 0 1px rgb(5 33 23 / 12%);
+      }
+
+      .app-mark svg {
+        width: 0.88rem;
+        height: 0.88rem;
+      }
+
+      .app-name {
+        overflow: hidden;
+        color: var(--text);
+        font-size: 0.78rem;
+        font-weight: 630;
+        letter-spacing: -0.015em;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .app-context {
+        color: var(--muted);
+        font-size: 0.68rem;
+      }
+
+      .drag-label {
+        display: flex;
+        min-width: 0;
+        color: var(--muted);
+        font-size: 0.69rem;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .window-actions {
+        display: flex;
+        -webkit-app-region: no-drag;
+      }
+
+      .window-action {
+        display: grid;
+        border: 0;
+        color: var(--muted);
+        background: transparent;
+        place-items: center;
+        cursor: pointer;
+        transition:
+          color 120ms ease,
+          background 120ms ease,
+          transform 120ms ease;
+      }
+
+      .window-action svg {
+        width: 0.78rem;
+        height: 0.78rem;
+        fill: none;
+        stroke: currentColor;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-width: 1.4;
+      }
+
+      .window-action:hover {
+        color: var(--text);
+      }
+
+      .window-action:active {
+        transform: scale(0.92);
+      }
+
+      .window-action--close:hover {
+        color: #fff;
+        background: var(--danger) !important;
+      }
+
+      .workspace {
+        min-height: 19rem;
+        padding: clamp(1.4rem, 3vw, 2.6rem);
+        background:
+          radial-gradient(circle at 86% 0%, rgb(42 181 130 / 13%), transparent 14rem),
+          var(--surface);
+      }
+
+      .workspace__header {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid var(--line);
+        padding-bottom: 1rem;
+      }
+
+      .workspace__brand,
+      .workspace__label {
+        font-size: 0.68rem;
+        font-weight: 680;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+
+      .workspace__brand {
+        color: #12805a;
+      }
+
+      body[data-preview-theme='dark'] .workspace__brand {
+        color: var(--accent-bright);
+      }
+
+      .workspace__label {
+        color: var(--muted);
+      }
+
+      .workspace__copy {
+        max-width: 32rem;
+        padding-top: 2.5rem;
+      }
+
+      .workspace__kicker {
+        color: var(--muted);
+        font-family: 'Geist Mono', 'Cascadia Code', monospace;
+        font-size: 0.66rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .workspace h3 {
+        max-width: 20rem;
+        margin: 0.65rem 0 0;
+        font-size: clamp(1.55rem, 3.4vw, 2.55rem);
+        font-weight: 580;
+        letter-spacing: -0.055em;
+        line-height: 0.98;
+      }
+
+      .workspace__copy p {
+        max-width: 26rem;
+        margin: 0.9rem 0 0;
+        color: var(--muted);
+        font-size: 0.76rem;
+        line-height: 1.55;
+      }
+
+      .window-status {
+        position: absolute;
+        right: 1rem;
+        bottom: 0.8rem;
+        color: var(--muted);
+        font-family: 'Geist Mono', 'Cascadia Code', monospace;
+        font-size: 0.62rem;
+        opacity: 0;
+        transform: translateY(0.3rem);
+        transition:
+          opacity 160ms ease,
+          transform 160ms ease;
+      }
+
+      .window-status.is-visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      /* Direction 01: calm, compact, and closest to native Windows geometry. */
+      .precision .titlebar {
+        height: 2.75rem;
+        grid-template-columns: minmax(12rem, 0.85fr) minmax(5rem, 1fr) auto;
+        background: var(--surface-raised);
+      }
+
+      .precision .window-action {
+        width: 2.9rem;
+        height: 2.7rem;
+      }
+
+      .precision .window-action:hover {
+        background: var(--surface-muted);
+      }
+
+      .precision .drag-label::before {
+        width: 0.34rem;
+        height: 0.34rem;
+        margin-right: 0.5rem;
+        border-radius: 50%;
+        background: var(--accent);
+        content: '';
+      }
+
+      /* Direction 02: softer controls and a centered document-like title. */
+      .soft-focus .titlebar {
+        height: 3.25rem;
+        grid-template-columns: 1fr auto 1fr;
+        padding: 0.45rem;
+        background: color-mix(in srgb, var(--surface-raised) 88%, transparent);
+        backdrop-filter: blur(18px);
+      }
+
+      .soft-focus .identity {
+        padding-inline: 0.5rem;
+      }
+
+      .soft-focus .app-mark {
+        border-radius: 50%;
+      }
+
+      .soft-focus .drag-label {
+        padding-inline: 1.2rem;
+        color: var(--text);
+        font-weight: 580;
+      }
+
+      .soft-focus .window-actions {
+        gap: 0.22rem;
+        justify-self: end;
+      }
+
+      .soft-focus .window-action {
+        width: 2.25rem;
+        height: 2.25rem;
+        border-radius: 0.68rem;
+        background: var(--surface-muted);
+      }
+
+      .soft-focus .window-action:hover {
+        color: #087550;
+        background: color-mix(in srgb, var(--accent-bright) 22%, var(--surface-muted));
+      }
+
+      /* Direction 03: unmistakably branded, suitable for creative or focused tools. */
+      .emerald-rail .titlebar {
+        height: 3.5rem;
+        grid-template-columns: minmax(12rem, 1fr) minmax(6rem, 1fr) auto;
+        border-bottom-color: rgb(255 255 255 / 10%);
+        color: #effff8;
+        background: #0a6c4a;
+      }
+
+      .emerald-rail .identity {
+        padding-inline: 1rem;
+      }
+
+      .emerald-rail .app-mark {
+        color: #eafff6;
+        background: rgb(255 255 255 / 13%);
+        box-shadow: inset 0 0 0 1px rgb(255 255 255 / 12%);
+      }
+
+      .emerald-rail .app-name,
+      .emerald-rail .drag-label {
+        color: #effff8;
+      }
+
+      .emerald-rail .app-context {
+        color: rgb(239 255 248 / 66%);
+      }
+
+      .emerald-rail .drag-label {
+        justify-content: flex-start;
+        font-family: 'Geist Mono', 'Cascadia Code', monospace;
+        opacity: 0.68;
+      }
+
+      .emerald-rail .window-actions {
+        gap: 0.28rem;
+        padding: 0.55rem 0.65rem;
+      }
+
+      .emerald-rail .window-action {
+        width: 2.3rem;
+        height: 2.3rem;
+        border: 1px solid rgb(255 255 255 / 12%);
+        border-radius: 999px;
+        color: rgb(239 255 248 / 76%);
+        background: rgb(255 255 255 / 7%);
+      }
+
+      .emerald-rail .window-action:hover {
+        color: #fff;
+        background: rgb(255 255 255 / 15%);
+      }
+
+      .selection-bar {
+        display: flex;
+        position: fixed;
+        z-index: 20;
+        right: 1.25rem;
+        bottom: 1.25rem;
+        left: 1.25rem;
+        width: min(760px, calc(100% - 2.5rem));
+        min-height: 3.8rem;
+        margin-inline: auto;
+        gap: 1rem;
+        padding: 0.65rem 0.75rem 0.65rem 1rem;
+        align-items: center;
+        justify-content: space-between;
+        border: 1px solid rgb(255 255 255 / 12%);
+        border-radius: 0.9rem;
+        background: rgb(16 19 17 / 90%);
+        box-shadow: 0 18px 48px rgb(0 0 0 / 35%);
+        backdrop-filter: blur(18px);
+      }
+
+      .selection-bar p {
+        margin: 0.15rem 0 0;
+        color: #dce2de;
+        font-size: 0.86rem;
+      }
+
+      .selection-bar a {
+        flex: 0 0 auto;
+        padding: 0.72rem 0.9rem;
+        border-radius: 0.65rem;
+        color: #062017;
+        background: var(--accent-bright);
+        font-size: 0.8rem;
+        font-weight: 670;
+        text-decoration: none;
+      }
+
+      @media (max-width: 1080px) {
+        .concept {
+          grid-template-columns: 10rem minmax(0, 1fr);
+        }
+
+        .concept__notes {
+          grid-column: 2;
+        }
+
+        .concept__notes ul {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+      }
+
+      @media (max-width: 760px) {
+        .shell {
+          width: min(100% - 1.25rem, 1440px);
+        }
+
+        .page-header {
+          min-height: auto;
+          padding-block: 4rem 2.5rem;
+        }
+
+        .page-header__layout,
+        .concept {
+          grid-template-columns: 1fr;
+        }
+
+        .toolbar {
+          flex-wrap: wrap;
+        }
+
+        .concept {
+          gap: 1.5rem;
+          padding-block: 3.5rem;
+        }
+
+        .concept__notes {
+          grid-column: 1;
+        }
+
+        .concept__notes ul {
+          grid-template-columns: 1fr;
+        }
+
+        .app-context,
+        .drag-label {
+          display: none;
+        }
+
+        .precision .titlebar,
+        .soft-focus .titlebar,
+        .emerald-rail .titlebar {
+          grid-template-columns: 1fr auto;
+        }
+
+        .soft-focus .window-actions {
+          grid-column: 2;
+        }
+
+        .workspace {
+          min-height: 15rem;
+        }
+
+        .selection-bar {
+          align-items: flex-start;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          scroll-behavior: auto !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+    </style>
+  </head>
+  <body id="top" data-preview-theme="light" data-window-activity="active">
+    <header class="page-header">
+      <div class="page-header__layout shell">
+        <div>
+          <div class="eyebrow">Window chrome study · 01</div>
+          <h1>Own the top edge.</h1>
+          <p class="intro">
+            Three title-bar directions for the boilerplate. Each keeps identity readable, reserves a
+            generous drag region, and treats minimize, maximize, and close as first-class controls.
+          </p>
+        </div>
+        <div class="toolbar" aria-label="Preview controls">
+          <button id="theme-toggle" type="button">Dark previews</button>
+          <button id="activity-toggle" type="button">Show inactive</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="shell">
+      <article class="concept is-selected" data-concept="Quiet Precision">
+        <div class="concept__intro">
+          <div class="concept__number">Direction 01</div>
+          <h2>Quiet Precision</h2>
+          <p>Compact geometry, native expectations, and just enough emerald to feel owned.</p>
+          <span class="recommended">Recommended default</span>
+        </div>
+
+        <div class="mock-window precision">
+          <div class="titlebar">
+            <div class="identity">
+              <span class="app-mark" aria-hidden="true">
+                <svg viewBox="0 0 20 20">
+                  <path d="M4 5.5 10 2l6 3.5v7L10 16l-6-3.5z" fill="none" stroke="currentColor" />
+                  <path d="M7 7.2 10 5.5l3 1.7v3.6L10 12.5l-3-1.7z" fill="currentColor" />
+                </svg>
+              </span>
+              <span>
+                <span class="app-name">Electron Boilerplate</span>
+              </span>
+            </div>
+            <div class="drag-label">Ready</div>
+            <div class="window-actions" aria-label="Window controls">
+              <button
+                class="window-action"
+                type="button"
+                data-action="minimize"
+                aria-label="Minimize"
+              >
+                <svg viewBox="0 0 16 16"><path d="M3 8.5h10" /></svg>
+              </button>
+              <button
+                class="window-action"
+                type="button"
+                data-action="maximize"
+                aria-label="Maximize"
+              >
+                <svg viewBox="0 0 16 16"><rect x="3.5" y="3.5" width="9" height="9" /></svg>
+              </button>
+              <button
+                class="window-action window-action--close"
+                type="button"
+                data-action="close"
+                aria-label="Close"
+              >
+                <svg viewBox="0 0 16 16"><path d="m4 4 8 8m0-8-8 8" /></svg>
+              </button>
+            </div>
+          </div>
+          <div class="workspace">
+            <div class="workspace__header">
+              <span class="workspace__brand">Electron Boilerplate</span>
+              <span class="workspace__label">Desktop foundation</span>
+            </div>
+            <div class="workspace__copy">
+              <div class="workspace__kicker">System / ready</div>
+              <h3>A calm frame for the product.</h3>
+              <p>
+                The bar stays out of the way while the application identity remains unmistakable.
+              </p>
+            </div>
+          </div>
+          <span class="window-status" aria-live="polite"></span>
+        </div>
+
+        <div class="concept__notes">
+          <div class="status-label">Why it works</div>
+          <ul>
+            <li>44px height preserves workspace density.</li>
+            <li>Familiar right-edge controls reduce relearning.</li>
+            <li>Branding survives light, dark, active, and inactive states.</li>
+          </ul>
+          <button class="choose-button" type="button">Selected direction</button>
+        </div>
+      </article>
+
+      <article class="concept" data-concept="Soft Focus">
+        <div class="concept__intro">
+          <div class="concept__number">Direction 02</div>
+          <h2>Soft Focus</h2>
+          <p>
+            Rounded controls and a centered context label make the shell feel friendly and modern.
+          </p>
+        </div>
+
+        <div class="mock-window soft-focus">
+          <div class="titlebar">
+            <div class="identity">
+              <span class="app-mark" aria-hidden="true">
+                <svg viewBox="0 0 20 20">
+                  <circle cx="10" cy="10" r="4.4" fill="none" stroke="currentColor" />
+                  <circle cx="10" cy="10" r="1.8" fill="currentColor" />
+                </svg>
+              </span>
+              <span class="app-name">Electron Boilerplate</span>
+            </div>
+            <div class="drag-label">Desktop foundation</div>
+            <div class="window-actions" aria-label="Window controls">
+              <button
+                class="window-action"
+                type="button"
+                data-action="minimize"
+                aria-label="Minimize"
+              >
+                <svg viewBox="0 0 16 16"><path d="M4 8h8" /></svg>
+              </button>
+              <button
+                class="window-action"
+                type="button"
+                data-action="maximize"
+                aria-label="Maximize"
+              >
+                <svg viewBox="0 0 16 16"><rect x="4" y="4" width="8" height="8" rx="1" /></svg>
+              </button>
+              <button
+                class="window-action window-action--close"
+                type="button"
+                data-action="close"
+                aria-label="Close"
+              >
+                <svg viewBox="0 0 16 16"><path d="m5 5 6 6m0-6-6 6" /></svg>
+              </button>
+            </div>
+          </div>
+          <div class="workspace">
+            <div class="workspace__header">
+              <span class="workspace__brand">Electron Boilerplate</span>
+              <span class="workspace__label">Desktop foundation</span>
+            </div>
+            <div class="workspace__copy">
+              <div class="workspace__kicker">System / ready</div>
+              <h3>Friendly without becoming ornamental.</h3>
+              <p>
+                A roomier bar suits consumer tools while preserving a clear, uninterrupted drag
+                area.
+              </p>
+            </div>
+          </div>
+          <span class="window-status" aria-live="polite"></span>
+        </div>
+
+        <div class="concept__notes">
+          <div class="status-label">Character</div>
+          <ul>
+            <li>52px height gives controls a generous target.</li>
+            <li>Centered context reads like a document title.</li>
+            <li>Soft buttons work best for approachable products.</li>
+          </ul>
+          <button class="choose-button" type="button">Choose Soft Focus</button>
+        </div>
+      </article>
+
+      <article class="concept" data-concept="Emerald Rail">
+        <div class="concept__intro">
+          <div class="concept__number">Direction 03</div>
+          <h2>Emerald Rail</h2>
+          <p>A confident band turns the shell itself into a recognizable part of the product.</p>
+        </div>
+
+        <div class="mock-window emerald-rail">
+          <div class="titlebar">
+            <div class="identity">
+              <span class="app-mark" aria-hidden="true">
+                <svg viewBox="0 0 20 20">
+                  <path d="M4 5.5 10 2l6 3.5v7L10 16l-6-3.5z" fill="none" stroke="currentColor" />
+                  <path d="m7 10 2 2 4-5" fill="none" stroke="currentColor" />
+                </svg>
+              </span>
+              <span>
+                <span class="app-name">Electron Boilerplate</span><br />
+                <span class="app-context">Desktop foundation</span>
+              </span>
+            </div>
+            <div class="drag-label">APP://SYSTEM</div>
+            <div class="window-actions" aria-label="Window controls">
+              <button
+                class="window-action"
+                type="button"
+                data-action="minimize"
+                aria-label="Minimize"
+              >
+                <svg viewBox="0 0 16 16"><path d="M4 8h8" /></svg>
+              </button>
+              <button
+                class="window-action"
+                type="button"
+                data-action="maximize"
+                aria-label="Maximize"
+              >
+                <svg viewBox="0 0 16 16"><rect x="4" y="4" width="8" height="8" rx="1" /></svg>
+              </button>
+              <button
+                class="window-action window-action--close"
+                type="button"
+                data-action="close"
+                aria-label="Close"
+              >
+                <svg viewBox="0 0 16 16"><path d="m5 5 6 6m0-6-6 6" /></svg>
+              </button>
+            </div>
+          </div>
+          <div class="workspace">
+            <div class="workspace__header">
+              <span class="workspace__brand">Electron Boilerplate</span>
+              <span class="workspace__label">Desktop foundation</span>
+            </div>
+            <div class="workspace__copy">
+              <div class="workspace__kicker">System / ready</div>
+              <h3>Make the frame part of the signature.</h3>
+              <p>
+                The strongest direction for products that want the title bar to carry brand
+                presence.
+              </p>
+            </div>
+          </div>
+          <span class="window-status" aria-live="polite"></span>
+        </div>
+
+        <div class="concept__notes">
+          <div class="status-label">Character</div>
+          <ul>
+            <li>56px rail makes app identity highly visible.</li>
+            <li>Round controls feel intentionally custom.</li>
+            <li>Best when emerald remains the product accent.</li>
+          </ul>
+          <button class="choose-button" type="button">Choose Emerald Rail</button>
+        </div>
+      </article>
+    </main>
+
+    <aside class="selection-bar" aria-live="polite">
+      <div>
+        <div class="status-label">Current direction</div>
+        <p id="selection-output">Quiet Precision · recommended scaffold default</p>
+      </div>
+      <a href="#top" id="back-to-top">Review again</a>
+    </aside>
+
+    <script>
+      const themeToggle = document.querySelector('#theme-toggle')
+      const activityToggle = document.querySelector('#activity-toggle')
+      const selectionOutput = document.querySelector('#selection-output')
+      const concepts = document.querySelectorAll('.concept')
+
+      themeToggle.addEventListener('click', () => {
+        const dark = document.body.dataset.previewTheme === 'dark'
+        document.body.dataset.previewTheme = dark ? 'light' : 'dark'
+        themeToggle.textContent = dark ? 'Dark previews' : 'Light previews'
+      })
+
+      activityToggle.addEventListener('click', () => {
+        const inactive = document.body.dataset.windowActivity === 'inactive'
+        document.body.dataset.windowActivity = inactive ? 'active' : 'inactive'
+        activityToggle.textContent = inactive ? 'Show inactive' : 'Show active'
+      })
+
+      concepts.forEach((concept) => {
+        const chooseButton = concept.querySelector('.choose-button')
+        const conceptName = concept.dataset.concept
+
+        chooseButton.addEventListener('click', () => {
+          concepts.forEach((candidate) => {
+            candidate.classList.remove('is-selected')
+            candidate.querySelector('.choose-button').textContent =
+              `Choose ${candidate.dataset.concept}`
+          })
+
+          concept.classList.add('is-selected')
+          chooseButton.textContent = 'Selected direction'
+          selectionOutput.textContent = `${conceptName} · ready for implementation planning`
+        })
+      })
+
+      document.querySelectorAll('.window-action').forEach((button) => {
+        button.addEventListener('click', () => {
+          const windowPreview = button.closest('.mock-window')
+          const status = windowPreview.querySelector('.window-status')
+          const action = button.dataset.action
+
+          status.textContent = `${action} preview`
+          status.classList.add('is-visible')
+
+          if (action === 'maximize') {
+            windowPreview.classList.toggle('is-maximized')
+          } else {
+            const stateClass = action === 'close' ? 'is-closing' : 'is-minimized'
+            windowPreview.classList.add(stateClass)
+            window.setTimeout(() => windowPreview.classList.remove(stateClass), 520)
+          }
+
+          window.setTimeout(() => status.classList.remove('is-visible'), 900)
+        })
+      })
+    </script>
+  </body>
+</html>

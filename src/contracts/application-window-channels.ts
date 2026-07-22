@@ -1,0 +1,5 @@
+export const applicationWindowGetStateChannel = 'app:application-window:get-state'
+export const applicationWindowStateChangedChannel = 'app:application-window:state-changed'
+export const applicationWindowMinimizeChannel = 'app:application-window:minimize'
+export const applicationWindowToggleMaximizeChannel = 'app:application-window:toggle-maximize'
+export const applicationWindowCloseChannel = 'app:application-window:close'

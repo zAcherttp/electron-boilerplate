@@ -154,6 +154,41 @@ Discovered files are copied into `build/` and registered in `electron-builder.ym
 
 Packaging never publishes an artifact. GitHub Actions uploads build results only to the workflow run; adding a public release or update feed is a product decision.
 
+## Application title bar
+
+Quiet Precision is the scaffold's default application chrome. The 44px renderer surface uses the existing Stone and Emerald tokens, keeps a broad drag region, and places Windows/Linux controls at the familiar right edge. The title comes from `app.getName()`, whose value is registered and updated by the setup utility.
+
+Electron main owns minimize, maximize/restore, close, focus, and maximize state. The sandboxed preload exposes only those named operations and a state subscription. Each command validates its sender against the active window, and each state object passes the shared Zod contract before crossing IPC. Do not add a generic window method or channel escape hatch.
+
+On macOS, `hiddenInset` preserves native traffic lights and the renderer reserves their space. Windows and Linux use the HTML controls with `titleBarStyle: 'hidden'`. Interactive controls are `app-region: no-drag`; the rest of the title bar is draggable. The default application menu is auto-hidden rather than removed, retaining standard Alt-key access where supported.
+
+When changing the title bar:
+
+- keep the application name owned by setup and Electron main;
+- preserve keyboard labels and visible focus treatment;
+- test both native-control and custom-control renderer states;
+- run both `pnpm check` and `pnpm test:package` because frame behavior differs between source and packaged windows.
+
+The three original design studies remain in [`titlebar-playground.html`](titlebar-playground.html).
+
+The root application frame has two rows. `ApplicationTitleBar` owns the fixed 44px chrome row, and the application-wide shadcn Base UI `ScrollArea` owns the remaining row. `html`, `body`, and `#root` never scroll. Add route content normally inside the root outlet; do not create another page-level vertical scroller unless a feature explicitly needs nested scrolling.
+
+## Appearance and theme
+
+The title-bar appearance menu exposes three explicit sources: System, Light, and Dark. Electron main is the sole owner of that choice through `nativeTheme.themeSource`; do not introduce a renderer-only theme context or `localStorage` preference. The selected source is stored as a versioned, Zod-validated `appearance.json` file under Electron's `userData` directory. Invalid files recover to System, and writes replace the complete small preference document.
+
+The renderer synchronously mirrors `prefers-color-scheme` onto the shadcn `.dark` class before React mounts, then reconciles against the validated main-owned state. This gives system mode a pre-paint palette while keeping explicit overrides and later operating-system changes authoritative. All application styling should use the semantic color tokens in `styles.css`; feature code must not branch on a theme or duplicate light/dark colors.
+
+The BrowserWindow background follows the resolved palette both at construction and after theme updates. This matters because it is visible before the renderer's first complete paint. Native menus, dialogs, DevTools, and macOS window surfaces follow the same Electron theme source.
+
+When extending appearance:
+
+- add new persisted fields through a versioned schema change rather than accepting unvalidated JSON;
+- keep IPC operations named and sender-validated;
+- preserve System as the default and as an explicit reset option;
+- test light/dark selector changes and restart persistence with an isolated user-data directory;
+- use semantic tokens so title-bar controls, scrollbars, overlays, and route content change together.
+
 ## Renderer design system
 
 The renderer uses shadcn/ui on Base UI with the reproducible preset [`b2BVUGjbM`](https://ui.shadcn.com/create?preset=b2BVUGjbM):
@@ -240,18 +275,19 @@ Common credential fields are redacted, but feature code must still avoid logging
 
 ## Repository landmarks
 
-| Path                   | Owner                                                        |
-| ---------------------- | ------------------------------------------------------------ |
-| `src/renderer`         | React routes, queries, features, and UI                      |
-| `components.json`      | shadcn Base UI style, registry, and renderer path contract   |
-| `src/preload`          | Narrow renderer-to-main API                                  |
-| `src/main`             | Electron lifecycle, security, adapters, logging, and IPC     |
-| `src/api`              | Portable in-memory Hono Application API                      |
-| `src/contracts`        | Zod boundary schemas and data shapes                         |
-| `tests/e2e`            | Source and packaged Electron smoke tests                     |
-| `scripts/setup.mts`    | Repository identity and icon personalization                 |
-| `electron-builder.yml` | Package identity, Windows target, fuses, and artifact naming |
-| `.github/workflows`    | Clean Windows quality and packaging evidence                 |
+| Path                          | Owner                                                        |
+| ----------------------------- | ------------------------------------------------------------ |
+| `src/renderer`                | React routes, queries, features, and UI                      |
+| `components.json`             | shadcn Base UI style, registry, and renderer path contract   |
+| `src/preload`                 | Narrow renderer-to-main API                                  |
+| `src/main`                    | Electron lifecycle, security, adapters, logging, and IPC     |
+| `src/main/application-window` | Main-owned title-bar state and window commands               |
+| `src/api`                     | Portable in-memory Hono Application API                      |
+| `src/contracts`               | Zod boundary schemas and data shapes                         |
+| `tests/e2e`                   | Source and packaged Electron smoke tests                     |
+| `scripts/setup.mts`           | Repository identity and icon personalization                 |
+| `electron-builder.yml`        | Package identity, Windows target, fuses, and artifact naming |
+| `.github/workflows`           | Clean Windows quality and packaging evidence                 |
 
 The renderer primitives are application-owned shadcn source. Use `pnpm exec shadcn add <name> --dry-run` before registry writes and review diffs before overwriting a locally customized component.
 

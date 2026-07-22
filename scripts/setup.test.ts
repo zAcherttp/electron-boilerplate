@@ -115,6 +115,9 @@ describe('application setup', () => {
     expect(readFixtureFile(fixtureRoot, 'src/main/index.ts')).toContain(
       "setAppUserModelId('com.example.northstar')",
     )
+    expect(readFixtureFile(fixtureRoot, 'src/main/index.ts')).toContain(
+      "app.setName('Northstar Desktop')",
+    )
     expect(readFixtureFile(fixtureRoot, 'src/renderer/index.html')).toContain(
       '<title>Northstar Desktop</title>',
     )

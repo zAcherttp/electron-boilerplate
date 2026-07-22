@@ -518,6 +518,8 @@
         <span class="pill pill--active">Core scaffold complete through Phase 07</span>
         <span class="pill">Phase 08 logging operations complete</span>
         <span class="pill">Phase 09 design system verified</span>
+        <span class="pill">Phase 10 application chrome verified</span>
+        <span class="pill">Phase 11 native appearance verified</span>
         <span class="pill">Updated July 22, 2026</span>
         <span class="pill">Vite + TypeScript 7 verified</span>
         <span class="pill">Secure shell + packaging verified</span>
@@ -1155,11 +1157,95 @@ future api-server ──→ extracted api package</code></pre>
               </p>
             </div>
           </li>
+          <li class="phase">
+            <div class="phase__index">10</div>
+            <div>
+              <h3>Custom application chrome</h3>
+              <ul>
+                <li>
+                  Compare Quiet Precision, Soft Focus, and Emerald Rail in the
+                  <a href="titlebar-playground.html">interactive title-bar playground</a>. Quiet
+                  Precision is the selected scaffold default. <strong>Done.</strong>
+                </li>
+                <li>
+                  Keep one renderer-owned title-bar component in the application shell and source
+                  its visible title from Electron's registered application identity.
+                  <strong>Done.</strong>
+                </li>
+                <li>
+                  Use an HTML drag region with explicit non-draggable controls. Preserve native
+                  macOS traffic lights; provide HTML window controls on Windows and Linux.
+                  <strong>Done.</strong>
+                </li>
+                <li>
+                  Add a narrow, validated preload and IPC contract for minimize, maximize/restore,
+                  close, and observable focus/maximize state. Never expose raw Electron objects or
+                  generic channel access. <strong>Done.</strong>
+                </li>
+                <li>
+                  Preserve resize behavior, system shortcuts, inactive-window treatment, keyboard
+                  focus, accessible labels, and reduced-motion behavior. Auto-hide the native menu
+                  while retaining Alt-key access rather than recreating it in HTML.
+                  <strong>Done.</strong>
+                </li>
+                <li>
+                  Cover the state schema and component in Vitest, exercise maximize/restore in
+                  source and packaged Electron smoke tests, and close the source app through the
+                  rendered control. <strong>Done.</strong>
+                </li>
+              </ul>
+              <p class="acceptance">
+                <strong>Verified:</strong> the chosen title bar is draggable outside interactive
+                controls, uses the personalized app name, remains operable by mouse and keyboard,
+                reflects focus and maximize state, preserves native macOS controls, and passes
+                <code>pnpm check</code> plus <code>pnpm test:package</code> on the declared platform
+                contract.
+              </p>
+            </div>
+          </li>
+          <li class="phase">
+            <div class="phase__index">11</div>
+            <div>
+              <h3>Native appearance</h3>
+              <ul>
+                <li>
+                  Define validated System, Light, and Dark contracts and expose only named
+                  appearance operations through preload and sender-validated IPC.
+                  <strong>Done.</strong>
+                </li>
+                <li>
+                  Keep Electron main and <code>nativeTheme.themeSource</code> authoritative for
+                  renderer and operating-system surfaces. <strong>Done.</strong>
+                </li>
+                <li>
+                  Persist the source in a versioned user-data preference, reject malformed state,
+                  and recover safely to System. <strong>Done.</strong>
+                </li>
+                <li>
+                  Synchronize the shadcn <code>.dark</code> selector before React mounts and update
+                  the BrowserWindow background with the resolved palette. <strong>Done.</strong>
+                </li>
+                <li>
+                  Add an accessible Base UI radio menu to the title bar and retain color-only press
+                  feedback for all title-bar controls. <strong>Done.</strong>
+                </li>
+                <li>
+                  Cover contracts, persistence recovery, renderer selection, native switching, and
+                  restart persistence in Vitest and Electron E2E. <strong>Done.</strong>
+                </li>
+              </ul>
+              <p class="acceptance">
+                <strong>Verified:</strong> System remains the default, Light and Dark synchronize
+                native and renderer surfaces, the preference survives a clean restart, malformed
+                storage fails safely, and the full local quality and package gates pass.
+              </p>
+            </div>
+          </li>
         </ol>
       </section>
 
       <section id="optional-modules">
-        <div class="eyebrow">10 · Opt-in catalog</div>
+        <div class="eyebrow">12 · Opt-in catalog</div>
         <h2>Optional modules.</h2>
         <p class="section-intro">
           Optional modules are recipes with clear activation triggers. They are not installed in the
@@ -1265,7 +1351,7 @@ future api-server ──→ extracted api package</code></pre>
       </section>
 
       <section id="quality">
-        <div class="eyebrow">10 · Guardrails</div>
+        <div class="eyebrow">12 · Guardrails</div>
         <h2>Definition of done.</h2>
         <p class="section-intro">
           A phase is complete when the behavior is observable at its real boundary—not when a set of

@@ -22,7 +22,29 @@ const systemInfo: SystemInfo = {
 afterEach(cleanup)
 
 function renderSystemInfoPage(getInfo: AppApi['system']['getInfo']): void {
-  window.app = { system: { getInfo } }
+  window.app = {
+    appearance: {
+      getState: async () => ({ resolved: 'light', source: 'system' }),
+      onStateChanged: () => () => {},
+      setSource: async (source) => ({
+        resolved: source === 'dark' ? 'dark' : 'light',
+        source,
+      }),
+    },
+    applicationWindow: {
+      close: async () => {},
+      getState: async () => ({
+        appName: 'Electron Boilerplate',
+        isFocused: true,
+        isMaximized: false,
+        usesNativeControls: false,
+      }),
+      minimize: async () => {},
+      onStateChanged: () => () => {},
+      toggleMaximize: async () => {},
+    },
+    system: { getInfo },
+  }
 
   const queryClient = new QueryClient({
     defaultOptions: {

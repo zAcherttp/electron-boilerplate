@@ -12,6 +12,7 @@ The repository is being assembled one verified increment at a time. The current 
 - single-instance lifecycle and package-time Electron security fuses
 - React 19 rendered by Vite 8
 - Tailwind CSS v4 and shadcn/ui on Base UI with packaged Geist and Geist Mono typography
+- main-owned System, Light, and Dark appearance with persisted native/renderer synchronization
 - TanStack Router with a code-defined, hash-based desktop route tree
 - TanStack Query with feature-owned IPC queries and explicit async states
 - top-level React error containment and accessible renderer fallbacks
@@ -146,7 +147,7 @@ Use `pnpm lint:fix` to apply Oxlint's safe automatic fixes.
 
 `pnpm build` creates the production output without launching it. `pnpm start` performs a clean production build and then launches Electron, so it is safe to run after a development session.
 
-`pnpm test:e2e` creates a clean production build and launches it through Playwright's Electron driver. The smoke test verifies the secure `app://` renderer, typed route, live preload → IPC → Hono result, and the absence of raw Node or Electron globals. It uses Electron's bundled Chromium and does not require a separate Playwright browser download.
+`pnpm test:e2e` creates a clean production build and launches it through Playwright's Electron driver. The smoke test verifies the secure `app://` renderer, typed route, live preload → IPC → Hono result, appearance switching and restart persistence, and the absence of raw Node or Electron globals. It uses Electron's bundled Chromium and does not require a separate Playwright browser download.
 
 `pnpm check` is the authoritative quality gate. It checks identity registration and Oxfmt formatting, runs Oxlint and TypeScript, executes Vitest, builds the production application, and finishes with the Electron smoke test. The Windows GitHub Actions workflow installs from the frozen lockfile and runs this same command.
 
@@ -183,6 +184,16 @@ The renderer may navigate only within its exact development or production author
 
 Browser permission checks and requests are denied until a product feature introduces a narrowly owned policy. Deep-link registration is likewise optional; the single-instance lifecycle needed by a future deep-link module is already present.
 
+## Application chrome
+
+The renderer owns a compact Quiet Precision title bar while Electron main remains the authority for window state and commands. Its title comes from the application name registered by `pnpm setup:apply`; it is not duplicated in renderer source. Windows and Linux use accessible HTML minimize, maximize/restore, and close controls. macOS keeps its native traffic lights.
+
+The complete title bar is draggable except for its controls. Focus and maximize changes return through a validated state contract, and raw Electron objects never cross preload. The native menu is auto-hidden on Windows and Linux but remains available through the standard Alt-key behavior.
+
+The application root is a fixed two-row frame: the title bar occupies the first row and a shadcn Base UI Scroll Area owns the remaining viewport. This keeps the custom scrollbar below the title bar, prevents document-level scrolling, and gives every route the same token-driven scrollbar without page-specific setup.
+
+The appearance control offers System, Light, and Dark modes. Electron main owns the selected source through `nativeTheme`, persists it in the application's `userData` directory, and broadcasts the resolved palette through a narrow typed bridge. The renderer applies the matching shadcn `.dark` selector before React mounts and keeps it synchronized with native menus, dialogs, and operating-system changes. The BrowserWindow background follows the resolved palette to avoid a contrasting startup flash.
+
 ## Renderer conventions
 
 Routes are code-defined to keep this initial tree explicit and avoid generated TypeScript. Hash history keeps desktop routes behind the contained `app://bundle/index.html` entry point. TanStack Query uses `networkMode: 'always'` because its current transport is IPC rather than browser networking.
@@ -213,6 +224,7 @@ Hono runs in memory without opening a localhost port. A future Node adapter can 
 - [Project manual: setup, perks, quirks, and utilities](docs/project-manual.md)
 - [Full visual implementation plan](docs/plan.html)
 - [Brief session-reload plan](docs/plan.md)
+- [Interactive title-bar design playground](docs/titlebar-playground.html)
 
 The core scaffold is verified through packaging: Vite, TypeScript, the secure Electron shell, Application API slice, renderer foundation, formatting, source and packaged-runtime smoke tests, editable identity, Pino logging, and unsigned NSIS generation. The Windows quality and manual packaging workflows both pass from clean checkouts.
 

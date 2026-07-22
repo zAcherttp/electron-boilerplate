@@ -10,19 +10,18 @@ import { TriangleAlertIcon } from 'lucide-react'
 import { Alert, AlertDescription, AlertTitle } from '../components/ui/alert'
 import { Button } from '../components/ui/button'
 import { EmptyState } from '../components/ui/empty-state'
+import { ScrollArea } from '../components/ui/scroll-area'
+import { ApplicationTitleBar } from '../features/application-window/application-title-bar'
 import { SystemInfoPage } from '../features/system-info/system-info-page'
 
 function RootLayout() {
   return (
-    <>
-      <header className="app-header">
-        <Link className="app-brand" to="/">
-          Electron Boilerplate
-        </Link>
-        <span>Desktop foundation</span>
-      </header>
-      <Outlet />
-    </>
+    <div className="application-frame">
+      <ApplicationTitleBar />
+      <ScrollArea className="application-viewport">
+        <Outlet />
+      </ScrollArea>
+    </div>
   )
 }
 

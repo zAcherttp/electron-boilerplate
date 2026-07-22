@@ -27,6 +27,7 @@
   --color-input: var(--input);
   --color-border: var(--border);
   --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
   --color-accent-foreground: var(--accent-foreground);
   --color-accent: var(--accent);
   --color-muted-foreground: var(--muted-foreground);
@@ -51,6 +52,7 @@
 }
 
 :root {
+  color-scheme: light;
   --background: oklch(1 0 0);
   --foreground: oklch(0.147 0.004 49.25);
   --card: oklch(1 0 0);
@@ -66,6 +68,7 @@
   --accent: oklch(0.97 0.001 106.424);
   --accent-foreground: oklch(0.216 0.006 56.043);
   --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: oklch(0.985 0 0);
   --border: oklch(0.923 0.003 48.717);
   --input: oklch(0.923 0.003 48.717);
   --ring: oklch(0.709 0.01 56.259);
@@ -91,6 +94,7 @@
 }
 
 .dark {
+  color-scheme: dark;
   --background: oklch(0.147 0.004 49.25);
   --foreground: oklch(0.985 0.001 106.423);
   --card: oklch(0.216 0.006 56.043);
@@ -106,6 +110,7 @@
   --accent: oklch(0.268 0.007 34.298);
   --accent-foreground: oklch(0.985 0.001 106.423);
   --destructive: oklch(0.704 0.191 22.216);
+  --destructive-foreground: oklch(0.985 0 0);
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
   --ring: oklch(0.553 0.013 58.071);
@@ -143,9 +148,18 @@
   box-sizing: border-box;
 }
 
+html,
+body,
+#root {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
 body {
+  --application-title-bar-height: 2.75rem;
   min-width: 320px;
-  min-height: 100vh;
+  min-height: 100%;
   margin: 0;
   background:
     radial-gradient(
@@ -156,33 +170,177 @@ body {
     var(--muted);
 }
 
-.app-header {
-  display: flex;
-  width: min(960px, calc(100% - 3rem));
-  margin: 0 auto;
-  padding: 1.1rem 0;
-  border-bottom: 1px solid var(--border);
-  align-items: center;
-  justify-content: space-between;
-  color: var(--muted-foreground);
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+.application-frame {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  grid-template-rows: var(--application-title-bar-height) minmax(0, 1fr);
+  overflow: hidden;
 }
 
-.app-brand,
+.application-viewport {
+  min-width: 0;
+  min-height: 0;
+}
+
+.application-viewport [data-slot='scroll-area-viewport'] {
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+}
+
+.application-viewport [data-slot='scroll-area-viewport']::-webkit-scrollbar {
+  display: none;
+}
+
+.application-title-bar {
+  display: grid;
+  position: relative;
+  z-index: 50;
+  height: 100%;
+  grid-template-columns: minmax(12rem, 1fr) auto minmax(12rem, 1fr);
+  border-bottom: 1px solid var(--border);
+  align-items: center;
+  color: var(--foreground);
+  background: color-mix(in oklch, var(--card) 94%, transparent);
+  backdrop-filter: blur(16px);
+  user-select: none;
+  -webkit-app-region: drag;
+  app-region: drag;
+  transition:
+    color 140ms ease,
+    background-color 140ms ease;
+}
+
+.application-title-bar[data-window-focused='false'] {
+  color: var(--muted-foreground);
+  background: color-mix(in oklch, var(--card) 82%, var(--muted));
+}
+
+.application-title-bar__identity {
+  display: flex;
+  min-width: 0;
+  gap: 0.62rem;
+  padding-inline: 0.75rem;
+  align-items: center;
+}
+
+.application-title-bar--native-controls .application-title-bar__identity {
+  padding-inline-start: max(5rem, env(titlebar-area-x, 0px));
+}
+
+.application-title-bar__mark {
+  display: grid;
+  flex: 0 0 auto;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: var(--radius-md);
+  color: var(--primary-foreground);
+  background: var(--primary);
+  place-items: center;
+}
+
+.application-title-bar__mark svg {
+  width: 0.9rem;
+  height: 0.9rem;
+  stroke-width: 1.8;
+}
+
+.application-title-bar__name {
+  overflow: hidden;
+  font-size: 0.78rem;
+  font-weight: 650;
+  letter-spacing: -0.012em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.application-title-bar__status {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  color: var(--muted-foreground);
+  font-size: 0.69rem;
+}
+
+.application-title-bar__status span {
+  width: 0.34rem;
+  height: 0.34rem;
+  border-radius: 999px;
+  background: var(--primary);
+}
+
+.application-title-bar__actions {
+  display: flex;
+  height: 100%;
+  justify-self: end;
+  -webkit-app-region: no-drag;
+  app-region: no-drag;
+}
+
+.application-title-bar__window-actions {
+  display: flex;
+  height: 100%;
+}
+
+.application-title-bar__control {
+  display: grid;
+  width: 2.9rem;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  color: var(--muted-foreground);
+  background: transparent;
+  place-items: center;
+  transition:
+    color 100ms ease,
+    background-color 100ms ease;
+}
+
+.application-title-bar__control svg {
+  width: 0.82rem;
+  height: 0.82rem;
+  stroke-width: 1.45;
+}
+
+.application-title-bar__control:hover {
+  color: var(--foreground);
+  background: var(--muted);
+}
+
+.application-title-bar__control[data-popup-open] {
+  color: var(--foreground);
+  background: var(--muted);
+}
+
+.application-title-bar__appearance-control {
+  width: 2.65rem;
+}
+
+.application-title-bar__control:active {
+  background: color-mix(in oklch, var(--muted) 80%, var(--foreground));
+}
+
+.application-title-bar__control:focus-visible {
+  z-index: 1;
+  outline: 2px solid var(--ring);
+  outline-offset: -3px;
+}
+
+.application-title-bar__control--close:hover {
+  color: var(--destructive-foreground);
+  background: var(--destructive);
+}
+
+.application-title-bar__control--close:active {
+  background: color-mix(in oklch, var(--destructive) 88%, black);
+}
+
 .text-link {
   color: var(--primary);
   text-decoration-thickness: 1px;
   text-underline-offset: 0.24em;
 }
 
-.app-brand {
-  text-decoration: none;
-}
-
-.app-brand:hover,
 .text-link:hover {
   color: color-mix(in oklch, var(--primary) 75%, var(--foreground));
 }
@@ -196,7 +354,7 @@ select {
 
 .app-shell {
   width: min(960px, calc(100% - 3rem));
-  min-height: 100vh;
+  min-height: calc(100vh - var(--application-title-bar-height));
   margin: 0 auto;
   padding: clamp(3rem, 8vw, 7rem) 0 3rem;
 }
@@ -296,7 +454,6 @@ h2 {
   gap: 0.7rem;
 }
 
-.app-brand:focus-visible,
 .text-link:focus-visible {
   outline: 3px solid color-mix(in oklch, var(--primary) 32%, transparent);
   outline-offset: 3px;
@@ -325,15 +482,27 @@ h2 {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .application-title-bar,
+  .application-title-bar__control {
+    transition: none;
+  }
+
   .animate-pulse {
     animation: none;
   }
 }
 
 @media (max-width: 720px) {
-  .app-header,
   .app-shell {
     width: min(100% - 1.5rem, 960px);
+  }
+
+  .application-title-bar {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .application-title-bar__status {
+    display: none;
   }
 
   .runtime {
