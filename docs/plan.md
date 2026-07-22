@@ -1,7 +1,7 @@
 # Electron Boilerplate — Quick Plan
 
 Updated: 2026-07-22
-Status: v0.1.0 release candidate locally verified; remote macOS/Linux evidence pending
+Status: v0.1.0 checkpoint verified locally and on Windows, macOS, and Linux CI
 
 This file is the concise architecture and status record. New users should begin with the [README](../README.md) and [project manual](./project-manual.md); the complete incremental history remains in [`plan.html`](./plan.html).
 
@@ -155,7 +155,7 @@ Execute these items in order:
 
 The macOS and Linux lanes must distinguish source-runtime smoke support from distributable package support. Do not claim packaging support until each platform has its own metadata, icons, signing boundary, and packaged-runtime acceptance evidence.
 
-Acceptance: logging has an explicit operating policy, dependency updates arrive through a controlled automated workflow, and all declared platforms have clean-checkout smoke evidence at the support level documented by the repository. **Configured; remote matrix evidence pending the commit.**
+Acceptance: logging has an explicit operating policy, dependency updates arrive through a controlled automated workflow, and all declared platforms have clean-checkout smoke evidence at the support level documented by the repository. **Verified.**
 
 ### Phase 09 — Renderer design system
 
@@ -245,4 +245,4 @@ pnpm check
 
 ## Next action
 
-Next: push the release baseline, collect the Windows/macOS/Linux workflow evidence, then tag the v0.1.0 boundary. Consent, remembered external origins, permission grants, deep-link routing, and the Node HTTP adapter remain deliberately absent.
+Next: publish the v0.1.0 tag, then add product capabilities only when their optional-module activation rules are met. Consent, remembered external origins, permission grants, deep-link routing, and the Node HTTP adapter remain deliberately absent.

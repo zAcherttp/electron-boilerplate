@@ -94,11 +94,11 @@ Individual gates remain available through `pnpm format`, `pnpm lint`, `pnpm type
 
 ## Platform promise
 
-| Platform | Source runtime                                        | Distribution                  |
-| -------- | ----------------------------------------------------- | ----------------------------- |
-| Windows  | Locally verified and covered by CI                    | Unpacked application and NSIS |
-| macOS    | CI lane configured; remote evidence pending           | Not yet claimed               |
-| Linux    | CI lane configured with Xvfb; remote evidence pending | Not yet claimed               |
+| Platform | Source runtime             | Distribution                  |
+| -------- | -------------------------- | ----------------------------- |
+| Windows  | Verified locally and in CI | Unpacked application and NSIS |
+| macOS    | Verified in CI             | Not yet claimed               |
+| Linux    | Verified in CI with Xvfb   | Not yet claimed               |
 
 macOS and Linux distribution support will require platform metadata, icons, signing boundaries, artifact workflows, and packaged-runtime acceptance. The template does not imply those guarantees from a successful source run.
 
