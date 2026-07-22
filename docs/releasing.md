@@ -1,6 +1,16 @@
 # Windows packaging and release
 
-The boilerplate produces an unpacked Windows application and an unsigned NSIS installer. Publishing is intentionally not configured: a product should choose its own release host, retention policy, signing identity, and rollout process.
+This guide covers the template's declared distribution target: a Windows application packaged with electron-builder and NSIS. Source-runtime checks on macOS and Linux are a separate compatibility promise and do not imply distributable artifacts for those platforms.
+
+The repository can produce an unpacked application, an unsigned installer, or a signing-required installer. Publishing remains intentionally unconfigured so a product can choose its release host, retention policy, signing identity, and rollout process.
+
+## Release path
+
+1. Personalize and verify every identity surface.
+2. Run the complete source quality gate.
+3. Exercise the unpacked packaged application.
+4. Build the unsigned installer or require signing credentials.
+5. Inspect and install the artifact before adding any publishing automation.
 
 ## Replace the boilerplate identity
 
@@ -32,7 +42,7 @@ The checked-in identity is deliberately neutral:
 - Executable: `electron-boilerplate.exe`
 - Version: `0.1.0`
 
-## Local validation
+## Validate locally
 
 Run the repository gate first, then exercise the packaged executable:
 

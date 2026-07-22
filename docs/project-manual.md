@@ -1,10 +1,23 @@
-# Electron Boilerplate Project Manual
+# Using the Electron Boilerplate
 
-This manual is the practical companion to the architecture plan. Use it when creating an application from the template, returning to the repository after some time away, or diagnosing behavior that is intentional but not obvious from the source tree.
+This is the operational reference for applications created from the template. The README gets a new repository running; this manual explains the conventions that keep it secure, portable, and easy to extend.
+
+## Find what you need
+
+| Task                            | Section                                             |
+| ------------------------------- | --------------------------------------------------- |
+| Rename the template             | [Personalization utility](#personalization-utility) |
+| Learn the commands              | [Command map](#command-map)                         |
+| Change the title bar            | [Application title bar](#application-title-bar)     |
+| Extend light and dark modes     | [Appearance and theme](#appearance-and-theme)       |
+| Add shadcn components           | [Renderer design system](#renderer-design-system)   |
+| Understand unusual choices      | [Project quirks](#project-quirks)                   |
+| Find an owner in the repository | [Repository landmarks](#repository-landmarks)       |
+| Diagnose a failure              | [Troubleshooting](#troubleshooting)                 |
 
 ## What this template gives you
 
-The repository is a small but production-shaped Electron foundation:
+The repository is deliberately a foundation rather than a sample application:
 
 - one Vite entrypoint for the React renderer, Electron main process, and preload script
 - a sandboxed renderer with a narrow typed preload API
@@ -18,11 +31,11 @@ The repository is a small but production-shaped Electron foundation:
 - Oxfmt, Oxlint, TypeScript, Vitest, Playwright, and cross-platform source CI behind one quality command
 - repository-owned identity and icon personalization
 
-The main perk is that the development, production, and packaged applications exercise the same vertical slice. The renderer calls the preload bridge, Electron main validates the IPC sender, and main calls the Hono app through `app.fetch()`.
+Development, production, and packaged applications exercise the same vertical slice. The renderer calls the preload bridge, Electron main validates the IPC sender, and main calls the Hono app through `app.fetch()`. There is no alternate mock architecture to replace when product work begins.
 
 ## First-time setup
 
-Enable Corepack if pnpm is not already available, then install the pinned package-manager version:
+After creating a repository from the GitHub template, enable Corepack if pnpm is not already available and install the pinned package-manager version:
 
 ```bash
 corepack enable

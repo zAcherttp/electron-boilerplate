@@ -1,9 +1,9 @@
 # Electron Boilerplate — Quick Plan
 
 Updated: 2026-07-22
-Status: Phases 00–12 implemented and locally verified; remote platform matrix pending
+Status: v0.1.0 release candidate locally verified; remote macOS/Linux evidence pending
 
-The detailed plan is in [`plan.html`](./plan.html).
+This file is the concise architecture and status record. New users should begin with the [README](../README.md) and [project manual](./project-manual.md); the complete incremental history remains in [`plan.html`](./plan.html).
 
 ## Goal
 
