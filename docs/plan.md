@@ -1,7 +1,7 @@
 # Electron Boilerplate — Quick Plan
 
 Updated: 2026-07-22
-Status: Phases 00–12 implemented; final clean-checkout acceptance in progress
+Status: Phases 00–12 implemented and locally verified; remote platform matrix pending
 
 The detailed plan is in [`plan.html`](./plan.html).
 
@@ -203,7 +203,7 @@ Acceptance: System remains the default, explicit Light/Dark choices synchronize 
 - Archive the title-bar studies under `docs/design`. **Done**
 - Normalize direct dependency ranges, repository ignores, and release notes. **Done**
 
-Acceptance: the full local gate, Windows packaged-runtime test, and a freshly installed personalized checkout pass without identity drift. **Local acceptance in progress.**
+Acceptance: the full local gate, Windows packaged-runtime test, and a freshly installed personalized checkout pass without identity drift. **Verified.**
 
 ## Optional modules
 
@@ -245,4 +245,4 @@ pnpm check
 
 ## Next action
 
-Next: complete the clean-checkout and packaged-runtime acceptance, then establish the v0.1.0 release boundary. Consent, remembered external origins, permission grants, deep-link routing, and the Node HTTP adapter remain deliberately absent.
+Next: push the release baseline, collect the Windows/macOS/Linux workflow evidence, then tag the v0.1.0 boundary. Consent, remembered external origins, permission grants, deep-link routing, and the Node HTTP adapter remain deliberately absent.
