@@ -283,7 +283,9 @@ The quality workflow runs the source application and the complete `pnpm check` g
 
 ### Dependencies are intentionally maintained
 
-Direct dependencies use exact versions so a clean checkout resolves from the reviewed lockfile and manifest together. Dependabot checks pnpm/npm and GitHub Actions weekly. Minor and patch updates are grouped to keep routine maintenance reviewable; major upgrades remain separate because they can change the template's platform or architecture contract.
+Direct dependencies use exact versions so a clean checkout resolves from the reviewed lockfile and manifest together. A self-hosted Renovate GitHub Action checks npm packages and GitHub Actions every four hours. Registry-backed updates remain hidden until their release timestamps are at least 24 hours old. Renovate then opens a pull request, waits for the protected branch's required Windows, macOS, and Linux checks, rebases stale branches, and squash-merges passing updates. This policy includes major updates, so the CI contract is the safety boundary rather than a manual approval step.
+
+The workflow requires a repository secret named `RENOVATE_TOKEN`. For this public repository, create a dedicated classic GitHub personal access token with `public_repo` and `workflow` scopes, then add it under **Settings → Secrets and variables → Actions**. Do not substitute the workflow's built-in `GITHUB_TOKEN`: pull requests created with it do not trigger the required CI events. The workflow runs on a four-hour UTC cron and can also be dispatched manually after rotating the token or changing `renovate.json`.
 
 ### Logging changes between development and packaging
 

@@ -1,0 +1,18 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "timezone": "Asia/Ho_Chi_Minh",
+  "dependencyDashboard": true,
+  "automerge": true,
+  "automergeType": "pr",
+  "automergeStrategy": "squash",
+  "platformAutomerge": false,
+  "packageRules": [
+    {
+      "description": "Wait 24 hours before proposing registry-backed updates",
+      "matchDatasources": ["npm", "github-releases", "github-tags"],
+      "minimumReleaseAge": "1 day",
+      "internalChecksFilter": "strict"
+    }
+  ]
+}
