@@ -50,3 +50,5 @@ jobs:
       - name: Run quality gate in a virtual display
         if: runner.os == 'Linux'
         run: xvfb-run --auto-servernum pnpm check
+        env:
+          ELECTRON_E2E_WINDOW_MANAGER: none

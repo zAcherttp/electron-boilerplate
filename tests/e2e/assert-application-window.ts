@@ -45,11 +45,14 @@ export async function assertApplicationWindow(window: Page): Promise<void> {
     await expect(maximizeButton).toBeVisible()
     await expect(window.getByRole('button', { name: 'Minimize' })).toBeVisible()
     await expect(window.getByRole('button', { name: 'Close' })).toBeVisible()
-    await maximizeButton.click()
-    const restoreButton = window.getByRole('button', { name: 'Restore' })
-    await expect(restoreButton).toBeVisible()
-    await restoreButton.click()
-    await expect(maximizeButton).toBeVisible()
+
+    if (process.env.ELECTRON_E2E_WINDOW_MANAGER !== 'none') {
+      await maximizeButton.click()
+      const restoreButton = window.getByRole('button', { name: 'Restore' })
+      await expect(restoreButton).toBeVisible()
+      await restoreButton.click()
+      await expect(maximizeButton).toBeVisible()
+    }
   }
 
   await expect(
