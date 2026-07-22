@@ -516,16 +516,17 @@
       </p>
       <div class="meta" aria-label="Plan metadata">
         <span class="pill pill--active">Core scaffold complete through Phase 07</span>
-        <span class="pill">Phase 08 logging operations complete</span>
+        <span class="pill">Phase 08 operational maturity implemented</span>
         <span class="pill">Phase 09 design system verified</span>
         <span class="pill">Phase 10 application chrome verified</span>
         <span class="pill">Phase 11 native appearance verified</span>
+        <span class="pill">Phase 12 pre-release consolidation implemented</span>
         <span class="pill">Updated July 22, 2026</span>
         <span class="pill">Vite + TypeScript 7 verified</span>
         <span class="pill">Secure shell + packaging verified</span>
         <span class="pill">Renderer foundation verified</span>
         <span class="pill">Electron smoke automated</span>
-        <span class="pill">Windows quality workflow configured</span>
+        <span class="pill">Cross-platform source workflow configured</span>
         <span class="pill">Windows package accepted locally</span>
         <span class="pill">Clean Windows workflows verified</span>
         <span class="pill">Pino logging implemented</span>
@@ -1094,17 +1095,17 @@ future api-server ──→ extracted api package</code></pre>
                 </li>
                 <li>
                   Add dependency maintenance automation.
-                  <strong>TBD next.</strong>
+                  <strong>Done.</strong>
                 </li>
                 <li>
                   Declare the platform contract and add macOS and Linux smoke lanes.
-                  <strong>TBD after dependency maintenance automation.</strong>
+                  <strong>Done.</strong>
                 </li>
               </ol>
               <p class="acceptance">
-                <strong>Accept when:</strong> logging has an explicit operating policy, dependency
-                updates use a controlled automated workflow, and every declared platform has
-                clean-checkout smoke evidence at its documented support level.
+                <strong>Configured; remote matrix evidence pending:</strong> logging has an explicit
+                operating policy, dependency updates use a controlled automated workflow, and every
+                declared platform has clean-checkout smoke evidence at its documented support level.
               </p>
               <p class="acceptance">
                 macOS and Linux source-runtime smoke support does not imply distributable package
@@ -1164,8 +1165,8 @@ future api-server ──→ extracted api package</code></pre>
               <ul>
                 <li>
                   Compare Quiet Precision, Soft Focus, and Emerald Rail in the
-                  <a href="titlebar-playground.html">interactive title-bar playground</a>. Quiet
-                  Precision is the selected scaffold default. <strong>Done.</strong>
+                  <a href="design/titlebar-playground.html">interactive title-bar playground</a>.
+                  Quiet Precision is the selected scaffold default. <strong>Done.</strong>
                 </li>
                 <li>
                   Keep one renderer-owned title-bar component in the application shell and source
@@ -1241,11 +1242,41 @@ future api-server ──→ extracted api package</code></pre>
               </p>
             </div>
           </li>
+          <li class="phase">
+            <div class="phase__index">12</div>
+            <div>
+              <h3>Pre-release consolidation</h3>
+              <ul>
+                <li>
+                  Separate application identity, main composition, and window creation.
+                  <strong>Done.</strong>
+                </li>
+                <li>
+                  Move feature styles and setup behavior to clear owners. <strong>Done.</strong>
+                </li>
+                <li>
+                  Keep personalization independent from unrelated test fixtures.
+                  <strong>Done.</strong>
+                </li>
+                <li>
+                  Refocus the README, manual, plan, and design archive. <strong>Done.</strong>
+                </li>
+                <li>
+                  Normalize dependency policy, repository ignores, and release notes.
+                  <strong>Done.</strong>
+                </li>
+              </ul>
+              <p class="acceptance">
+                <strong>Accept when:</strong> the local quality gate, Windows packaged-runtime test,
+                and a freshly installed personalized checkout all pass without identity drift.
+              </p>
+            </div>
+          </li>
         </ol>
       </section>
 
       <section id="optional-modules">
-        <div class="eyebrow">12 · Opt-in catalog</div>
+        <div class="eyebrow">13 · Opt-in catalog</div>
         <h2>Optional modules.</h2>
         <p class="section-intro">
           Optional modules are recipes with clear activation triggers. They are not installed in the
@@ -1351,7 +1382,7 @@ future api-server ──→ extracted api package</code></pre>
       </section>
 
       <section id="quality">
-        <div class="eyebrow">12 · Guardrails</div>
+        <div class="eyebrow">14 · Guardrails</div>
         <h2>Definition of done.</h2>
         <p class="section-intro">
           A phase is complete when the behavior is observable at its real boundary—not when a set of
@@ -1407,8 +1438,9 @@ future api-server ──→ extracted api package</code></pre>
       <p>
         This is a living plan. The portable in-memory Hono Application API, its first validated IPC
         vertical slice, secure Electron shell, and typed renderer foundation are implemented. The
-        production Electron and packaged-runtime smoke paths are automated. The Windows quality and
-        manual package workflows are verified, and Electron main now owns a packaged Pino log.
+        production Electron and packaged-runtime smoke paths are automated. Cross-platform source
+        quality and Windows package workflows are configured, and Electron main owns a packaged Pino
+        log.
       </p>
     </footer>
   </body>

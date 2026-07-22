@@ -36,15 +36,21 @@ export async function assertApplicationWindow(window: Page): Promise<void> {
   expect(frameMetrics.viewportTop).toBe(frameMetrics.titleBarBottom)
   expect(frameMetrics.documentScrollHeight).toBe(frameMetrics.documentHeight)
 
-  const maximizeButton = window.getByRole('button', { name: 'Maximize' })
-  await expect(maximizeButton).toBeVisible()
-  await expect(window.getByRole('button', { name: 'Minimize' })).toBeVisible()
-  await expect(window.getByRole('button', { name: 'Close' })).toBeVisible()
-  await maximizeButton.click()
-  const restoreButton = window.getByRole('button', { name: 'Restore' })
-  await expect(restoreButton).toBeVisible()
-  await restoreButton.click()
-  await expect(maximizeButton).toBeVisible()
+  if (process.platform === 'darwin') {
+    await expect(window.getByRole('button', { name: 'Minimize' })).toHaveCount(0)
+    await expect(window.getByRole('button', { name: 'Maximize' })).toHaveCount(0)
+    await expect(window.getByRole('button', { name: 'Close' })).toHaveCount(0)
+  } else {
+    const maximizeButton = window.getByRole('button', { name: 'Maximize' })
+    await expect(maximizeButton).toBeVisible()
+    await expect(window.getByRole('button', { name: 'Minimize' })).toBeVisible()
+    await expect(window.getByRole('button', { name: 'Close' })).toBeVisible()
+    await maximizeButton.click()
+    const restoreButton = window.getByRole('button', { name: 'Restore' })
+    await expect(restoreButton).toBeVisible()
+    await restoreButton.click()
+    await expect(maximizeButton).toBeVisible()
+  }
 
   await expect(
     window.getByRole('heading', {

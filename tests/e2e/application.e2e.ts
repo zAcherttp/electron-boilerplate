@@ -25,10 +25,14 @@ test('launches the production renderer through the secure desktop bridge', async
     await firstWindow.getByRole('button', { name: 'Appearance: Dark' }).waitFor()
     await firstWindow.locator('html.dark').waitFor()
 
-    const firstWindowClosed = firstWindow.waitForEvent('close')
-    await firstWindow.getByRole('button', { name: 'Close' }).click()
-    await firstWindowClosed
-    await electronApp.close()
+    if (process.platform === 'darwin') {
+      await electronApp.close()
+    } else {
+      const firstWindowClosed = firstWindow.waitForEvent('close')
+      await firstWindow.getByRole('button', { name: 'Close' }).click()
+      await firstWindowClosed
+      await electronApp.close()
+    }
 
     electronApp = await launchApplication()
     const secondWindow = await electronApp.firstWindow()

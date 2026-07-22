@@ -15,7 +15,7 @@ The repository is a small but production-shaped Electron foundation:
 - deny-by-default navigation, popup, permission, and external-link policies
 - Pino logging owned by Electron main
 - electron-builder packaging, hardened Electron fuses, and NSIS installer generation
-- Oxfmt, Oxlint, TypeScript, Vitest, Playwright, and Windows CI behind one quality command
+- Oxfmt, Oxlint, TypeScript, Vitest, Playwright, and cross-platform source CI behind one quality command
 - repository-owned identity and icon personalization
 
 The main perk is that the development, production, and packaged applications exercise the same vertical slice. The renderer calls the preload bridge, Electron main validates the IPC sender, and main calls the Hono app through `app.fetch()`.
@@ -54,9 +54,8 @@ The setup utility treats identity as one repository-wide contract instead of a c
 - MIT license copyright holder
 - electron-builder application ID, product name, and executable name
 - Windows App User Model ID
-- renderer document title and application heading
+- renderer document title and Electron application title
 - source and packaged Electron smoke-test expectations
-- API version fixtures and logger tests
 - Windows workflow artifact name
 - release guide and plan identity references
 - application, installer, and uninstaller icon registrations
@@ -169,7 +168,7 @@ When changing the title bar:
 - test both native-control and custom-control renderer states;
 - run both `pnpm check` and `pnpm test:package` because frame behavior differs between source and packaged windows.
 
-The three original design studies remain in [`titlebar-playground.html`](titlebar-playground.html).
+The three original design studies remain in the [`design/titlebar-playground.html`](design/titlebar-playground.html) archive.
 
 The root application frame has two rows. `ApplicationTitleBar` owns the fixed 44px chrome row, and the application-wide shadcn Base UI `ScrollArea` owns the remaining row. `html`, `body`, and `#root` never scroll. Add route content normally inside the root outlet; do not create another page-level vertical scroller unless a feature explicitly needs nested scrolling.
 
@@ -229,6 +228,8 @@ pnpm exec shadcn add dialog
 
 Keep downloaded shadcn components in `src/renderer/components/ui` and edit them as application-owned source. Product-specific composition remains with its feature; do not move workflows into generic UI primitives. Preserve semantic loading, empty, and failure states and run `pnpm check` after component changes.
 
+`src/renderer/styles.css` owns Tailwind imports, semantic theme tokens, document defaults, and small application-wide fallbacks. The root frame is owned by `src/renderer/app/application-frame.css`; title-bar, appearance, and system-info styling stays beside those features. Add a global rule only when every route truly shares it.
+
 ## Project quirks
 
 ### Doubleshot owns Electron startup
@@ -263,7 +264,13 @@ TypeScript 7 removed `baseUrl`. Import aliases use `paths` directly; do not rein
 
 ### Packaging is Windows-first
 
-The checked-in builder configuration produces an unpacked Windows application and NSIS installer. NSIS is a classic Windows installer format; it is not MSIX. macOS and Linux targets require their own icons, metadata, CI runners, signing, and smoke-test acceptance before they should be advertised as supported.
+The checked-in builder configuration produces an unpacked Windows application and NSIS installer. NSIS is a classic Windows installer format; it is not MSIX.
+
+The quality workflow runs the source application and the complete `pnpm check` gate on Windows, macOS, and Linux; Linux uses a virtual X display. This establishes source-runtime compatibility only. macOS and Linux distributions still require their own builder targets, icons, metadata, signing boundaries, artifact workflows, and packaged-runtime acceptance evidence before they are advertised as distributable platforms.
+
+### Dependencies are intentionally maintained
+
+Direct dependencies use exact versions so a clean checkout resolves from the reviewed lockfile and manifest together. Dependabot checks pnpm/npm and GitHub Actions weekly. Minor and patch updates are grouped to keep routine maintenance reviewable; major upgrades remain separate because they can change the template's platform or architecture contract.
 
 ### Logging changes between development and packaging
 
@@ -275,19 +282,22 @@ Common credential fields are redacted, but feature code must still avoid logging
 
 ## Repository landmarks
 
-| Path                          | Owner                                                        |
-| ----------------------------- | ------------------------------------------------------------ |
-| `src/renderer`                | React routes, queries, features, and UI                      |
-| `components.json`             | shadcn Base UI style, registry, and renderer path contract   |
-| `src/preload`                 | Narrow renderer-to-main API                                  |
-| `src/main`                    | Electron lifecycle, security, adapters, logging, and IPC     |
-| `src/main/application-window` | Main-owned title-bar state and window commands               |
-| `src/api`                     | Portable in-memory Hono Application API                      |
-| `src/contracts`               | Zod boundary schemas and data shapes                         |
-| `tests/e2e`                   | Source and packaged Electron smoke tests                     |
-| `scripts/setup.mts`           | Repository identity and icon personalization                 |
-| `electron-builder.yml`        | Package identity, Windows target, fuses, and artifact naming |
-| `.github/workflows`           | Clean Windows quality and packaging evidence                 |
+| Path                            | Owner                                                        |
+| ------------------------------- | ------------------------------------------------------------ |
+| `src/renderer`                  | React routes, queries, features, UI, and global tokens       |
+| `components.json`               | shadcn Base UI style, registry, and renderer path contract   |
+| `src/preload`                   | Narrow renderer-to-main API                                  |
+| `src/main/index.ts`             | Stable application identity entrypoint                       |
+| `src/main/start-application.ts` | Main-process composition and lifecycle                       |
+| `src/main/application-window`   | Main-owned title-bar state and window commands               |
+| `src/api`                       | Portable in-memory Hono Application API                      |
+| `src/contracts`                 | Zod boundary schemas and data shapes                         |
+| `tests/e2e`                     | Source and packaged Electron smoke tests                     |
+| `scripts/setup.mts`             | Personalization command-line boundary                        |
+| `scripts/setup`                 | Identity, icon, and repository personalization owners        |
+| `docs/design`                   | Archived visual studies, not runtime documentation           |
+| `electron-builder.yml`          | Package identity, Windows target, fuses, and artifact naming |
+| `.github/workflows`             | Cross-platform source quality and Windows packaging evidence |
 
 The renderer primitives are application-owned shadcn source. Use `pnpm exec shadcn add <name> --dry-run` before registry writes and review diffs before overwriting a locally customized component.
 

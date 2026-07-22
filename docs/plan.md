@@ -1,7 +1,7 @@
 # Electron Boilerplate — Quick Plan
 
 Updated: 2026-07-22
-Status: Core scaffold complete through Phase 07; Phase 08 logging operations complete; Phases 09–11 verified
+Status: Phases 00–12 implemented; final clean-checkout acceptance in progress
 
 The detailed plan is in [`plan.html`](./plan.html).
 
@@ -150,12 +150,12 @@ Acceptance: a temporary clone can be fully personalized with one command, the pr
 Execute these items in order:
 
 1. Finish logging operations: add readable colored development output, define bounded retention and rotation, make the packaged log location observable, and cover operational failure behavior. **Done**
-2. Add dependency maintenance automation. **TBD — next**
-3. Declare the platform contract and add macOS and Linux smoke lanes. **TBD — after dependency maintenance automation**
+2. Add dependency maintenance automation. **Done**
+3. Declare the platform contract and add macOS and Linux smoke lanes. **Done**
 
 The macOS and Linux lanes must distinguish source-runtime smoke support from distributable package support. Do not claim packaging support until each platform has its own metadata, icons, signing boundary, and packaged-runtime acceptance evidence.
 
-Acceptance: logging has an explicit operating policy, dependency updates arrive through a controlled automated workflow, and all declared platforms have clean-checkout smoke evidence at the support level documented by the repository.
+Acceptance: logging has an explicit operating policy, dependency updates arrive through a controlled automated workflow, and all declared platforms have clean-checkout smoke evidence at the support level documented by the repository. **Configured; remote matrix evidence pending the commit.**
 
 ### Phase 09 — Renderer design system
 
@@ -172,7 +172,7 @@ Acceptance: the selected Base UI preset is reproducible, all `@shadcn-replaceabl
 
 ### Phase 10 — Custom application chrome
 
-- Compare three directions in [`titlebar-playground.html`](titlebar-playground.html) and select Quiet Precision as the scaffold default. **Done**
+- Compare three directions in the archived [`titlebar-playground.html`](design/titlebar-playground.html) and select Quiet Precision as the scaffold default. **Done**
 - Keep one renderer-owned `ApplicationTitleBar` in the app shell; source the visible title from Electron's registered application identity rather than a duplicate string. **Done**
 - Use an HTML drag region with explicit non-draggable controls. Keep native macOS traffic lights and use HTML minimize, maximize/restore, and close controls on Windows/Linux. **Done**
 - Add a narrow, validated preload/IPC contract for window commands and observable focus/maximize state. Never expose `BrowserWindow`, `ipcRenderer`, or generic channel access. **Done**
@@ -192,6 +192,18 @@ Acceptance: the chosen title bar is draggable outside interactive controls, uses
 - Cover contracts, persistence, renderer selection, palette application, native Electron switching, and restart persistence. **Done**
 
 Acceptance: System remains the default, explicit Light/Dark choices synchronize native and renderer surfaces, the preference survives a clean application restart, invalid storage fails safely, and the full local quality and package gates pass. **Verified**
+
+### Phase 12 — Pre-release consolidation
+
+- Keep `src/main/index.ts` identity-only and move application composition and window creation to named owners. **Done**
+- Split renderer feature CSS from global tokens and application-wide defaults. **Done**
+- Split the personalization CLI from identity, icon, and repository mutation owners. **Done**
+- Keep identity-independent test fixtures independent from personalization. **Done**
+- Reduce the README to onboarding and route operational detail into the manual. **Done**
+- Archive the title-bar studies under `docs/design`. **Done**
+- Normalize direct dependency ranges, repository ignores, and release notes. **Done**
+
+Acceptance: the full local gate, Windows packaged-runtime test, and a freshly installed personalized checkout pass without identity drift. **Local acceptance in progress.**
 
 ## Optional modules
 
@@ -233,4 +245,4 @@ pnpm check
 
 ## Next action
 
-Next: resume Phase 08 with dependency maintenance automation, followed by macOS/Linux source-runtime smoke lanes. Consent, remembered external origins, permission grants, deep-link routing, and the Node HTTP adapter remain deliberately absent.
+Next: complete the clean-checkout and packaged-runtime acceptance, then establish the v0.1.0 release boundary. Consent, remembered external origins, permission grants, deep-link routing, and the Node HTTP adapter remain deliberately absent.
