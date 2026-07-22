@@ -1,6 +1,7 @@
 {
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
+    "allowImportingTsExtensions": true,
     "composite": true,
     "lib": ["ES2023", "DOM", "DOM.Iterable"],
     "rootDir": ".",
@@ -10,6 +11,7 @@
   "include": [
     "./playwright.config.ts",
     "./scripts/**/*.mts",
+    "./scripts/setup/**/*.mts",
     "./tests/e2e/**/*.ts",
     "./vite.config.ts"
   ]

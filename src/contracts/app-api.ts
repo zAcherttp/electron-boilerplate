@@ -2,8 +2,6 @@ import type { AppearanceState, ThemeSource } from './appearance'
 import type { ApplicationWindowState } from './application-window'
 import type { SystemInfo } from './system-info'
 
-export const systemInfoChannel = 'app:system:get-info'
-
 export interface AppApi {
   appearance: {
     getState: () => Promise<AppearanceState>

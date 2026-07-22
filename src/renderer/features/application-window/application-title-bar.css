@@ -1,0 +1,154 @@
+.application-title-bar {
+  display: grid;
+  position: relative;
+  z-index: 50;
+  height: 100%;
+  grid-template-columns: minmax(12rem, 1fr) auto minmax(12rem, 1fr);
+  border-bottom: 1px solid var(--border);
+  align-items: center;
+  color: var(--foreground);
+  background: color-mix(in oklch, var(--card) 94%, transparent);
+  backdrop-filter: blur(16px);
+  user-select: none;
+  -webkit-app-region: drag;
+  app-region: drag;
+  transition:
+    color 140ms ease,
+    background-color 140ms ease;
+}
+
+.application-title-bar[data-window-focused='false'] {
+  color: var(--muted-foreground);
+  background: color-mix(in oklch, var(--card) 82%, var(--muted));
+}
+
+.application-title-bar__identity {
+  display: flex;
+  min-width: 0;
+  gap: 0.62rem;
+  padding-inline: 0.75rem;
+  align-items: center;
+}
+
+.application-title-bar--native-controls .application-title-bar__identity {
+  padding-inline-start: max(5rem, env(titlebar-area-x, 0px));
+}
+
+.application-title-bar__mark {
+  display: grid;
+  flex: 0 0 auto;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: var(--radius-md);
+  color: var(--primary-foreground);
+  background: var(--primary);
+  place-items: center;
+}
+
+.application-title-bar__mark svg {
+  width: 0.9rem;
+  height: 0.9rem;
+  stroke-width: 1.8;
+}
+
+.application-title-bar__name {
+  overflow: hidden;
+  font-size: 0.78rem;
+  font-weight: 650;
+  letter-spacing: -0.012em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.application-title-bar__status {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  color: var(--muted-foreground);
+  font-size: 0.69rem;
+}
+
+.application-title-bar__status span {
+  width: 0.34rem;
+  height: 0.34rem;
+  border-radius: 999px;
+  background: var(--primary);
+}
+
+.application-title-bar__actions,
+.application-title-bar__window-actions {
+  display: flex;
+  height: 100%;
+}
+
+.application-title-bar__actions {
+  justify-self: end;
+  -webkit-app-region: no-drag;
+  app-region: no-drag;
+}
+
+.application-title-bar__control {
+  display: grid;
+  width: 2.9rem;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  color: var(--muted-foreground);
+  background: transparent;
+  place-items: center;
+  transition:
+    color 100ms ease,
+    background-color 100ms ease;
+}
+
+.application-title-bar__control svg {
+  width: 0.82rem;
+  height: 0.82rem;
+  stroke-width: 1.45;
+}
+
+.application-title-bar__control:hover,
+.application-title-bar__control[data-popup-open] {
+  color: var(--foreground);
+  background: var(--muted);
+}
+
+.application-title-bar__appearance-control {
+  width: 2.65rem;
+}
+
+.application-title-bar__control:active {
+  background: color-mix(in oklch, var(--muted) 80%, var(--foreground));
+}
+
+.application-title-bar__control:focus-visible {
+  z-index: 1;
+  outline: 2px solid var(--ring);
+  outline-offset: -3px;
+}
+
+.application-title-bar__control--close:hover {
+  color: var(--destructive-foreground);
+  background: var(--destructive);
+}
+
+.application-title-bar__control--close:active {
+  background: color-mix(in oklch, var(--destructive) 88%, black);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .application-title-bar,
+  .application-title-bar__control {
+    transition: none;
+  }
+}
+
+@media (max-width: 720px) {
+  .application-title-bar {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .application-title-bar__status {
+    display: none;
+  }
+}

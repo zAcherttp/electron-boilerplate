@@ -12,7 +12,7 @@ import {
   applicationWindowStateChangedChannel,
   applicationWindowToggleMaximizeChannel,
 } from '../contracts/application-window-channels'
-import { systemInfoChannel } from '../contracts/app-api'
+import { systemInfoChannel } from '../contracts/system-info-channels'
 
 const appApi: AppApi = {
   appearance: {

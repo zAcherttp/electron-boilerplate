@@ -3,6 +3,9 @@
 @import 'shadcn/tailwind.css';
 @import '@fontsource-variable/geist';
 @import '@fontsource-variable/geist-mono';
+@import './app/application-frame.css';
+@import './features/application-window/application-title-bar.css';
+@import './features/system-info/system-info-page.css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -170,171 +173,6 @@ body {
     var(--muted);
 }
 
-.application-frame {
-  display: grid;
-  width: 100%;
-  height: 100%;
-  grid-template-rows: var(--application-title-bar-height) minmax(0, 1fr);
-  overflow: hidden;
-}
-
-.application-viewport {
-  min-width: 0;
-  min-height: 0;
-}
-
-.application-viewport [data-slot='scroll-area-viewport'] {
-  overscroll-behavior: contain;
-  scrollbar-width: none;
-}
-
-.application-viewport [data-slot='scroll-area-viewport']::-webkit-scrollbar {
-  display: none;
-}
-
-.application-title-bar {
-  display: grid;
-  position: relative;
-  z-index: 50;
-  height: 100%;
-  grid-template-columns: minmax(12rem, 1fr) auto minmax(12rem, 1fr);
-  border-bottom: 1px solid var(--border);
-  align-items: center;
-  color: var(--foreground);
-  background: color-mix(in oklch, var(--card) 94%, transparent);
-  backdrop-filter: blur(16px);
-  user-select: none;
-  -webkit-app-region: drag;
-  app-region: drag;
-  transition:
-    color 140ms ease,
-    background-color 140ms ease;
-}
-
-.application-title-bar[data-window-focused='false'] {
-  color: var(--muted-foreground);
-  background: color-mix(in oklch, var(--card) 82%, var(--muted));
-}
-
-.application-title-bar__identity {
-  display: flex;
-  min-width: 0;
-  gap: 0.62rem;
-  padding-inline: 0.75rem;
-  align-items: center;
-}
-
-.application-title-bar--native-controls .application-title-bar__identity {
-  padding-inline-start: max(5rem, env(titlebar-area-x, 0px));
-}
-
-.application-title-bar__mark {
-  display: grid;
-  flex: 0 0 auto;
-  width: 1.5rem;
-  height: 1.5rem;
-  border-radius: var(--radius-md);
-  color: var(--primary-foreground);
-  background: var(--primary);
-  place-items: center;
-}
-
-.application-title-bar__mark svg {
-  width: 0.9rem;
-  height: 0.9rem;
-  stroke-width: 1.8;
-}
-
-.application-title-bar__name {
-  overflow: hidden;
-  font-size: 0.78rem;
-  font-weight: 650;
-  letter-spacing: -0.012em;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.application-title-bar__status {
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
-  color: var(--muted-foreground);
-  font-size: 0.69rem;
-}
-
-.application-title-bar__status span {
-  width: 0.34rem;
-  height: 0.34rem;
-  border-radius: 999px;
-  background: var(--primary);
-}
-
-.application-title-bar__actions {
-  display: flex;
-  height: 100%;
-  justify-self: end;
-  -webkit-app-region: no-drag;
-  app-region: no-drag;
-}
-
-.application-title-bar__window-actions {
-  display: flex;
-  height: 100%;
-}
-
-.application-title-bar__control {
-  display: grid;
-  width: 2.9rem;
-  height: 100%;
-  padding: 0;
-  border: 0;
-  color: var(--muted-foreground);
-  background: transparent;
-  place-items: center;
-  transition:
-    color 100ms ease,
-    background-color 100ms ease;
-}
-
-.application-title-bar__control svg {
-  width: 0.82rem;
-  height: 0.82rem;
-  stroke-width: 1.45;
-}
-
-.application-title-bar__control:hover {
-  color: var(--foreground);
-  background: var(--muted);
-}
-
-.application-title-bar__control[data-popup-open] {
-  color: var(--foreground);
-  background: var(--muted);
-}
-
-.application-title-bar__appearance-control {
-  width: 2.65rem;
-}
-
-.application-title-bar__control:active {
-  background: color-mix(in oklch, var(--muted) 80%, var(--foreground));
-}
-
-.application-title-bar__control:focus-visible {
-  z-index: 1;
-  outline: 2px solid var(--ring);
-  outline-offset: -3px;
-}
-
-.application-title-bar__control--close:hover {
-  color: var(--destructive-foreground);
-  background: var(--destructive);
-}
-
-.application-title-bar__control--close:active {
-  background: color-mix(in oklch, var(--destructive) 88%, black);
-}
-
 .text-link {
   color: var(--primary);
   text-decoration-thickness: 1px;
@@ -365,31 +203,10 @@ select {
   place-items: center;
 }
 
-.hero {
-  max-width: 760px;
-}
-
-.eyebrow {
-  margin: 0 0 0.8rem;
-  color: var(--primary);
-  font-size: 0.76rem;
-  font-weight: 750;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
 h1,
 h2,
 p {
   margin-top: 0;
-}
-
-.hero h1 {
-  max-width: 12ch;
-  margin-bottom: 1.4rem;
-  font-size: clamp(3rem, 8vw, 6.5rem);
-  line-height: 0.96;
-  letter-spacing: -0.06em;
 }
 
 h2 {
@@ -405,88 +222,12 @@ h2 {
   letter-spacing: -0.055em;
 }
 
-.lede {
-  max-width: 58ch;
-  margin-bottom: 2rem;
-  color: var(--muted-foreground);
-  font-size: clamp(1rem, 2vw, 1.2rem);
-  line-height: 1.7;
-}
-
-.toolchain {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.6rem;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.toolchain li {
-  padding: 0.45rem 0.78rem;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  background: color-mix(in oklch, var(--card) 58%, transparent);
-  font-size: 0.8rem;
-  font-weight: 700;
-}
-
-.runtime {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(22rem, 1.2fr);
-  gap: 2rem;
-  align-items: end;
-  margin-top: clamp(4rem, 12vw, 9rem);
-  padding-top: 2rem;
-  border-top: 1px solid var(--border);
-}
-
-.runtime dl {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.7rem;
-  margin: 0;
-}
-
-.runtime-skeletons {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.7rem;
-}
-
 .text-link:focus-visible {
   outline: 3px solid color-mix(in oklch, var(--primary) 32%, transparent);
   outline-offset: 3px;
 }
 
-.runtime dl div {
-  padding: 1rem;
-  border-radius: var(--radius-lg);
-  color: var(--primary-foreground);
-  background: var(--primary);
-}
-
-.runtime dt {
-  margin-bottom: 0.3rem;
-  color: color-mix(in oklch, var(--primary-foreground) 70%, var(--primary));
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
-.runtime dd {
-  margin: 0;
-  font-family: var(--font-mono);
-  font-size: 0.9rem;
-}
-
 @media (prefers-reduced-motion: reduce) {
-  .application-title-bar,
-  .application-title-bar__control {
-    transition: none;
-  }
-
   .animate-pulse {
     animation: none;
   }
@@ -495,22 +236,5 @@ h2 {
 @media (max-width: 720px) {
   .app-shell {
     width: min(100% - 1.5rem, 960px);
-  }
-
-  .application-title-bar {
-    grid-template-columns: minmax(0, 1fr) auto;
-  }
-
-  .application-title-bar__status {
-    display: none;
-  }
-
-  .runtime {
-    grid-template-columns: 1fr;
-  }
-
-  .runtime dl,
-  .runtime-skeletons {
-    grid-template-columns: 1fr;
   }
 }

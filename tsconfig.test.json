@@ -11,9 +11,9 @@
   "include": [
     "./scripts/**/*.test.ts",
     "./scripts/**/*.mts",
+    "./scripts/setup/**/*.mts",
     "./src/api/**/*.ts",
     "./src/contracts/**/*.ts",
-    "./src/main/logging/**/*.ts",
-    "./src/main/security/**/*.ts"
+    "./src/main/**/*.ts"
   ]
 }

@@ -15,7 +15,7 @@ const logRecordSchema = z.object({
 
 describe('createApplicationLogger', () => {
   it('writes structured records and redacts credential fields', async () => {
-    const temporaryDirectory = mkdtempSync(join(tmpdir(), 'electron-boilerplate-log-'))
+    const temporaryDirectory = mkdtempSync(join(tmpdir(), 'application-log-'))
     const logFile = join(temporaryDirectory, 'main.log')
 
     try {
@@ -48,7 +48,7 @@ describe('createApplicationLogger', () => {
   })
 
   it('falls back to stderr when the packaged log directory cannot be created', async () => {
-    const temporaryDirectory = mkdtempSync(join(tmpdir(), 'electron-boilerplate-log-failure-'))
+    const temporaryDirectory = mkdtempSync(join(tmpdir(), 'application-log-failure-'))
     const invalidLogDirectory = join(temporaryDirectory, 'not-a-directory')
     writeFileSync(invalidLogDirectory, 'occupied by a file', 'utf8')
 

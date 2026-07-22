@@ -1,4 +1,11 @@
+import { readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
 import { expect, type Page } from '@playwright/test'
+import { z } from 'zod'
+
+const packageVersion = z
+  .object({ version: z.string() })
+  .parse(JSON.parse(readFileSync(resolve(__dirname, '../../package.json'), 'utf8'))).version
 
 export async function assertApplicationWindow(window: Page): Promise<void> {
   await expect(window).toHaveURL('app://bundle/index.html')
@@ -58,7 +65,7 @@ export async function assertApplicationWindow(window: Page): Promise<void> {
     .filter({ has: window.getByText('Application', { exact: true }) })
     .locator('dd')
 
-  await expect(applicationVersion).toHaveText('0.1.0')
+  await expect(applicationVersion).toHaveText(packageVersion)
   await expect(electronVersion).toHaveText(/^\d+\.\d+\.\d+/)
   await expect(platform).toHaveText(/^\S+ \/ \S+$/)
 

@@ -3,7 +3,7 @@ import { tmpdir } from 'node:os'
 import { dirname, join, resolve } from 'node:path'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { z } from 'zod'
-import { inspectRepository, personalizeRepository } from './setup.mts'
+import { inspectRepository, personalizeRepository } from './setup/personalize-repository.mts'
 
 const ownedTemplateFiles = [
   '.github/workflows/package-windows.yml',
@@ -16,12 +16,7 @@ const ownedTemplateFiles = [
   'LICENSE',
   'package.json',
   'README.md',
-  'src/api/create-api-client.test.ts',
-  'src/api/create-api.test.ts',
   'src/main/index.ts',
-  'src/main/logging/create-application-logger.test.ts',
-  'src/renderer/app/router.tsx',
-  'src/renderer/features/system-info/system-info-page.test.tsx',
   'src/renderer/index.html',
   'tests/e2e/assert-application-window.ts',
   'tests/e2e/package.e2e.ts',

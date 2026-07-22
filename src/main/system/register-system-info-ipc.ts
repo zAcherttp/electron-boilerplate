@@ -1,8 +1,8 @@
 import type { ApplicationApiClient } from '../../api/create-api-client'
 import type { BrowserWindow } from 'electron'
 import { ipcMain } from 'electron'
-import { systemInfoChannel } from '../../contracts/app-api'
 import { systemInfoSchema } from '../../contracts/system-info'
+import { systemInfoChannel } from '../../contracts/system-info-channels'
 import { assertTrustedIpcSender } from '../security/assert-trusted-ipc-sender'
 
 interface RegisterSystemInfoIpcOptions {

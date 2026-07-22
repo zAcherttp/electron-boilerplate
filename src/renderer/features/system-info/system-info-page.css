@@ -1,0 +1,97 @@
+.hero {
+  max-width: 760px;
+}
+
+.eyebrow {
+  margin: 0 0 0.8rem;
+  color: var(--primary);
+  font-size: 0.76rem;
+  font-weight: 750;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.hero h1 {
+  max-width: 12ch;
+  margin-bottom: 1.4rem;
+  font-size: clamp(3rem, 8vw, 6.5rem);
+  line-height: 0.96;
+  letter-spacing: -0.06em;
+}
+
+.lede {
+  max-width: 58ch;
+  margin-bottom: 2rem;
+  color: var(--muted-foreground);
+  font-size: clamp(1rem, 2vw, 1.2rem);
+  line-height: 1.7;
+}
+
+.toolchain {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.toolchain li {
+  padding: 0.45rem 0.78rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: color-mix(in oklch, var(--card) 58%, transparent);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.runtime {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(22rem, 1.2fr);
+  gap: 2rem;
+  align-items: end;
+  margin-top: clamp(4rem, 12vw, 9rem);
+  padding-top: 2rem;
+  border-top: 1px solid var(--border);
+}
+
+.runtime dl,
+.runtime-skeletons {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.7rem;
+}
+
+.runtime dl {
+  margin: 0;
+}
+
+.runtime dl div {
+  padding: 1rem;
+  border-radius: var(--radius-lg);
+  color: var(--primary-foreground);
+  background: var(--primary);
+}
+
+.runtime dt {
+  margin-bottom: 0.3rem;
+  color: color-mix(in oklch, var(--primary-foreground) 70%, var(--primary));
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.runtime dd {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+}
+
+@media (max-width: 720px) {
+  .runtime,
+  .runtime dl,
+  .runtime-skeletons {
+    grid-template-columns: 1fr;
+  }
+}
