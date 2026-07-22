@@ -1,6 +1,5 @@
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs'
 import { extname, resolve } from 'node:path'
-import { z } from 'zod'
 import { readYamlScalar } from './application-identity.mts'
 
 const autoIconDirectories = ['icons', 'assets/icons']

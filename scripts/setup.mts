@@ -41,7 +41,7 @@ function printSummary(summary: SetupSummary, operation: 'check' | 'setup' = 'set
   }
   console.log(summary.dryRun ? 'Would update' : 'Updated')
   for (const file of summary.changedFiles) console.log(`  ${file}`)
-  if (!summary.dryRun) console.log('Next: pnpm format && pnpm check && pnpm test:package')
+  if (!summary.dryRun) console.log('Next: pnpm check && pnpm test:package')
 }
 
 function printHelp(): void {
