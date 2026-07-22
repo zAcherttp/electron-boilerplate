@@ -102,6 +102,10 @@ Individual gates remain available through `pnpm format`, `pnpm lint`, `pnpm type
 
 macOS and Linux distribution support will require platform metadata, icons, signing boundaries, artifact workflows, and packaged-runtime acceptance. The template does not imply those guarantees from a successful source run.
 
+## Contributing
+
+Contributions are welcome. Read the [contribution guide](CONTRIBUTING.md) for local setup, architecture rules, conventions, verification, and pull request expectations.
+
 ## Documentation
 
 - [Project manual](docs/project-manual.md) — setup, conventions, architecture decisions, and troubleshooting
