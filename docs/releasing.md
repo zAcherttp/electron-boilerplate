@@ -26,13 +26,11 @@ Do not edit one surface in isolation. `pnpm setup:check`, also included in `pnpm
 
 The checked-in identity is deliberately neutral:
 
-| Surface        | Value                      |
-| -------------- | -------------------------- |
-| Package        | `electron-boilerplate`     |
-| Product        | `Electron Boilerplate`     |
-| Application ID | `dev.electron.boilerplate` |
-| Executable     | `electron-boilerplate.exe` |
-| Version        | `0.1.0`                    |
+- Package: `electron-boilerplate`
+- Product: `Electron Boilerplate`
+- Application ID: `dev.electron.boilerplate`
+- Executable: `electron-boilerplate.exe`
+- Version: `0.1.0`
 
 ## Local validation
 

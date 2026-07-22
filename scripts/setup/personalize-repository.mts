@@ -210,26 +210,26 @@ function planIdentityUpdates(
     )
     updated = replaceRequiredLiteral(
       updated,
-      `| Package        | \`${current.packageName}\``,
-      `| Package        | \`${next.packageName}\``,
+      `- Package: \`${current.packageName}\``,
+      `- Package: \`${next.packageName}\``,
       repositoryFiles.releaseGuide,
     )
     updated = replaceRequiredLiteral(
       updated,
-      `| Application ID | \`${current.appId}\``,
-      `| Application ID | \`${next.appId}\``,
+      `- Application ID: \`${current.appId}\``,
+      `- Application ID: \`${next.appId}\``,
       repositoryFiles.releaseGuide,
     )
     updated = replaceRequiredLiteral(
       updated,
-      `| Executable     | \`${current.executableName}.exe\``,
-      `| Executable     | \`${next.executableName}.exe\``,
+      `- Executable: \`${current.executableName}.exe\``,
+      `- Executable: \`${next.executableName}.exe\``,
       repositoryFiles.releaseGuide,
     )
     updated = replaceRequiredLiteral(
       updated,
-      `| Version        | \`${current.version}\``,
-      `| Version        | \`${next.version}\``,
+      `- Version: \`${current.version}\``,
+      `- Version: \`${next.version}\``,
       repositoryFiles.releaseGuide,
     )
     return replaceRequiredLiteral(
@@ -293,11 +293,11 @@ function verifyPlannedRepository(
     [repositoryFiles.packageE2e, `${identity.executableName}.exe`],
     [repositoryFiles.workflow, `${identity.packageName}-windows`],
     [repositoryFiles.license, identity.author],
-    [repositoryFiles.releaseGuide, `| Package        | \`${identity.packageName}\``],
-    [repositoryFiles.releaseGuide, `| Product        | \`${identity.productName}\``],
-    [repositoryFiles.releaseGuide, `| Application ID | \`${identity.appId}\``],
-    [repositoryFiles.releaseGuide, `| Executable     | \`${identity.executableName}.exe\``],
-    [repositoryFiles.releaseGuide, `| Version        | \`${identity.version}\``],
+    [repositoryFiles.releaseGuide, `- Package: \`${identity.packageName}\``],
+    [repositoryFiles.releaseGuide, `- Product: \`${identity.productName}\``],
+    [repositoryFiles.releaseGuide, `- Application ID: \`${identity.appId}\``],
+    [repositoryFiles.releaseGuide, `- Executable: \`${identity.executableName}.exe\``],
+    [repositoryFiles.releaseGuide, `- Version: \`${identity.version}\``],
   ]
   for (const [relativePath, registeredValue] of checks)
     if (!readPlannedText(plan, relativePath).includes(registeredValue))

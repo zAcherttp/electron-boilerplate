@@ -144,13 +144,11 @@ export function readRegisteredIconPaths(builder: string): IconRegistration[] {
   const uninstaller = builder.match(/^  uninstallerIcon:\s*(.+)$/m)?.[1]?.trim()
 
   if (installer) {
-    const path = installer.startsWith('"') ? z.string().parse(JSON.parse(installer)) : installer
+    const path = readYamlScalar(builder, /^  installerIcon:\s*(.+)$/m, 'nsis.installerIcon')
     registrations.push({ destination: path, kind: 'installer', source: path })
   }
   if (uninstaller) {
-    const path = uninstaller.startsWith('"')
-      ? z.string().parse(JSON.parse(uninstaller))
-      : uninstaller
+    const path = readYamlScalar(builder, /^  uninstallerIcon:\s*(.+)$/m, 'nsis.uninstallerIcon')
     registrations.push({ destination: path, kind: 'uninstaller', source: path })
   }
   return registrations

@@ -60,8 +60,14 @@ export function readYamlScalar(content: string, pattern: RegExp, label: string):
   const match = content.match(pattern)
   const rawValue = match?.[1]?.trim()
   if (!rawValue) throw new Error(`Could not read ${label} from electron-builder.yml`)
-  if (!rawValue.startsWith('"')) return rawValue
-  return z.string().parse(JSON.parse(rawValue))
+  if (rawValue.startsWith('"')) return z.string().parse(JSON.parse(rawValue))
+  if (rawValue.startsWith("'") && rawValue.endsWith("'"))
+    return rawValue.slice(1, -1).replaceAll("''", "'")
+  return rawValue
+}
+
+function formatYamlScalar(value: string): string {
+  return `'${value.replaceAll("'", "''")}'`
 }
 
 export function setYamlScalar(
@@ -71,7 +77,7 @@ export function setYamlScalar(
   value: string,
 ): string {
   if (!pattern.test(content)) throw new Error(`Could not update ${key} in electron-builder.yml`)
-  return content.replace(pattern, `${key}: ${JSON.stringify(value)}`)
+  return content.replace(pattern, `${key}: ${formatYamlScalar(value)}`)
 }
 
 export function setNestedYamlScalar(
@@ -82,11 +88,11 @@ export function setNestedYamlScalar(
 ): string {
   const existingPattern = new RegExp(`^  ${key}:\\s*.*$`, 'm')
   if (existingPattern.test(content))
-    return content.replace(existingPattern, `  ${key}: ${JSON.stringify(value)}`)
+    return content.replace(existingPattern, `  ${key}: ${formatYamlScalar(value)}`)
 
   const sectionMarker = `${section}:\n`
   if (content.includes(sectionMarker))
-    return content.replace(sectionMarker, `${sectionMarker}  ${key}: ${JSON.stringify(value)}\n`)
+    return content.replace(sectionMarker, `${sectionMarker}  ${key}: ${formatYamlScalar(value)}\n`)
 
   const artifactMarker = 'artifactName:'
   if (!content.includes(artifactMarker))
@@ -95,7 +101,7 @@ export function setNestedYamlScalar(
     )
   return content.replace(
     artifactMarker,
-    `${section}:\n  ${key}: ${JSON.stringify(value)}\n\n${artifactMarker}`,
+    `${section}:\n  ${key}: ${formatYamlScalar(value)}\n\n${artifactMarker}`,
   )
 }
 

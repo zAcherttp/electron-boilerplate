@@ -102,10 +102,10 @@ describe('application setup', () => {
       version: '1.2.3',
     })
     expect(readFixtureFile(fixtureRoot, 'electron-builder.yml')).toContain(
-      'appId: "com.example.northstar"',
+      "appId: 'com.example.northstar'",
     )
     expect(readFixtureFile(fixtureRoot, 'electron-builder.yml')).toContain(
-      'productName: "Northstar Desktop"',
+      "productName: 'Northstar Desktop'",
     )
     expect(readFixtureFile(fixtureRoot, 'src/main/index.ts')).toContain(
       "setAppUserModelId('com.example.northstar')",
