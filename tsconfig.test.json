@@ -1,11 +1,19 @@
 {
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
+    "allowImportingTsExtensions": true,
     "composite": true,
     "lib": ["ES2023"],
     "rootDir": ".",
     "tsBuildInfoFile": "./dist/.tsbuildinfo/test.tsbuildinfo",
     "types": ["node"]
   },
-  "include": ["./src/api/**/*.ts", "./src/contracts/**/*.ts", "./src/main/security/**/*.ts"]
+  "include": [
+    "./scripts/**/*.test.ts",
+    "./scripts/**/*.mts",
+    "./src/api/**/*.ts",
+    "./src/contracts/**/*.ts",
+    "./src/main/logging/**/*.ts",
+    "./src/main/security/**/*.ts"
+  ]
 }

@@ -1,8 +1,15 @@
-interface SkeletonProps {
-  label?: string
+import type { ComponentProps } from 'react'
+
+import { cn } from '@/lib/utils'
+
+function Skeleton({ className, ...props }: ComponentProps<'div'>) {
+  return (
+    <div
+      data-slot="skeleton"
+      className={cn('animate-pulse rounded-md bg-muted', className)}
+      {...props}
+    />
+  )
 }
 
-/** @shadcn-replaceable skeleton */
-export function Skeleton({ label = 'Loading content' }: SkeletonProps) {
-  return <output aria-label={label} className="ui-skeleton" />
-}
+export { Skeleton }

@@ -6,7 +6,8 @@ import {
   Link,
   Outlet,
 } from '@tanstack/react-router'
-import { Alert } from '../components/ui/alert'
+import { TriangleAlertIcon } from 'lucide-react'
+import { Alert, AlertDescription, AlertTitle } from '../components/ui/alert'
 import { Button } from '../components/ui/button'
 import { EmptyState } from '../components/ui/empty-state'
 import { SystemInfoPage } from '../features/system-info/system-info-page'
@@ -28,9 +29,15 @@ function RootLayout() {
 function RouteError({ reset }: { reset: () => void }) {
   return (
     <main className="app-shell app-fallback">
-      <Alert title="This route could not be rendered">
-        <p>Reset the route to try again.</p>
-        <Button onClick={reset}>Reset route</Button>
+      <Alert className="max-w-xl" variant="destructive">
+        <TriangleAlertIcon aria-hidden="true" />
+        <AlertTitle>This route could not be rendered</AlertTitle>
+        <AlertDescription>
+          <p>Reset the route to try again.</p>
+          <Button variant="outline" onClick={reset}>
+            Reset route
+          </Button>
+        </AlertDescription>
       </Alert>
     </main>
   )

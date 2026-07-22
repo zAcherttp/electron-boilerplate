@@ -22,12 +22,29 @@ registerRendererScheme()
 if (process.platform === 'win32') app.setAppUserModelId('dev.electron.boilerplate')
 app.setAppLogsPath()
 
-const applicationLogger = createApplicationLogger({
-  appVersion: app.getVersion(),
-  isPackaged: app.isPackaged,
-  logDirectory: app.getPath('logs'),
-})
+const applicationLogger = app.isPackaged
+  ? createApplicationLogger({
+      appVersion: app.getVersion(),
+      logDirectory: app.getPath('logs'),
+      mode: 'packaged',
+    })
+  : createApplicationLogger({
+      appVersion: app.getVersion(),
+      destination: 1,
+      mode: 'development',
+    })
 const logger = applicationLogger.logger
+
+process.on('uncaughtExceptionMonitor', (error, origin) => {
+  logger.fatal({ err: error, origin }, 'uncaught main-process exception')
+  applicationLogger.flush()
+})
+
+if (applicationLogger.storage.kind === 'stderr')
+  logger.error(
+    { reason: applicationLogger.storage.reason },
+    'packaged file logging unavailable; using stderr',
+  )
 
 const singleInstance = registerSingleInstance(() => {
   logger.info('second instance requested')
@@ -92,7 +109,7 @@ function startApplication(): void {
   logger.info(
     {
       architecture: process.arch,
-      logFile: applicationLogger.filePath,
+      logging: applicationLogger.storage,
       packaged: app.isPackaged,
       platform: process.platform,
     },
@@ -115,18 +132,25 @@ function startApplication(): void {
     getWindow: () => mainWindow,
   })
 
-  void app.whenReady().then(() => {
-    logger.info('application ready')
-    configureSessionSecurity(session.defaultSession)
-    const removeRendererProtocol = registerRendererProtocol(join(__dirname, '../renderer'))
+  void app
+    .whenReady()
+    .then(() => {
+      logger.info('application ready')
+      configureSessionSecurity(session.defaultSession)
+      const removeRendererProtocol = registerRendererProtocol(join(__dirname, '../renderer'))
 
-    app.once('will-quit', removeRendererProtocol)
-    createWindow()
+      app.once('will-quit', removeRendererProtocol)
+      createWindow()
 
-    app.on('activate', () => {
-      if (mainWindow === null) createWindow()
+      app.on('activate', () => {
+        if (mainWindow === null) createWindow()
+      })
     })
-  })
+    .catch((error: Error) => {
+      logger.fatal({ err: error }, 'application readiness failed')
+      applicationLogger.flush()
+      app.exit(1)
+    })
 
   app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') app.quit()

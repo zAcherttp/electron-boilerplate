@@ -5,10 +5,35 @@ import { dirname, resolve } from 'node:path'
 import { setTimeout as delay } from 'node:timers/promises'
 import { expect, test } from '@playwright/test'
 import { chromium, type Browser } from 'playwright'
+import { z } from 'zod'
 import { assertApplicationWindow } from './assert-application-window'
 
 const projectRoot = resolve(__dirname, '../..')
 const executablePath = resolve(projectRoot, 'release', 'win-unpacked', 'electron-boilerplate.exe')
+const packagedStartupRecordSchema = z.object({
+  logging: z.object({
+    filePath: z.string(),
+    kind: z.literal('file'),
+    maxFileBytes: z.literal(5 * 1024 * 1024),
+    retainedArchiveCount: z.literal(3),
+    rotatedAtStartup: z.boolean(),
+  }),
+  msg: z.literal('application starting'),
+})
+
+function readPackagedStartupRecord(logFilePath: string) {
+  if (!existsSync(logFilePath)) return null
+
+  const content = readFileSync(logFilePath, 'utf8').trim()
+  if (!content) return null
+
+  for (const line of content.split('\n').reverse()) {
+    const record = packagedStartupRecordSchema.safeParse(JSON.parse(line))
+    if (record.success) return record.data
+  }
+
+  return null
+}
 
 function getAvailablePort(): Promise<number> {
   return new Promise((resolvePort, reject) => {
@@ -71,12 +96,15 @@ test('launches the packaged Windows application and completes the vertical slice
     const window = context.pages()[0] ?? (await context.waitForEvent('page'))
 
     await assertApplicationWindow(window)
+    await expect.poll(() => readPackagedStartupRecord(logFilePath)).not.toBeNull()
+    expect(readPackagedStartupRecord(logFilePath)?.logging).toMatchObject({
+      filePath: logFilePath,
+      kind: 'file',
+      maxFileBytes: 5 * 1024 * 1024,
+      retainedArchiveCount: 3,
+    })
     await expect
-      .poll(
-        () =>
-          existsSync(logFilePath) &&
-          readFileSync(logFilePath, 'utf8').includes('"msg":"application ready"'),
-      )
+      .poll(() => readFileSync(logFilePath, 'utf8').includes('"msg":"application ready"'))
       .toBe(true)
   } finally {
     await browser?.close()

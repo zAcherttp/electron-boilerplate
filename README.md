@@ -11,18 +11,20 @@ The repository is being assembled one verified increment at a time. The current 
 - default-deny navigation, popups, webviews, external URLs, and session permissions
 - single-instance lifecycle and package-time Electron security fuses
 - React 19 rendered by Vite 8
+- Tailwind CSS v4 and shadcn/ui on Base UI with packaged Geist and Geist Mono typography
 - TanStack Router with a code-defined, hash-based desktop route tree
 - TanStack Query with feature-owned IPC queries and explicit async states
 - top-level React error containment and accessible renderer fallbacks
 - Playwright smoke coverage for Electron startup, routing, IPC, and renderer isolation
 - Oxfmt formatting and one `pnpm check` quality gate shared by local development and CI
 - Windows GitHub Actions validation from a frozen-lockfile checkout
+- one-command identity and icon personalization with drift checking
 - TypeScript 7 in strict mode
 - vite-plugin-doubleshot for Electron main, preload, and application startup
 - electron-builder for ASAR packaging and Windows installers
 - Hono Application API with Zod request and response contracts
 - narrow, sender-validated IPC exposed as `window.app.system.getInfo()`
-- Pino structured logging owned by Electron main with packaged file output
+- Pino structured logging with colored development output and packaged file retention
 - Oxlint with TypeScript 7 type-aware, React, accessibility, and Vitest rules
 - pnpm 11.15.1 pinned through `packageManager`
 - one straightforward Vite command for development and production builds
@@ -101,6 +103,22 @@ Vite is the toolchain entrypoint. Doubleshot wires Electron main and preload bui
 - Node.js 22.18 or newer
 - pnpm 11.15.1 (Corepack can select it from `package.json`)
 
+## Personalize the template
+
+Preview the complete identity change, then apply it:
+
+```bash
+pnpm setup:dry-run -- --name "Northstar Desktop" --app-id com.example.northstar
+pnpm setup:apply -- --name "Northstar Desktop" --app-id com.example.northstar
+pnpm setup:check
+```
+
+`--name` and `--app-id` are required. The package and executable names default to a lowercase slug of the app name; `--package-name`, `--executable`, `--version`, `--description`, and `--author` override their individual values. The command updates package metadata, MIT copyright holder, electron-builder identity, Windows App User Model ID, renderer title, tests, workflow artifact name, and identity documentation together. It prints the registered app name, application ID, package, executable, version, author, icons, and changed files.
+
+Pass `--icons <file-or-directory>` or place an icon directory at `icons/` or `assets/icons/` for automatic discovery. The application icon may be `icon.svg`, `icon.png`, or `icon.ico`; `app.*` and `application.*` are also recognized. Optional NSIS icons must be named `installer.ico` or `installerIcon.ico` and `uninstaller.ico` or `uninstallerIcon.ico`. The command validates every discovered icon before copying it into `build/` and registering it in `electron-builder.yml`.
+
+`pnpm setup:check` is included in `pnpm check`, so later identity or icon drift fails locally and in CI.
+
 ## Development
 
 ```bash
@@ -130,7 +148,7 @@ Use `pnpm lint:fix` to apply Oxlint's safe automatic fixes.
 
 `pnpm test:e2e` creates a clean production build and launches it through Playwright's Electron driver. The smoke test verifies the secure `app://` renderer, typed route, live preload → IPC → Hono result, and the absence of raw Node or Electron globals. It uses Electron's bundled Chromium and does not require a separate Playwright browser download.
 
-`pnpm check` is the authoritative quality gate. It checks Oxfmt formatting, runs Oxlint and TypeScript, executes Vitest, builds the production application, and finishes with the Electron smoke test. The Windows GitHub Actions workflow installs from the frozen lockfile and runs this same command.
+`pnpm check` is the authoritative quality gate. It checks identity registration and Oxfmt formatting, runs Oxlint and TypeScript, executes Vitest, builds the production application, and finishes with the Electron smoke test. The Windows GitHub Actions workflow installs from the frozen lockfile and runs this same command.
 
 ## Packaging
 
@@ -151,11 +169,13 @@ Packaged applications also disable Electron's run-as-Node, Node environment opti
 
 ## Logging
 
-Electron main owns the Pino logger. Development records are structured JSON on stdout; packaged records append to `main.log` in Electron's operating-system log directory. Startup, readiness, second-instance activation, renderer termination, load failure, window closure, and shutdown provide the baseline lifecycle trail.
+Electron main owns the Pino logger. Development records use `pino-pretty` to render a compact, colored local timestamp, level, PID, `[Electron] [main]` owner, message, and single-line context. Packaged records remain newline-delimited JSON and append synchronously to `main.log` in Electron's operating-system log directory. At launch, a log at or above 5 MiB rotates to `main.1.log`; three numbered archives are retained. Startup, readiness, second-instance activation, renderer termination, load failure, window closure, shutdown, readiness failure, and uncaught main-process exceptions provide the baseline lifecycle trail.
 
 Common password, token, authorization, and cookie fields are redacted at the logger boundary. Do not log raw IPC payloads, request bodies, credentials, or user documents. The renderer receives no generic logging IPC method; add feature-specific diagnostics only when a product requirement defines their data policy.
 
-The packaged-runtime smoke test verifies that the log file is created and contains the readiness record. Products that introduce sustained or high-volume logging should also define retention and rotation limits.
+The startup record includes the absolute log path, storage mode, rotation threshold, archive count, and whether rotation occurred. If the packaged log directory cannot be prepared, logging falls back to stderr and emits an explicit failure record. The packaged-runtime smoke test verifies this storage contract and the readiness record.
+
+Synchronous file output is deliberate for this low-volume lifecycle baseline so early-exit and crash records can be flushed deterministically. A product that introduces sustained or high-volume logging should replace it with a separately tested worker transport rather than sending payload-heavy records through Electron main.
 
 ## Electron security policy
 
@@ -167,13 +187,7 @@ Browser permission checks and requests are denied until a product feature introd
 
 Routes are code-defined to keep this initial tree explicit and avoid generated TypeScript. Hash history keeps desktop routes behind the contained `app://bundle/index.html` entry point. TanStack Query uses `networkMode: 'always'` because its current transport is IPC rather than browser networking.
 
-Replaceable UI primitives carry a searchable source comment in this form:
-
-```ts
-/** @shadcn-replaceable button */
-```
-
-Run `rg "@shadcn-replaceable" src/renderer` to find the complete migration surface before adopting shadcn.
+Renderer primitives use shadcn/ui on Base UI with the Nova, Stone, and Emerald preset `b2BVUGjbM`. Geist and Geist Mono are bundled through Fontsource; packaged applications do not download fonts at runtime. `components.json` scopes generated components and utilities to `src/renderer`. Preview new components with `pnpm exec shadcn add <name> --dry-run` before writing them. The [project manual](docs/project-manual.md#renderer-design-system) records the preset and update workflow.
 
 ## TypeScript 7 support
 
@@ -196,7 +210,12 @@ Hono runs in memory without opening a localhost port. A future Node adapter can 
 
 ## Plans
 
+- [Project manual: setup, perks, quirks, and utilities](docs/project-manual.md)
 - [Full visual implementation plan](docs/plan.html)
 - [Brief session-reload plan](docs/plan.md)
 
 The core scaffold is verified through packaging: Vite, TypeScript, the secure Electron shell, Application API slice, renderer foundation, formatting, source and packaged-runtime smoke tests, editable identity, Pino logging, and unsigned NSIS generation. The Windows quality and manual packaging workflows both pass from clean checkouts.
+
+## License
+
+[MIT](LICENSE)

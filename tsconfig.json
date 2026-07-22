@@ -1,5 +1,10 @@
 {
   "files": [],
+  "compilerOptions": {
+    "paths": {
+      "@/*": ["./src/renderer/*"]
+    }
+  },
   "references": [
     { "path": "./src/main" },
     { "path": "./src/preload" },

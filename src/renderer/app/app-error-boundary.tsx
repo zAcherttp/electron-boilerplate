@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import { Component } from 'react'
-import { Alert } from '../components/ui/alert'
+import { TriangleAlertIcon } from 'lucide-react'
+import { Alert, AlertDescription, AlertTitle } from '../components/ui/alert'
 import { Button } from '../components/ui/button'
 
 interface AppErrorBoundaryProps {
@@ -27,9 +28,15 @@ export class AppErrorBoundary extends Component<AppErrorBoundaryProps, AppErrorB
 
     return (
       <main className="app-shell app-fallback">
-        <Alert title="The application view stopped unexpectedly">
-          <p>Reset the view to try rendering it again.</p>
-          <Button onClick={this.reset}>Reset view</Button>
+        <Alert className="max-w-xl" variant="destructive">
+          <TriangleAlertIcon aria-hidden="true" />
+          <AlertTitle>The application view stopped unexpectedly</AlertTitle>
+          <AlertDescription>
+            <p>Reset the view to try rendering it again.</p>
+            <Button variant="outline" onClick={this.reset}>
+              Reset view
+            </Button>
+          </AlertDescription>
         </Alert>
       </main>
     )

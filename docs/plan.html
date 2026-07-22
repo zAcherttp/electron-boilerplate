@@ -515,7 +515,9 @@
         product-specific capabilities remain optional until a real requirement activates them.
       </p>
       <div class="meta" aria-label="Plan metadata">
-        <span class="pill pill--active">Core scaffold complete through Phase 06</span>
+        <span class="pill pill--active">Core scaffold complete through Phase 07</span>
+        <span class="pill">Phase 08 logging operations complete</span>
+        <span class="pill">Phase 09 design system verified</span>
         <span class="pill">Updated July 22, 2026</span>
         <span class="pill">Vite + TypeScript 7 verified</span>
         <span class="pill">Secure shell + packaging verified</span>
@@ -861,7 +863,7 @@ future api-server ──→ extracted api package</code></pre>
       </section>
 
       <section id="phases">
-        <div class="eyebrow">06 · Delivery</div>
+        <div class="eyebrow">07 · Delivery</div>
         <h2>Incremental implementation.</h2>
         <p class="section-intro">
           Each phase should leave the repository runnable and reviewable. We do not begin the next
@@ -1047,11 +1049,117 @@ future api-server ──→ extracted api package</code></pre>
               </p>
             </div>
           </li>
+          <li class="phase">
+            <div class="phase__index">07</div>
+            <div>
+              <h3>One-command template personalization</h3>
+              <ul>
+                <li>
+                  Add one non-interactive command for application identity and package metadata.
+                  <strong>Done.</strong>
+                </li>
+                <li>
+                  Auto-detect, validate, copy, register, and report application and optional NSIS
+                  icons. <strong>Done.</strong>
+                </li>
+                <li>
+                  Provide a no-write preview and an identity drift check used by the unified quality
+                  gate. <strong>Done.</strong>
+                </li>
+                <li>
+                  Exercise the owned workflow against an isolated repository fixture.
+                  <strong>Done.</strong>
+                </li>
+              </ul>
+              <p class="acceptance">
+                <strong>Verified:</strong> one command personalizes the complete identity, the
+                preview writes nothing, and the result passes the same registration check used by
+                CI.
+              </p>
+            </div>
+          </li>
+          <li class="phase">
+            <div class="phase__index">08</div>
+            <div>
+              <h3>Operational maturity</h3>
+              <p>Execute these items in order:</p>
+              <ol>
+                <li>
+                  Finish logging operations: add readable colored development output, define bounded
+                  retention and rotation, make the packaged log location observable, and cover
+                  operational failure behavior.
+                  <strong>Done.</strong>
+                </li>
+                <li>
+                  Add dependency maintenance automation.
+                  <strong>TBD next.</strong>
+                </li>
+                <li>
+                  Declare the platform contract and add macOS and Linux smoke lanes.
+                  <strong>TBD after dependency maintenance automation.</strong>
+                </li>
+              </ol>
+              <p class="acceptance">
+                <strong>Accept when:</strong> logging has an explicit operating policy, dependency
+                updates use a controlled automated workflow, and every declared platform has
+                clean-checkout smoke evidence at its documented support level.
+              </p>
+              <p class="acceptance">
+                macOS and Linux source-runtime smoke support does not imply distributable package
+                support. Packaging requires platform metadata, icons, signing boundaries, and
+                packaged-runtime acceptance evidence.
+              </p>
+            </div>
+          </li>
+          <li class="phase">
+            <div class="phase__index">09</div>
+            <div>
+              <h3>Renderer design system</h3>
+              <ul>
+                <li>
+                  Lock a reproducible preset in
+                  <a href="https://ui.shadcn.com/create">shadcn/create</a> and record its decoded
+                  configuration. <strong>Done.</strong>
+                </li>
+                <li>
+                  Select shadcn/ui on Base UI explicitly. The preset is
+                  <code>b2BVUGjbM</code>: Nova, Stone, Emerald, Lucide, packaged Geist, default
+                  radius, and subtle menu accents. <strong>Done.</strong>
+                </li>
+                <li>
+                  Add Tailwind CSS v4 through <code>@tailwindcss/vite</code>, keep Vite as the
+                  command entrypoint, and scope <code>@/*</code> to <code>src/renderer/*</code>.
+                  <strong>Done.</strong>
+                </li>
+                <li>
+                  Commit <code>components.json</code>, preview registry writes with
+                  <code>shadcn add --dry-run</code> and <code>--diff</code>, and keep generated UI
+                  inside the renderer boundary. <strong>Done.</strong>
+                </li>
+                <li>
+                  Replace the tagged Button, Alert, Skeleton, and Empty primitives incrementally;
+                  merge theme tokens into the existing stylesheet and remove only superseded CSS.
+                  <strong>Done.</strong>
+                </li>
+                <li>
+                  Keep fonts and assets available offline in packaged builds, keep the UI toolchain
+                  out of production dependencies, and preserve tested success, loading, error, and
+                  empty states. <strong>Done.</strong>
+                </li>
+              </ul>
+              <p class="acceptance">
+                <strong>Verified:</strong> the Base UI preset is reproducible, no
+                <code>@shadcn-replaceable</code> primitive or duplicate primitive styling remains,
+                renderer states stay accessible, and <code>pnpm check</code> plus
+                <code>pnpm test:package</code> pass.
+              </p>
+            </div>
+          </li>
         </ol>
       </section>
 
       <section id="optional-modules">
-        <div class="eyebrow">07 · Opt-in catalog</div>
+        <div class="eyebrow">10 · Opt-in catalog</div>
         <h2>Optional modules.</h2>
         <p class="section-intro">
           Optional modules are recipes with clear activation triggers. They are not installed in the
@@ -1141,12 +1249,6 @@ future api-server ──→ extracted api package</code></pre>
                 <td><span class="module-status module-status--later">Product</span></td>
               </tr>
               <tr>
-                <td>Design system</td>
-                <td>Multiple product screens require reusable visual primitives.</td>
-                <td>Tailwind plus accessible primitives and documented design tokens.</td>
-                <td><span class="module-status module-status--later">Product</span></td>
-              </tr>
-              <tr>
                 <td>Offline synchronization</td>
                 <td>Local and remote sources both own mutable data.</td>
                 <td>Explicit sync state machine, conflict policy, durable operation log.</td>
@@ -1163,7 +1265,7 @@ future api-server ──→ extracted api package</code></pre>
       </section>
 
       <section id="quality">
-        <div class="eyebrow">08 · Guardrails</div>
+        <div class="eyebrow">10 · Guardrails</div>
         <h2>Definition of done.</h2>
         <p class="section-intro">
           A phase is complete when the behavior is observable at its real boundary—not when a set of

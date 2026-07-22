@@ -4,13 +4,25 @@ The boilerplate produces an unpacked Windows application and an unsigned NSIS in
 
 ## Replace the boilerplate identity
 
-Before distributing an application, update every identity surface together:
+Preview and apply every identity surface together with the repository-owned setup command:
+
+```bash
+pnpm setup:dry-run -- --name "Northstar Desktop" --app-id com.example.northstar
+pnpm setup:apply -- --name "Northstar Desktop" --app-id com.example.northstar
+pnpm setup:check
+```
+
+Use `--icons <file-or-directory>` or an automatically discovered `icons/` or `assets/icons/` directory to register application and optional NSIS icons. Run `pnpm setup:apply -- --help` for the full naming and metadata options.
+
+The command owns these identity surfaces:
 
 1. Set `name`, `version`, `description`, and `author` in `package.json`.
 2. Set `appId`, `productName`, and `win.executableName` in `electron-builder.yml`.
 3. Keep the Windows App User Model ID in `src/main/index.ts` equal to `appId`.
-4. Replace `build/icon.svg` with a square SVG master and keep `win.icon` pointed to it.
+4. Validate and register application, installer, and uninstaller icons under `build/`.
 5. Update the document title in `src/renderer/index.html` and the corresponding E2E assertions.
+
+Do not edit one surface in isolation. `pnpm setup:check`, also included in `pnpm check`, fails when the registered identity or icon files drift.
 
 The checked-in identity is deliberately neutral:
 
@@ -32,7 +44,7 @@ pnpm test:package
 pnpm dist
 ```
 
-`pnpm test:package` builds `release/win-unpacked/electron-boilerplate.exe`, starts that executable, and verifies the complete system-info vertical slice. The test adds a Chromium debugging flag only to its child process so Playwright can inspect the renderer; the application does not enable remote debugging itself, and the packaged Node-inspector fuse remains disabled.
+`pnpm test:package` builds `release/win-unpacked/electron-boilerplate.exe`, starts that executable, and verifies the complete system-info vertical slice plus the packaged logging path and retention contract. The test adds a Chromium debugging flag only to its child process so Playwright can inspect the renderer; the application does not enable remote debugging itself, and the packaged Node-inspector fuse remains disabled.
 
 `pnpm dist` creates the unsigned NSIS installer and block map in `release/`. Install the artifact on a disposable Windows profile before release and verify launch, removal, Start menu identity, taskbar icon, and the system-info screen.
 

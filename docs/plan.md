@@ -1,7 +1,7 @@
 # Electron Boilerplate — Quick Plan
 
 Updated: 2026-07-22
-Status: Core scaffold complete through Phase 06; clean Windows workflows verified and Pino baseline implemented
+Status: Core scaffold complete through Phase 07; Phase 08 logging operations complete; Phase 09 design system verified
 
 The detailed plan is in [`plan.html`](./plan.html).
 
@@ -17,6 +17,7 @@ Build an opinionated but small Electron boilerplate using:
 - Hono as a portable Application API
 - Zod contracts
 - TanStack Router and TanStack Query
+- Tailwind CSS and shadcn/ui on Base UI
 - electron-builder
 - Vitest and Playwright
 - Oxlint, formatting, Pino, and GitHub Actions
@@ -134,6 +135,41 @@ Acceptance: `pnpm check` passes locally and in the Windows workflow after a clea
 
 Acceptance: `pnpm test:package` launches the unpacked Windows artifact and completes the system-info vertical slice; the manual Windows workflow produces and uploads the unsigned NSIS installer and block map. **Verified**
 
+### Phase 07 — Template experience
+
+- Add one non-interactive setup command for app identity and metadata. **Done**
+- Auto-detect, validate, copy, register, and report application and optional NSIS icons. **Done**
+- Provide dry-run and drift-check commands. **Done**
+- Include identity registration in the unified quality gate. **Done**
+- Cover the owned setup workflow with an isolated repository-level integration test. **Done**
+
+Acceptance: a temporary clone can be fully personalized with one command, the preview writes nothing, and the resulting identity and icon registration pass the same check used by CI. **Verified**
+
+### Phase 08 — Operational maturity
+
+Execute these items in order:
+
+1. Finish logging operations: add readable colored development output, define bounded retention and rotation, make the packaged log location observable, and cover operational failure behavior. **Done**
+2. Add dependency maintenance automation. **TBD — next**
+3. Declare the platform contract and add macOS and Linux smoke lanes. **TBD — after dependency maintenance automation**
+
+The macOS and Linux lanes must distinguish source-runtime smoke support from distributable package support. Do not claim packaging support until each platform has its own metadata, icons, signing boundary, and packaged-runtime acceptance evidence.
+
+Acceptance: logging has an explicit operating policy, dependency updates arrive through a controlled automated workflow, and all declared platforms have clean-checkout smoke evidence at the support level documented by the repository.
+
+### Phase 09 — Renderer design system
+
+- Lock and record shadcn preset `b2BVUGjbM`: Nova, Stone, Emerald, Lucide, Geist, default radius, and subtle menu accents. **Done**
+- Use shadcn/ui with Base UI explicitly selected, even while Base UI is the upstream default. **Done**
+- Add Tailwind CSS v4 through `@tailwindcss/vite` without changing Vite as the single command entrypoint. **Done**
+- Scope `@/*` to `src/renderer/*`; generated UI belongs in `src/renderer/components/ui` and renderer utilities in `src/renderer/lib`. **Done**
+- Commit `components.json` as the design-system source of truth and document `shadcn add --dry-run` and `--diff`. **Done**
+- Replace the tagged custom Button, Alert, Skeleton, and Empty primitives while preserving feature ownership and the current application character. **Done**
+- Merge theme tokens into `src/renderer/styles.css` and remove the superseded primitive CSS. **Done**
+- Package Geist locally and keep the complete UI toolchain out of production dependencies. **Done**
+
+Acceptance: the selected Base UI preset is reproducible, all `@shadcn-replaceable` primitives are migrated without duplicate styling, success/loading/error/empty renderer states remain accessible, and `pnpm check` plus `pnpm test:package` pass. **Verified**
+
 ## Optional modules
 
 Add only when activated by a real requirement:
@@ -149,7 +185,6 @@ Add only when activated by a real requirement:
 - utility-process background jobs
 - telemetry and error reporting
 - internationalization
-- Tailwind and a reusable design system
 - offline synchronization
 
 Before adding an optional module, define its owner, threat model, persistence and packaging impact, and acceptance test.
@@ -175,4 +210,4 @@ pnpm check
 
 ## Next action
 
-The essential scaffold is complete. Start an optional module only when a real application requirement defines its owner and acceptance test. Consent, remembered external origins, permission grants, deep-link routing, and the Node HTTP adapter remain deliberately absent.
+Next: resume Phase 08 with dependency maintenance automation, followed by macOS/Linux source-runtime smoke lanes. Consent, remembered external origins, permission grants, deep-link routing, and the Node HTTP adapter remain deliberately absent.

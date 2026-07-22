@@ -1,4 +1,5 @@
 import { fileURLToPath, URL } from 'node:url'
+import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 import { VitePluginDoubleshot } from 'vite-plugin-doubleshot'
@@ -12,6 +13,7 @@ export default defineConfig({
   clearScreen: false,
   plugins: [
     react(),
+    tailwindcss(),
     VitePluginDoubleshot({
       type: 'electron',
       main: 'dist/main/index.js',
@@ -26,6 +28,11 @@ export default defineConfig({
       },
     }),
   ],
+  resolve: {
+    alias: {
+      '@': rendererRoot,
+    },
+  },
   server: {
     host: '127.0.0.1',
     port: 5173,

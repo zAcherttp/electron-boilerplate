@@ -1,4 +1,5 @@
-import { Alert } from '../../components/ui/alert'
+import { TriangleAlertIcon } from 'lucide-react'
+import { Alert, AlertDescription, AlertTitle } from '../../components/ui/alert'
 import { Button } from '../../components/ui/button'
 import { Skeleton } from '../../components/ui/skeleton'
 import { useSystemInfoQuery } from './system-info-query'
@@ -42,17 +43,23 @@ export function SystemInfoPage() {
 
         <div className="runtime-result" aria-live="polite">
           {systemInfoQuery.isPending && (
-            <div className="runtime-skeletons">
-              <Skeleton label="Loading application version" />
-              <Skeleton label="Loading platform information" />
-              <Skeleton label="Loading runtime versions" />
-            </div>
+            <output aria-label="Loading system information" className="runtime-skeletons">
+              <Skeleton aria-hidden="true" className="min-h-20" />
+              <Skeleton aria-hidden="true" className="min-h-20" />
+              <Skeleton aria-hidden="true" className="min-h-20" />
+            </output>
           )}
 
           {systemInfoQuery.isError && (
-            <Alert title="System information is unavailable">
-              <p>The desktop bridge did not complete the request.</p>
-              <Button onClick={() => void systemInfoQuery.refetch()}>Try again</Button>
+            <Alert className="max-w-xl" variant="destructive">
+              <TriangleAlertIcon aria-hidden="true" />
+              <AlertTitle>System information is unavailable</AlertTitle>
+              <AlertDescription>
+                <p>The desktop bridge did not complete the request.</p>
+                <Button variant="outline" onClick={() => void systemInfoQuery.refetch()}>
+                  Try again
+                </Button>
+              </AlertDescription>
             </Alert>
           )}
 
