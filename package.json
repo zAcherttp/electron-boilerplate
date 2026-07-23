@@ -60,7 +60,7 @@
     "electron-builder": "26.15.3",
     "jsdom": "29.1.1",
     "lucide-react": "1.25.0",
-    "oxfmt": "0.59.0",
+    "oxfmt": "0.60.0",
     "oxlint": "1.74.0",
     "oxlint-tsgolint": "0.25.0",
     "pino-pretty": "13.1.3",
