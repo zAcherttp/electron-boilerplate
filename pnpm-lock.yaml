@@ -73,8 +73,8 @@ importers:
         specifier: 2.1.1
         version: 2.1.1
       electron:
-        specifier: 43.1.1
-        version: 43.1.1(supports-color@7.2.0)
+        specifier: 43.2.0
+        version: 43.2.0(supports-color@7.2.0)
       electron-builder:
         specifier: 26.15.3
         version: 26.15.3(electron-builder-squirrel-windows@26.15.3)(supports-color@7.2.0)
@@ -122,7 +122,7 @@ importers:
         version: 8.1.5(@types/node@26.1.1)(esbuild@0.28.1)(jiti@2.7.0)
       vite-plugin-doubleshot:
         specifier: 0.0.25
-        version: 0.0.25(debug@4.4.3(supports-color@7.2.0))(electron-builder@26.15.3(electron-builder-squirrel-windows@26.15.3)(supports-color@7.2.0))(electron@43.1.1(supports-color@7.2.0))(esbuild@0.28.1)(supports-color@7.2.0)(typescript@7.0.2)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1)(jiti@2.7.0))
+        version: 0.0.25(debug@4.4.3(supports-color@7.2.0))(electron-builder@26.15.3(electron-builder-squirrel-windows@26.15.3)(supports-color@7.2.0))(electron@43.2.0(supports-color@7.2.0))(esbuild@0.28.1)(supports-color@7.2.0)(typescript@7.0.2)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1)(jiti@2.7.0))
       vitest:
         specifier: 4.1.10
         version: 4.1.10(@types/node@26.1.1)(jsdom@29.1.1(@noble/hashes@2.2.0))(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1)(jiti@2.7.0))
@@ -2198,8 +2198,8 @@ packages:
     resolution: {integrity: sha512-bO3y10YikuUwUuDUQRM4KfwNkKhnpVO7IPdbsrejwN9/AABJzzTQ4GeHwyzNSrVO+tEH3/Np255a3sVZpZDjvg==}
     engines: {node: '>=8.0.0'}
 
-  electron@43.1.1:
-    resolution: {integrity: sha512-I5c5vfuVvaXpWx3IZdwvXgxQW44+e7OP1wXGVQkogLeSFSkUZ6sLCcWV05AdEcs65AO5tAIJJwbp7ixw+LdarA==}
+  electron@43.2.0:
+    resolution: {integrity: sha512-80zvrgG7ZRXD+tD0IyLvrnN9n+veSxadMRsMaC9wKKP3iUbtC7rGM8+dVuCmOb0Rrwwv8ESW4awnUZh9Hbp1fA==}
     engines: {node: '>= 22.12.0'}
     hasBin: true
 
@@ -4475,7 +4475,7 @@ snapshots:
 
   '@dotenvx/primitives@0.8.0': {}
 
-  '@doubleshot/builder@0.0.24(debug@4.4.3(supports-color@7.2.0))(electron-builder@26.15.3(electron-builder-squirrel-windows@26.15.3)(supports-color@7.2.0))(electron@43.1.1(supports-color@7.2.0))(esbuild@0.28.1)(supports-color@7.2.0)(typescript@7.0.2)':
+  '@doubleshot/builder@0.0.24(debug@4.4.3(supports-color@7.2.0))(electron-builder@26.15.3(electron-builder-squirrel-windows@26.15.3)(supports-color@7.2.0))(electron@43.2.0(supports-color@7.2.0))(esbuild@0.28.1)(supports-color@7.2.0)(typescript@7.0.2)':
     dependencies:
       bundle-require: 5.1.0(esbuild@0.28.1)
       cac: 7.0.0
@@ -4486,7 +4486,7 @@ snapshots:
       tsdown: 0.22.5(typescript@7.0.2)
       wait-on: 9.0.10(debug@4.4.3(supports-color@7.2.0))(supports-color@7.2.0)
     optionalDependencies:
-      electron: 43.1.1(supports-color@7.2.0)
+      electron: 43.2.0(supports-color@7.2.0)
       electron-builder: 26.15.3(electron-builder-squirrel-windows@26.15.3)(supports-color@7.2.0)
     transitivePeerDependencies:
       - '@arethetypeswrong/core'
@@ -6030,7 +6030,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  electron@43.1.1(supports-color@7.2.0):
+  electron@43.2.0(supports-color@7.2.0):
     dependencies:
       '@electron-internal/extract-zip': 1.0.4
       '@electron/get': 5.0.0(supports-color@7.2.0)
@@ -7835,9 +7835,9 @@ snapshots:
 
   vary@1.1.2: {}
 
-  vite-plugin-doubleshot@0.0.25(debug@4.4.3(supports-color@7.2.0))(electron-builder@26.15.3(electron-builder-squirrel-windows@26.15.3)(supports-color@7.2.0))(electron@43.1.1(supports-color@7.2.0))(esbuild@0.28.1)(supports-color@7.2.0)(typescript@7.0.2)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1)(jiti@2.7.0)):
+  vite-plugin-doubleshot@0.0.25(debug@4.4.3(supports-color@7.2.0))(electron-builder@26.15.3(electron-builder-squirrel-windows@26.15.3)(supports-color@7.2.0))(electron@43.2.0(supports-color@7.2.0))(esbuild@0.28.1)(supports-color@7.2.0)(typescript@7.0.2)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1)(jiti@2.7.0)):
     dependencies:
-      '@doubleshot/builder': 0.0.24(debug@4.4.3(supports-color@7.2.0))(electron-builder@26.15.3(electron-builder-squirrel-windows@26.15.3)(supports-color@7.2.0))(electron@43.1.1(supports-color@7.2.0))(esbuild@0.28.1)(supports-color@7.2.0)(typescript@7.0.2)
+      '@doubleshot/builder': 0.0.24(debug@4.4.3(supports-color@7.2.0))(electron-builder@26.15.3(electron-builder-squirrel-windows@26.15.3)(supports-color@7.2.0))(electron@43.2.0(supports-color@7.2.0))(esbuild@0.28.1)(supports-color@7.2.0)(typescript@7.0.2)
       vite: 8.1.5(@types/node@26.1.1)(esbuild@0.28.1)(jiti@2.7.0)
     transitivePeerDependencies:
       - '@arethetypeswrong/core'
