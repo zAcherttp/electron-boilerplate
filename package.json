@@ -34,7 +34,7 @@
   },
   "dependencies": {
     "@tanstack/react-query": "5.101.4",
-    "@tanstack/react-router": "1.170.28",
+    "@tanstack/react-router": "1.170.29",
     "hono": "4.13.2",
     "pino": "10.3.1",
     "react": "19.2.8",
