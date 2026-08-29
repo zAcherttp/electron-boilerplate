@@ -33,7 +33,7 @@
     "postinstall": "electron-builder install-app-deps"
   },
   "dependencies": {
-    "@tanstack/react-query": "5.102.3",
+    "@tanstack/react-query": "5.102.8",
     "@tanstack/react-router": "1.170.32",
     "hono": "4.13.5",
     "pino": "10.3.1",
