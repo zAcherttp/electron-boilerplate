@@ -173,8 +173,8 @@ importers:
         specifier: 1.170.40
         version: 1.170.40(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       hono:
-        specifier: 4.13.9
-        version: 4.13.9
+        specifier: 4.13.10
+        version: 4.13.10
       pino:
         specifier: 10.3.1
         version: 10.3.1
@@ -2769,8 +2769,8 @@ packages:
   help-me@5.0.0:
     resolution: {integrity: sha512-7xgomUX6ADmcYzFik0HzAxh/73YlKR9bmFzf51CZwR+b6YtzU2m0u49hQCqV6SvlqIqsaxovfwdvbnsw3b/zpg==}
 
-  hono@4.13.9:
-    resolution: {integrity: sha512-7dMkQmZoC4E6F7AtaQSPhlWAdnBti+j7rreMZl8QB4jFiEhP9TWbGWUMi8WYzBCgmgulxuvLQupKqo+Co6Omyg==}
+  hono@4.13.10:
+    resolution: {integrity: sha512-dQuLsa5oO+47QVMVMaaD9cIv8ctmVtK1iRvwWngkfloFJMeFeuoUFDswIqZGxmGX3hrRzREgEArjkK9OgsQEhA==}
     engines: {node: '>=16.9.0'}
 
   hookable@6.1.1:
@@ -5075,9 +5075,9 @@ snapshots:
     dependencies:
       '@hapi/hoek': 11.0.7
 
-  '@hono/node-server@1.19.14(hono@4.13.9)':
+  '@hono/node-server@1.19.14(hono@4.13.10)':
     dependencies:
-      hono: 4.13.9
+      hono: 4.13.10
 
   '@isaacs/fs-minipass@4.0.1':
     dependencies:
@@ -5117,7 +5117,7 @@ snapshots:
 
   '@modelcontextprotocol/sdk@1.29.0(supports-color@7.2.0)(zod@3.25.76)':
     dependencies:
-      '@hono/node-server': 1.19.14(hono@4.13.9)
+      '@hono/node-server': 1.19.14(hono@4.13.10)
       ajv: 8.20.0
       ajv-formats: 3.0.1(ajv@8.20.0)
       content-type: 1.0.5
@@ -5127,7 +5127,7 @@ snapshots:
       eventsource-parser: 3.1.0
       express: 5.2.1(supports-color@7.2.0)
       express-rate-limit: 8.6.0(express@5.2.1(supports-color@7.2.0))(supports-color@7.2.0)
-      hono: 4.13.9
+      hono: 4.13.10
       jose: 6.2.3
       json-schema-typed: 8.0.2
       pkce-challenge: 5.0.1
@@ -6765,7 +6765,7 @@ snapshots:
 
   help-me@5.0.0: {}
 
-  hono@4.13.9: {}
+  hono@4.13.10: {}
 
   hookable@6.1.1: {}
 
